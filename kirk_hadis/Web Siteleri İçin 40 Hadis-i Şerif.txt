@@ -1,0 +1,35 @@
+Web Siteleri İçin 40 Hadis-i Şerif Widget'ı (8 Sekmeli, Eksiksiz)
+
+
+Yeni Versiyon Özellikleri ve Amaç
+Siz değerli kullanıcılarımızdan gelen geri bildirimler doğrultusunda, web sitelerine kolayca entegre edilebilen **40 Hadis-i Şerif Widget'ını** güncelledik. Bu widget, koyu teması, mobil uyumlu yapısı ve Arapça metinleri ile ziyaretçilerinize İslami temel ahlak ve inanç esaslarını pratik bir formatta sunmaktadır.
+
+Yeni versiyonda, içerik uzunluğunu azaltmak ve kullanım kolaylığını artırmak için en büyük değişiklik, hadislerin gruplandırılma şeklinde yapılmıştır. Artık her sekmede 10 hadis yerine, sadece **5 hadis** bulunmaktadır.
+
+Toplamda 8 ayrı sekmeye bölünmüş olan bu içerik, sayfa içi kaydırma ihtiyacını minimuma indirerek kullanıcı deneyimini (UX) önemli ölçüde iyileştirmiştir.
+
+
+
+Tasarım ve İçerik Detayları
+Widget, estetik bir görünüme sahip olmasının yanı sıra, içerik zenginliğiyle de öne çıkmaktadır.
+
+**Arapça Font Ayarı:** Arapça metinlerin büyüklüğü, okunaklılığı koruyacak şekilde, widget'ın genel tasarımına daha uygun hale getirilmiştir.
+**Sekmeli Yapı:** Hadisler, 1-5, 6-10, ... şeklinde 8 ayrı sekmeye ayrılarak hızlı ve pratik erişim sağlanmıştır.
+**Genişletilmiş Başlık:** Başlık alanına kısa bir açıklama eklenerek, widget'ın ne sunduğu netleştirilmiştir.
+**İçerik Detayı:** Her hadis; güvenilir kaynakları (Buhârî, Müslim, Tirmizî, vb.) ile birlikte sunulmaktadır.
+
+
+Kurulum Talimatları (Kopyala & Yapıştır)
+Bu widget'ı sitenize eklemek için herhangi bir özel kod bilgisi gerekmez.
+
+**Aşama 1: HTML Dosyasını Kaydedin**
+Son paylaşılan **TAM HTML KODU** bloğunu kopyalayın ve sunucunuzda bir HTML dosyası olarak kaydedin. Örnek dosya adı: kirk-hadis-widget.html
+
+
+
+**Aşama 2: Sayfanıza Yerleştirin (Iframe Kodu)**
+Kaydettiğiniz bu dosyayı, sitenizin ana sayfa, sidebar veya makale alanına aşağıdaki iframe kodu ile yerleştirin.
+
+<iframe src="/sunucunuzdaki/dosya/yolu/kirk-hadis-widget.html" width="350" height="480" frameborder="0" scrolling="no"></iframe>
+
+**Not:** Hadisler 5'erli gruplandığı için önerilen minimum yükseklik height="480" olarak ayarlanmıştır. İhtiyacınıza göre bu değeri artırabilirsiniz.
