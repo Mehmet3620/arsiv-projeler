@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root { --gold: #c5a059; --dark-gold: #8a6d3b; --bg: #0a0a0a; --red: #ff3b3b; }
+        body { background: #1a1a1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; font-family: 'Segoe UI', sans-serif; user-select: none; }
+
+        .phone-frame {
+            width: 350px; height: 600px;
+            background: var(--bg);
+            border: 6px solid var(--gold);
+            border-radius: 40px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 10px var(--dark-gold);
+            position: relative; overflow: hidden;
+            display: flex; flex-direction: column; color: white;
+        }
+
+        /* STATUS BAR - YENİDEN DÜZENLENDİ */
+        .status-bar { padding: 15px 15px 5px; display: flex; justify-content: space-between; font-size: 11px; color: #aaa; align-items: center; }
+        .vol-indicator { color: white; display: flex; align-items: center; gap: 8px; flex: 1; }
+        .vol-slider { -webkit-appearance: none; width: 80px; height: 3px; background: #333; border-radius: 2px; outline: none; cursor: pointer; transition: 0.3s; }
+        .vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: var(--red); border-radius: 50%; cursor: pointer; box-shadow: 0 0 5px var(--red); }
+        
+        .mini-eq-canvas { width: 60px; height: 18px; margin-left: 10px; opacity: 0.9; }
+
+        .header { text-align: center; margin-top: 10px; }
+        .album-name { font-size: 16px; font-weight: bold; margin: 0; color: var(--gold); }
+        .song-name { font-size: 13px; color: #888; margin: 5px 0; }
+
+        .art-container { 
+            width: 250px; height: 250px; margin: 20px auto; 
+            border-radius: 15px; overflow: hidden; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
+            background: #111; display: flex; align-items: center; justify-content: center;
+        }
+        .art-container img { width: 100%; height: 100%; object-fit: contain; }
+        
+        .playing .art-container { animation: pulse 3s infinite ease-in-out; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
+
+        .quality-info { text-align: center; font-size: 11px; color: #666; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .dsd-badge { background: #222; color: #4CAF50; padding: 1px 4px; border-radius: 2px; font-weight: bold; border: 1px solid #333; }
+
+        .main-controls { display: flex; justify-content: space-around; align-items: center; padding: 0 40px; margin-top: 5px; }
+        .btn-main { background: none; border: none; color: white; cursor: pointer; transition: 0.2s; font-size: 24px; }
+        .btn-main:hover { color: var(--gold); transform: scale(1.1); }
+        .btn-play { font-size: 45px; }
+
+        .progress-section { padding: 15px 30px; }
+        .time-labels { display: flex; justify-content: space-between; font-size: 10px; color: #666; margin-bottom: 5px; }
+        .prog-bg { height: 3px; background: #333; position: relative; cursor: pointer; }
+        .prog-fill { height: 100%; background: var(--red); width: 0%; position: relative; }
+        .prog-dot { width: 10px; height: 10px; background: var(--red); border-radius: 50%; position: absolute; right: -5px; top: -4px; box-shadow: 0 0 5px var(--red); }
+
+        /* NAV MENÜ HOVER EKLENDİ */
+        .nav-menu { margin-top: auto; padding: 18px; display: flex; justify-content: space-between; border-top: 1px solid #1a1a1a; font-size: 18px; color: #666; }
+        .nav-item { cursor: pointer; transition: 0.3s ease; }
+        .nav-item:hover { color: var(--gold); transform: translateY(-3px); text-shadow: 0 0 10px var(--gold); }
+        .nav-item.active { color: var(--red); }
+
+        /* OVERLAYS */
+        .overlay { position: absolute; bottom: -100%; left: 0; width: 100%; height: 85%; background: #0c0c0c; border-top: 3px solid var(--gold); border-radius: 30px 30px 0 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100; padding: 25px; box-sizing: border-box; }
+        .overlay.active { bottom: 0; }
+        
+        /* SOSYAL MEDYA GRID */
+        .share-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center; margin-top: 20px; }
+        .share-btn { color: #888; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.3s; }
+        .share-btn:hover { color: white; }
+        .share-btn i { font-size: 28px; color: var(--gold); }
+
+        .pl-item { padding: 12px; border-bottom: 1px solid #1a1a1a; font-size: 13px; display: flex; justify-content: space-between; cursor: pointer; }
+        .pl-item.active { color: var(--gold); background: #151515; }
+        .pl-list { height: calc(100% - 40px); overflow-y: auto; }
+        .pl-list::-webkit-scrollbar { width: 3px; }
+        .pl-list::-webkit-scrollbar-thumb { background: var(--gold); }
+
+        /* HAKKINDA STİL */
+        .about-text { font-size: 12px; color: #aaa; line-height: 1.8; }
+        .about-text b { color: var(--gold); }
+        .feature-list { list-style: none; padding: 0; margin: 15px 0; }
+        .feature-list li { margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
+        .feature-list li i { color: #4CAF50; font-size: 10px; }
+    </style>
+</head>
+<body>
+
+<audio id="audio" crossorigin="anonymous"></audio>
+
+<div class="phone-frame" id="playerBody">
+    <div class="status-bar">
+        <div class="vol-indicator">
+            <i class="fas fa-volume-up"></i>
+            <span id="volNum" style="width: 15px;">70</span>
+            <input type="range" class="vol-slider" id="volSlider" min="0" max="1" step="0.01" value="0.7">
+            <canvas id="miniEq" class="mini-eq-canvas"></canvas>
+        </div>
+        <div style="display: flex; gap: 6px; align-items: center;">
+            <i class="fas fa-signal" style="color: #4CAF50;"></i>
+            <span id="digitalClock" style="font-weight: bold;">00:00</span>
+            <i class="fas fa-battery-three-quarters"></i>
+        </div>
+    </div>
+
+    <div class="header">
+        <p class="album-name" id="albumName">Dost Yurdu Hi-Res</p>
+        <p class="song-name" id="songName">Bağlanıyor...</p>
+    </div>
+
+    <div class="art-container">
+        <img id="coverArt" src="https://picsum.photos/500/500?random=1">
+    </div>
+
+    <div class="quality-info">
+        <span>DFF | 2822.4 kHz | 1bit | 5644 kbps</span>
+        <span class="dsd-badge">DSD</span>
+    </div>
+
+    <div class="main-controls">
+        <button class="btn-main" onclick="prev()"><i class="fas fa-step-backward"></i></button>
+        <button class="btn-main btn-play" id="playBtn" onclick="toggle()"><i class="fas fa-play-circle"></i></button>
+        <button class="btn-main" onclick="next()"><i class="fas fa-step-forward"></i></button>
+    </div>
+
+    <div class="progress-section">
+        <div class="time-labels"><span id="curTime">00:00</span><span id="durTime">00:00</span></div>
+        <div class="prog-bg" id="pSeek"><div class="prog-fill" id="pFill"><div class="prog-dot"></div></div></div>
+        <div style="text-align: center; font-size: 11px; color: #444; margin-top: 8px;" id="trackIdx">1 / 20</div>
+    </div>
+
+    <div class="nav-menu">
+        <i class="fas fa-sync-alt nav-item" id="loopBtn" title="Tekrarla" onclick="toggleLoop()"></i>
+        <i class="fas fa-heart nav-item" title="Paylaş" onclick="toggleOverlay('shareBox')"></i>
+        <i class="fas fa-plus-square nav-item" title="Dost Yurdu Blog" onclick="window.open('https://dostyurdu.blogspot.com/', '_blank')"></i>
+        <i class="fas fa-info-circle nav-item" title="Bilgi" onclick="toggleOverlay('aboutBox')"></i>
+        <i class="fas fa-list-ul nav-item" title="Liste" onclick="toggleOverlay('plBox')"></i>
+    </div>
+
+    <div class="overlay" id="plBox">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px;">
+            <span style="color: var(--gold);">ÇALMA LİSTESİ</span>
+            <i class="fas fa-times" onclick="toggleOverlay('plBox')"></i>
+        </div>
+        <div class="pl-list" id="listContent"></div>
+    </div>
+
+    <div class="overlay" id="shareBox">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 15px; color: var(--gold);"><b>ŞİMDİ PAYLAŞ</b><i class="fas fa-times" onclick="toggleOverlay('shareBox')"></i></div>
+        <div class="share-grid">
+            <a href="#" class="share-btn"><i class="fab fa-facebook"></i>Facebook</a>
+            <a href="#" class="share-btn"><i class="fab fa-whatsapp"></i>WhatsApp</a>
+            <a href="#" class="share-btn"><i class="fab fa-twitter"></i>X / Twitter</a>
+            <a href="#" class="share-btn"><i class="fab fa-telegram"></i>Telegram</a>
+            <a href="#" class="share-btn"><i class="fab fa-instagram"></i>Instagram</a>
+            <a href="#" class="share-btn"><i class="fab fa-linkedin"></i>LinkedIn</a>
+            <a href="#" class="share-btn"><i class="fas fa-envelope"></i>E-Posta</a>
+            <a href="#" class="share-btn"><i class="fas fa-link"></i>Kopyala</a>
+        </div>
+    </div>
+
+    <div class="overlay" id="aboutBox">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 15px; color: var(--gold);"><b>SİSTEM BİLGİSİ</b><i class="fas fa-times" onclick="toggleOverlay('aboutBox')"></i></div>
+        <div class="about-text">
+            <p><b>Dost Yurdu Hi-Res Player V4.6</b></p>
+            <p>En üst düzey ses deneyimi için özel olarak kodlanmış profesyonel medya arayüzü.</p>
+            <ul class="feature-list">
+                <li><i class="fas fa-check"></i> Sese Duyarlı 15 Kanallı Spektrum</li>
+                <li><i class="fas fa-check"></i> 20 Parçalık Akıllı Çalma Listesi</li>
+                <li><i class="fas fa-check"></i> Hi-Res DSD Ses İşleme Motoru</li>
+                <li><i class="fas fa-check"></i> Sosyal Medya Paylaşım Entegrasyonu</li>
+                <li><i class="fas fa-check"></i> Otomatik Tekrar Modu (Loop)</li>
+                <li><i class="fas fa-check"></i> Dinamik Saat ve Hat Göstergesi</li>
+            </ul>
+            <p style="margin-top: 20px; text-align: center; border-top: 1px solid #222; padding-top: 15px;">
+                <small>Yapımcı:</small><br>
+                <b style="font-size: 14px; letter-spacing: 1px;">DOST YURDU PROJECT</b>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const songs = [
+        {n: "Dost Yurdu Radyo", a: "Canlı Yayın", l: "https://eu1.fastcast4u.com/proxy/qpnslltp?mp=/1", i: "https://s1.directupload.eu/images/260103/7wlczo55.jpg"},
+        {n: "Zakir Tama - Elhamdulillah", a: "İlahi Esintiler", l: "https://ia903209.us.archive.org/1/items/zakir-tama-elhamdulillah/Zakir%20Tama%20-%20Elhamdulillah.mp3", i: "https://s1.directupload.eu/images/260103/6qcpfn2w.jpg"},
+        {n: "Süleymaniye Hadis 01", a: "Hadis Dersleri", l: "https://ia800202.us.archive.org/34/items/suleymaniyehadisdersleri/Suleymaniye01.mp3", i: "https://s1.directupload.eu/images/260103/hivpo3zu.jpg"},
+        {n: "Allahın Sevdiği Kullar", a: "Eren Bilge", l: "https://dn710608.ca.archive.org/0/items/erenbilge/ALLAH-in_Sevdigi_Kullari_64kb.mp3", i: "https://s1.directupload.eu/images/260103/9wn4j6s4.jpg"},
+        {n: "Kur'an Kıssaları Adem", a: "Kıssalar", l: "https://ia801200.us.archive.org/16/items/Kuran_Kissalari/03_Adem_as_kissasi_Insanin_yaratilisi.mp3", i: "https://s1.directupload.eu/images/260103/ljaurbk6.jpg"},
+        {n: "Riyazus-Salihin 03", a: "Ders Kayıtları", l: "https://ia800605.us.archive.org/15/items/Riyazus-Salihin/003-Riyazus-Salihin.mp3", i: "https://s1.directupload.eu/images/260103/x4u3spil.jpg"},
+        {n: "Muslumanin Gayesi", a: "Timurtaş Hoca", l: "https://ia801603.us.archive.org/10/items/Timurtas-Ucar-Hoca/Muslumanin_Gayesi_Allah_in_Rizasidir.mp3", i: "https://s1.directupload.eu/images/260103/5yekdl3x.jpg"},
+        {n: "ALLAH'in Rızası", a: "Dini Sohbetler", l: "https://dn710608.ca.archive.org/0/items/erenbilge/ALLAH-in_rizasini_kazanmak.mp3", i: "https://s1.directupload.eu/images/260103/qr7f9nen.jpg"},
+        {n: "Allah İçin Sevmek", a: "Eren Bilge", l: "https://dn710608.ca.archive.org/0/items/erenbilge/Allah-icin-sevmek-1.mp3", i: "https://s1.directupload.eu/images/260103/lw3ek4ds.jpg"},
+        {n: "Kadin Erkek Hakları", a: "Sohbetler", l: "https://dn710608.ca.archive.org/0/items/erenbilge/Kadin-Erkek-Haklari.mp3", i: "https://s1.directupload.eu/images/260103/5u7hk7w9.jpg"},
+        {n: "Huzur Sohbeti", a: "Dost Yurdu", l: "https://ia800202.us.archive.org/34/items/suleymaniyehadisdersleri/Suleymaniye02.mp3", i: "https://s1.directupload.eu/images/260103/bqat4eiu.jpg"},
+        {n: "İslam Ahlakı", a: "Timurtaş Hoca", l: "https://ia801603.us.archive.org/10/items/Timurtas-Ucar-Hoca/Islam_ve_Ahlak.mp3", i: "https://s1.directupload.eu/images/260103/milbhfdq.jpg"},
+        {n: "Sabır ve Şükür", a: "Eren Bilge", l: "https://dn710608.ca.archive.org/0/items/erenbilge/Sabir-ve-Sukur.mp3", i: "https://s1.directupload.eu/images/260103/ymf629ww.jpg"},
+        {n: "Doğru Yolun Esasları", a: "Riyazus Salihin", l: "https://ia800605.us.archive.org/15/items/Riyazus-Salihin/004-Riyazus-Salihin.mp3", i: "https://s1.directupload.eu/images/260103/z3yrxkz6.jpg"},
+        {n: "Gönül Dünyamız", a: "Sohbet", l: "https://dn710608.ca.archive.org/0/items/erenbilge/Gonul-Dunyamiz.mp3", i: "https://s1.directupload.eu/images/260103/np2tomev.jpg"},
+        {n: "Namazın Önemi", a: "Vaazlar", l: "https://ia801603.us.archive.org/10/items/Timurtas-Ucar-Hoca/Namazin_Onemi.mp3", i: "https://s1.directupload.eu/images/260103/gabd4t9d.jpg"},
+        {n: "Zekat ve İnfak", a: "Fıkıh", l: "https://ia800605.us.archive.org/15/items/Riyazus-Salihin/005-Riyazus-Salihin.mp3", i: "https://s1.directupload.eu/images/260103/6iwby8z3.jpg"},
+        {n: "Vaaz ve Sohbetler", a: "Tahir Büyükkörükçü", l: "https://ia802900.us.archive.org/3/items/vaaz_mp3/012%20Vaaz%20-Tahir%20B%C3%BCy%C3%BCkk%C3%B6r%C3%BCk%C3%A7%C3%BC%20Hoca.mp3", i: "https://s1.directupload.eu/images/260103/sjvo4nlm.jpg"},
+        {n: "Dua ve İstiğfar", a: "Maneviyat", l: "https://ia601505.us.archive.org/2/items/kalplerin-kesfi-imamgazali/047_Zikrullah-in-fazileti_64kb.mp3", i: "https://s1.directupload.eu/images/260103/lkp9bfao.jpg"},
+        {n: "Güzel Ahlak", a: "Dost Yurdu", l: "https://ia601505.us.archive.org/2/items/kalplerin-kesfi-imamgazali/004_Nefsin-arzulari-ve-terbiyesi_64kb.mp3", i: "https://s1.directupload.eu/images/260103/lxjk5l8p.jpg"}
+    ];
+
+    const audio = document.getElementById('audio');
+    const playBtn = document.getElementById('playBtn');
+    const volSlider = document.getElementById('volSlider');
+    const volNum = document.getElementById('volNum');
+    let idx = 0, isLoop = false;
+
+    // EKOLAYZER SİSTEMİ (GELİŞMİŞ)
+    const canvas = document.getElementById('miniEq');
+    const ctx = canvas.getContext('2d');
+    let audioCtx, analyser, dataArray;
+
+    function initEq() {
+        if(audioCtx) return;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        const source = audioCtx.createMediaElementSource(audio);
+        source.connect(analyser);
+        analyser.connect(audioCtx.destination);
+        analyser.fftSize = 64;
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+        draw();
+    }
+
+    function draw() {
+        requestAnimationFrame(draw);
+        analyser.getByteFrequencyData(dataArray);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const barWidth = 3;
+        let x = 0;
+        for(let i = 0; i < 15; i++) { // 15 Çubuk
+            const h = (dataArray[i] / 255) * canvas.height;
+            ctx.fillStyle = '#999';
+            ctx.fillRect(x, canvas.height - h, 1.5, h);
+            x += barWidth;
+        }
+    }
+
+    setInterval(() => {
+        const d = new Date();
+        document.getElementById('digitalClock').innerText = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
+    }, 1000);
+
+    volSlider.oninput = (e) => {
+        audio.volume = e.target.value;
+        volNum.innerText = Math.round(e.target.value * 100);
+    };
+
+    const listContent = document.getElementById('listContent');
+    songs.forEach((s, i) => {
+        const item = document.createElement('div');
+        item.className = 'pl-item';
+        item.id = 'pli-'+i;
+        item.innerHTML = `<span>${i+1}. ${s.n}</span><span style="font-size:10px; color:#555;">${s.a}</span>`;
+        item.onclick = () => { play(i); toggleOverlay('plBox'); };
+        listContent.appendChild(item);
+    });
+
+    function play(i) {
+        initEq(); if(audioCtx.state === 'suspended') audioCtx.resume();
+        idx = i;
+        document.querySelectorAll('.pl-item').forEach(el => el.classList.remove('active'));
+        document.getElementById('pli-'+i).classList.add('active');
+        document.getElementById('songName').innerText = songs[i].n;
+        document.getElementById('albumName').innerText = songs[i].a;
+        document.getElementById('coverArt').src = songs[i].i;
+        document.getElementById('trackIdx').innerText = `${i+1} / ${songs.length}`;
+        audio.src = songs[i].l;
+        audio.play().catch(()=>{});
+        playBtn.innerHTML = '<i class="fas fa-pause-circle"></i>';
+        document.getElementById('playerBody').classList.add('playing');
+    }
+
+    function toggle() {
+        initEq(); if(audioCtx.state === 'suspended') audioCtx.resume();
+        if(!audio.src) { play(0); return; }
+        if(audio.paused) { audio.play(); playBtn.innerHTML = '<i class="fas fa-pause-circle"></i>'; document.getElementById('playerBody').classList.add('playing'); }
+        else { audio.pause(); playBtn.innerHTML = '<i class="fas fa-play-circle"></i>'; document.getElementById('playerBody').classList.remove('playing'); }
+    }
+
+    function toggleLoop() {
+        isLoop = !isLoop; audio.loop = isLoop;
+        document.getElementById('loopBtn').classList.toggle('active');
+    }
+
+    function next() { idx = (idx + 1) % songs.length; play(idx); }
+    function prev() { idx = (idx - 1 + songs.length) % songs.length; play(idx); }
+    function toggleOverlay(id) { document.getElementById(id).classList.toggle('active'); }
+
+    document.getElementById('pSeek').onclick = (e) => {
+        if(!audio.duration) return;
+        const rect = e.currentTarget.getBoundingClientRect();
+        audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+    };
+
+    audio.ontimeupdate = () => {
+        const c = audio.currentTime || 0, d = audio.duration || 0;
+        document.getElementById('pFill').style.width = d > 0 ? (c/d * 100) + "%" : "0%";
+        const fmt = (s) => Math.floor(s/60).toString().padStart(2,'0') + ":" + Math.floor(s%60).toString().padStart(2,'0');
+        document.getElementById('curTime').innerText = fmt(c);
+        document.getElementById('durTime').innerText = (d > 0 && isFinite(d)) ? fmt(d) : "CANLI";
+    };
+
+    audio.onended = () => { if(!isLoop) next(); };
+    play(0); audio.pause(); playBtn.innerHTML = '<i class="fas fa-play-circle"></i>'; document.getElementById('playerBody').classList.remove('playing');
+</script>
+</body>
+</html>
