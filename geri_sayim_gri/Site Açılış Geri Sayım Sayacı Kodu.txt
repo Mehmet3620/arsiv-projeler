@@ -1,0 +1,160 @@
+<div style="text-align: center; margin: 20px 0;">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /*
+        * FORUM UYUMLU CSS
+        */
+        
+        /* Sayaç Kapsayıcısı ve Ortalaması */
+        .site-countdown-wrapper {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            background: linear-gradient(135deg, #111111, #222222, #333333) !important; 
+            color: #fff !important;
+            padding: 30px 20px 10px 20px !important;
+            border-radius: 15px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
+            border: 2px solid #6c757d !important;
+            margin: 20px auto !important;
+            max-width: 650px !important; 
+            display: block !important;
+            position: relative !important;
+        }
+
+        .site-countdown-header {
+            margin-bottom: 25px !important;
+            font-size: 2.2em !important;
+            color: #ffffff !important;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3) !important;
+            font-weight: bold !important;
+            text-align: center !important; 
+        }
+        
+        /* BAŞLIKTAKİ SİMGELERİN RENGİ */
+        .site-countdown-header i {
+            color: #adb5bd !important;
+            margin: 0 10px;
+        }
+
+        .site-countdown-container {
+            display: flex !important;
+            justify-content: center !important; 
+            gap: 15px !important;
+            flex-wrap: wrap !important; 
+        }
+
+        .site-countdown-item {
+            background-color: #495057 !important;
+            padding: 15px 20px !important;
+            border-radius: 10px !important;
+            min-width: 80px !important;
+            text-align: center !important;
+        }
+
+        .site-countdown-value {
+            font-size: 2.8em !important;
+            font-weight: bold !important;
+            color: #ffffff !important;
+            line-height: 1 !important;
+            margin-bottom: 5px !important;
+        }
+
+        .site-countdown-label {
+            font-size: 0.9em !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            color: #ced4da !important;
+        }
+
+        #site-status-message {
+            margin-top: 30px !important;
+            font-size: 1.8em !important;
+            color: #adb5bd !important;
+            text-shadow: 0 0 5px rgba(173, 181, 189, 0.8) !important;
+            display: none;
+            text-align: center !important;
+        }
+        
+        /* ALLATURKA FORUM LİNK STİLİ */
+        .allaturka-link-site {
+            display: block !important;
+            text-align: right !important;
+            padding-right: 10px !important;
+            padding-top: 10px !important;
+            font-size: 0.9em !important;
+        }
+        .allaturka-link-site a {
+            color: #adb5bd !important;
+            text-decoration: none !important;
+            font-weight: bold !important;
+            transition: color 0.2s !important;
+        }
+        .allaturka-link-site a:hover {
+            color: #ffffff !important;
+            text-decoration: underline !important;
+        }
+    </style>
+
+    <div id="countdown-wrapper-site" class="site-countdown-wrapper">
+        
+        <div class="site-countdown-header">
+            <i class="fas fa-globe"></i> Sitemiz Yayına Başlıyor! <i class="fas fa-play"></i>
+        </div>
+
+        <div id="countdown-container-inner-site" class="site-countdown-container">
+            <div class="site-countdown-item">
+                <div id="site-days" class="site-countdown-value">0</div>
+                <div class="site-countdown-label">Gün</div>
+            </div>
+            <div class="site-countdown-item">
+                <div id="site-hours" class="site-countdown-value">0</div>
+                <div class="site-countdown-label">Saat</div>
+            </div>
+            <div class="site-countdown-item">
+                <div id="site-minutes" class="site-countdown-value">0</div>
+                <div class="site-countdown-label">Dakika</div>
+            </div>
+            <div class="site-countdown-item">
+                <div id="site-seconds" class="site-countdown-value">0</div>
+                <div class="site-countdown-label">Saniye</div>
+            </div>
+        </div>
+
+        <div id="site-status-message">
+            Sitemiz Yayında! Hoş Geldiniz!
+        </div>
+        
+        <div class="allaturka-link-site">
+             <a href="https://allaturkaa.de/forum/" target="_blank">Allaturka Forum</a>
+        </div>
+    </div>
+    <script>
+        // Sitenin açılış tarihi: 1 Ocak 2026, Öğlen 12:00
+        // YIL, AY(0-11), GÜN, SAAT, DAKİKA, SANİYE
+        const siteLaunchDate = new Date(2026, 0, 1, 12, 0, 0).getTime(); 
+
+        const siteCountdownFunction = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = siteLaunchDate - now;
+
+            // Hesaplamalar
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // HTML'deki yerlere yazma
+            document.getElementById("site-days").innerHTML = days;
+            document.getElementById("site-hours").innerHTML = hours;
+            document.getElementById("site-minutes").innerHTML = minutes;
+            document.getElementById("site-seconds").innerHTML = seconds;
+
+            // Eğer geri sayım biterse
+            if (distance < 0) {
+                clearInterval(siteCountdownFunction); 
+                document.getElementById("countdown-container-inner-site").style.display = "none"; 
+                document.getElementById("site-status-message").style.display = "block"; 
+            }
+        }, 1000); 
+    </script>
+</div>
