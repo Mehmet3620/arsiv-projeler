@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mehmet-OS Paint</title>
+    <style>
+        /* MASAÜSTÜ VE GENEL STİLLER */
+        body { background: #008080; font-family: 'Tahoma', sans-serif; overflow: hidden; margin: 0; }
+        
+        .desktop-icon {
+            width: 75px; height: 80px; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; cursor: pointer; 
+            margin: 20px; transition: 0.2s; color: white; text-align: center;
+        }
+        .desktop-icon:hover { background: rgba(255,255,255,0.2); outline: 1px dotted #fff; }
+        .desktop-icon span { font-size: 11px; margin-top: 5px; text-shadow: 1px 1px #000; }
+
+        /* PENCERE STİLLERİ */
+        #paintWindow {
+            display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%);
+            z-index:999; width:920px; background:#c0c0c0; border:2px solid #fff;
+            border-right:2px solid #000; border-bottom:2px solid #000; padding:2px;
+        }
+        .title-bar {
+            background: linear-gradient(90deg, #000080, #1084d0); color: white;
+            padding: 3px 5px; display: flex; justify-content: space-between;
+            align-items: center; cursor: move; height: 18px; font-weight: bold; font-size: 11px;
+        }
+        .close-btn {
+            background:#c0c0c0; border:1px solid #fff; border-right:1px solid #000;
+            border-bottom:1px solid #000; cursor:pointer; width:16px; height:14px; font-size:9px;
+        }
+
+        /* ARAÇ KUTUSU */
+        .tool-box {
+            width: 70px; background: #c0c0c0; display: grid; grid-template-columns: 1fr 1fr;
+            gap: 4px; padding: 8px 4px; border-right: 1px solid #808080;
+        }
+        .p-btn {
+            width:28px; height:28px; cursor:pointer; border:1px solid #fff;
+            border-right:1px solid #000; border-bottom:1px solid #000;
+            background:#c0c0c0; display:flex; align-items:center; justify-content:center;
+        }
+        .p-btn.active {
+            border:1px solid #000; border-right:1px solid #fff; border-bottom:1px solid #fff;
+            background:#e0e0e0; box-shadow: inset 1px 1px #808080;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="desktop-icon" ondblclick="acPaint()">
+        <div style="font-size: 35px;">🎨</div>
+        <span>Paint</span>
+    </div>
+
+ <div id="paintWindow" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:999999; width:920px; background:#c0c0c0; border:2px solid #fff; border-right:2px solid #000; border-bottom:2px solid #000; padding:2px; box-sizing: border-box; font-family: Tahoma, sans-serif; user-select: none;">
+    
+    <div id="paintDrag" style="background:linear-gradient(90deg, #000080, #1084d0); color:white; padding:3px 5px; display:flex; justify-content:space-between; align-items:center; cursor:move; height:18px;">
+        <span style="font-size:11px; font-weight:bold;">untitled - Paint</span>
+        <button onclick="document.getElementById('paintWindow').style.display='none'" style="background:#c0c0c0; border:1px solid #fff; border-right:1px solid #000; border-bottom:1px solid #000; cursor:pointer; width:16px; height:14px; font-size:9px;">X</button>
+    </div>
+
+    <div style="display: flex; background: #c0c0c0; padding: 2px;">
+        <div id="paintTools" style="width: 70px; background: #c0c0c0; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 8px 4px; justify-items: center; align-content: start; border-right: 1px solid #808080;">
+            <button class="p-btn active" id="btn-pen" onclick="m_setTool('pen')" title="Kalem">✏️</button>
+            <button class="p-btn" id="btn-eraser" onclick="m_setTool('eraser')" title="Silgi">🧽</button>
+            <button class="p-btn" id="btn-bucket" onclick="m_setTool('bucket')" title="Boya Kovası">🪣</button>
+            <button class="p-btn" id="btn-line" onclick="m_setTool('line')" title="Çizgi">╱</button>
+            <button class="p-btn" id="btn-rect" onclick="m_setTool('rect')" title="Dikdörtgen">⬜</button>
+            <button class="p-btn" id="btn-circle" onclick="m_setTool('circle')" title="Daire">⭕</button>
+            <button class="p-btn" id="btn-tri" onclick="m_setTool('tri')" title="Üçgen">▲</button>
+            <button class="p-btn" id="btn-star" onclick="m_setTool('star')" title="Yıldız">⭐</button>
+            <button onclick="m_clearPaint()" title="Temizle" style="width:28px; height:28px; cursor:pointer; border:1px solid #fff; border-right:1px solid #000; border-bottom:1px solid #000; background:#c0c0c0;">🗑️</button>
+            
+            <style>
+                .p-btn { width:28px; height:28px; cursor:pointer; border:1px solid #fff; border-right:1px solid #000; border-bottom:1px solid #000; background:#c0c0c0; display:flex; align-items:center; justify-content:center; padding:0; }
+                .p-btn.active { border:1px solid #000; border-right:1px solid #fff; border-bottom:1px solid #fff; background:#e0e0e0; box-shadow: inset 1px 1px #808080; }
+            </style>
+
+            <div style="grid-column: span 2; margin-top:10px; border: 2px inset #fff; padding:2px; background:white; width: 45px; height:35px;">
+                <input type="color" id="m_paintColor" style="width:100%; height:100%; border:none; padding:0; cursor:pointer; background:none;">
+            </div>
+            <div style="grid-column: span 2; margin-top:5px; font-size:9px; text-align:center;">
+                <input type="range" id="m_paintSize" min="1" max="20" value="3" style="width:90%;">
+            </div>
+        </div>
+
+        <div style="flex-grow: 1; background: #808080; padding: 5px; display: flex; flex-direction: column; align-items: center;">
+            <canvas id="m_paintCanvas" width="820" height="520" style="background:white; cursor:crosshair; border:2px inset #fff;"></canvas>
+            
+            <div id="m_palette" style="margin-top: 8px; background: #c0c0c0; border: 2px inset #fff; display: grid; grid-template-columns: repeat(14, 1fr); gap: 2px; padding: 4px; width: 100%;">
+                <script>
+                    const m_clrs = ['#000000','#808080','#800000','#808000','#008000','#008080','#000080','#800080','#808040','#004040','#0080ff','#004080','#4000ff','#804000','#ffffff','#c0c0c0','#ff0000','#ffff00','#00ff00','#00ffff','#0000ff','#ff00ff','#ffff80','#00ff80','#80ffff','#8080ff','#ff0080','#ff8040'];
+                    m_clrs.forEach(c => document.write(`<div onclick="m_quickColor('${c}')" style="width:16px; height:16px; background:${c}; border:1px solid #707070; cursor:pointer;"></div>`));
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+var m_can, m_ctx, m_drawing = false;
+var m_tool = 'pen', m_startX, m_startY, m_snapshot;
+
+function m_setTool(t) {
+    m_tool = t;
+    document.querySelectorAll('.p-btn').forEach(b => b.classList.remove('active'));
+    if(document.getElementById('btn-' + t)) document.getElementById('btn-' + t).classList.add('active');
+}
+
+function acPaint() {
+    document.getElementById('paintWindow').style.display = 'block';
+    m_can = document.getElementById('m_paintCanvas');
+    m_ctx = m_can.getContext('2d', { willReadFrequently: true });
+    
+    if(!m_snapshot) {
+        m_ctx.fillStyle = "#FFFFFF";
+        m_ctx.fillRect(0, 0, m_can.width, m_can.height);
+    }
+
+    m_can.onmousedown = (e) => {
+        const r = m_can.getBoundingClientRect();
+        m_startX = Math.round(e.clientX - r.left);
+        m_startY = Math.round(e.clientY - r.top);
+        
+        if(m_tool === 'bucket') {
+            m_floodFill(m_startX, m_startY, document.getElementById('m_paintColor').value);
+            return;
+        }
+
+        m_drawing = true;
+        m_ctx.beginPath();
+        m_ctx.lineWidth = document.getElementById('m_paintSize').value;
+        m_ctx.lineCap = 'round';
+        m_ctx.strokeStyle = (m_tool === 'eraser') ? '#FFFFFF' : document.getElementById('m_paintColor').value;
+        m_ctx.fillStyle = document.getElementById('m_paintColor').value;
+        
+        // ÖNİZLEME İÇİN EKRANIN KOPYASINI AL
+        m_snapshot = m_ctx.getImageData(0, 0, m_can.width, m_can.height);
+    };
+
+    m_can.onmousemove = (e) => {
+        if (!m_drawing) return;
+        const r = m_can.getBoundingClientRect();
+        const x = Math.round(e.clientX - r.left);
+        const y = Math.round(e.clientY - r.top);
+
+        if (m_tool === 'pen' || m_tool === 'eraser') {
+            m_ctx.lineTo(x, y);
+            m_ctx.stroke();
+        } else {
+            // ŞEKİL ÇİZERKEN ESKİ EKRANI KOY VE ÜSTÜNE ÇİZ
+            m_ctx.putImageData(m_snapshot, 0, 0);
+            m_ctx.beginPath();
+            if (m_tool === 'line') { m_ctx.moveTo(m_startX, m_startY); m_ctx.lineTo(x, y); }
+            else if (m_tool === 'rect') m_ctx.strokeRect(m_startX, m_startY, x - m_startX, y - m_startY);
+            else if (m_tool === 'circle') {
+                let rd = Math.sqrt(Math.pow(x - m_startX, 2) + Math.pow(y - m_startY, 2));
+                m_ctx.arc(m_startX, m_startY, rd, 0, 2 * Math.PI);
+            }
+            else if (m_tool === 'tri') {
+                m_ctx.moveTo(m_startX + (x - m_startX) / 2, m_startY);
+                m_ctx.lineTo(m_startX, y); m_ctx.lineTo(x, y); m_ctx.closePath();
+            }
+            else if (m_tool === 'star') {
+                let pts = 5; let out = Math.sqrt(Math.pow(x - m_startX, 2) + Math.pow(y - m_startY, 2));
+                let inn = out / 2.5;
+                for (let i = 0; i < 2 * pts; i++) {
+                    let r = (i % 2 === 0) ? out : inn;
+                    let a = (Math.PI * i) / pts - Math.PI / 2;
+                    m_ctx.lineTo(m_startX + r * Math.cos(a), m_startY + r * Math.sin(a));
+                }
+                m_ctx.closePath();
+            }
+            m_ctx.stroke();
+        }
+    };
+
+    m_can.onmouseup = () => { m_drawing = false; m_ctx.beginPath(); };
+}
+
+// BOYA KOVASI ALGORİTMASI (FLOOD FILL)
+function m_floodFill(x, y, fillHex) {
+    const imgData = m_ctx.getImageData(0, 0, m_can.width, m_can.height);
+    const startPos = (y * m_can.width + x) * 4;
+    const startR = imgData.data[startPos];
+    const startG = imgData.data[startPos+1];
+    const startB = imgData.data[startPos+2];
+    
+    const fillRgb = hexToRgb(fillHex);
+    if(startR === fillRgb[0] && startG === fillRgb[1] && startB === fillRgb[2]) return;
+
+    const stack = [[x, y]];
+    while(stack.length) {
+        const [curX, curY] = stack.pop();
+        const pos = (curY * m_can.width + curX) * 4;
+        
+        if(imgData.data[pos] === startR && imgData.data[pos+1] === startG && imgData.data[pos+2] === startB) {
+            imgData.data[pos] = fillRgb[0];
+            imgData.data[pos+1] = fillRgb[1];
+            imgData.data[pos+2] = fillRgb[2];
+            imgData.data[pos+3] = 255;
+            
+            if(curX + 1 < m_can.width) stack.push([curX + 1, curY]);
+            if(curX - 1 >= 0) stack.push([curX - 1, curY]);
+            if(curY + 1 < m_can.height) stack.push([curX, curY + 1]);
+            if(curY - 1 >= 0) stack.push([curX, curY - 1]);
+        }
+    }
+    m_ctx.putImageData(imgData, 0, 0);
+}
+
+function hexToRgb(hex) {
+    const res = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return res ? [parseInt(res[1], 16), parseInt(res[2], 16), parseInt(res[3], 16)] : [0,0,0];
+}
+
+function m_quickColor(c) { document.getElementById('m_paintColor').value = c; }
+function m_clearPaint() { m_ctx.fillStyle="#FFFFFF"; m_ctx.fillRect(0,0,m_can.width,m_can.height); }
+</script>
+    
+</body>
+</html>
