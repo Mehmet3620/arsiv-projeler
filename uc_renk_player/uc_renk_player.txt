@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radyo Player Widget - Üç Tema</title>
+    
+    <style>
+        /* Animasyonlar - HIZLANDIRILDI (0.8s) ve PARLAKLIK ARTTIRILDI */
+        @keyframes rotating-glow {
+            0% { transform: rotate(0deg); opacity: 0.6; }
+            50% { opacity: 1.0; } 
+            100% { transform: rotate(360deg); opacity: 0.6; } 
+        }
+
+        /* Genel Ayarlar */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0; padding: 0; overflow: hidden;
+            background-color: transparent; 
+        }
+
+        /* Ana Kapsayıcı (Her üç player için) */
+        .radio-player-container {
+            width: 600px;
+            height: 100px; 
+            box-sizing: border-box; 
+            position: relative;
+            margin-bottom: 25px; /* Player'lar arası boşluk arttırıldı */
+        }
+        
+        .player-widget {
+            display: flex;
+            align-items: center;
+            height: 100%; 
+            padding: 5px 15px 5px 10px; 
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            box-sizing: border-box;
+            color: white;
+            position: relative;
+        }
+
+        /* Ortak Stiller */
+        .playback { margin-right: 12px; flex-shrink: 0; position: relative; z-index: 2; }
+        .play-btn-wrapper { width: 50px; height: 50px; position: relative; border-radius: 50%; transition: box-shadow 0.2s; }
+        .play, .stop { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: absolute; top: 0; left: 0; transition: opacity 0.3s; }
+        .is-playing .play { opacity: 0; display: none; }
+        .is-playing .stop { opacity: 1; display: flex; }
+        .play { opacity: 1; display: flex; }
+        .stop { opacity: 0; display: none; }
+        .playback svg path { fill: #FFFFFF; filter: blur(0.4px); text-shadow: 0 0 1px #fff; }
+
+        /* SİYAH TEMA (Varsayılan - Yeşil Efekt) */
+        .player-widget:not(.blue-theme):not(.orange-theme) {
+            background-color: #2b2b2b; 
+        }
+        .player-widget:not(.blue-theme):not(.orange-theme) .play-btn-wrapper {
+             box-shadow: 0 0 8px rgba(0, 191, 255, 0.7), 0 0 3px rgba(255, 255, 255, 0.9) inset;
+        }
+        .player-widget:not(.blue-theme):not(.orange-theme) .playback svg circle {
+            fill: #007ACC;
+        }
+        
+        /* SİYAH TEMA - Oynatma Efekti (YEŞİL - Artırılmış Öncelik ve Belirginlik) */
+        #radioWidgetBlack.is-playing .play-btn-wrapper {
+            box-shadow: 0 0 12px #66BB6A, 
+                        0 0 3px rgba(255, 255, 255, 0.9) inset; 
+        }
+        
+        /* **DÖNEN YEŞİL EFEKT KURALI - KESİN ÖNCELİK** */
+        #radioWidgetBlack.is-playing .play-btn-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -4px; left: -4px; right: -4px; bottom: -4px;
+            border-radius: 50%;
+            animation: rotating-glow 0.8s linear infinite; 
+            z-index: 1; 
+            box-shadow: 0 0 0 3px #66BB6A, 
+                        0 0 18px rgba(102, 187, 106, 0.9) inset; 
+        }
+        
+        /* SİYAH TEMA - SES ÇUBUĞU (YEŞİL) */
+        .player-widget:not(.blue-theme):not(.orange-theme) .vol-bar {
+            background-color: #4CAF50; 
+        }
+        .player-widget:not(.blue-theme):not(.orange-theme) .right-area-wrapper::before {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .player-widget:not(.blue-theme):not(.orange-theme) .player-status,
+        .player-widget:not(.blue-theme):not(.orange-theme) .playlists span {
+            color: #eee;
+        }
+        
+        /* MAVİ TEMA Özel Stilleri (#13568B) */
+        .player-widget.blue-theme {
+            background-color: #13568B; 
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #E0F2F7;
+        }
+        .player-widget.blue-theme .play-btn-wrapper {
+             box-shadow: 0 0 8px rgba(255, 255, 255, 0.7),
+                         0 0 3px rgba(255, 255, 255, 0.9) inset;
+        }
+        .player-widget.blue-theme .playback svg circle {
+            fill: #347BA6;
+        }
+        
+        /* MAVİ TEMA - Oynatma Efekti (AÇIK MAVİ - Artırılmış Belirginlik) */
+        #radioWidgetBlue.is-playing .play-btn-wrapper {
+            box-shadow: 0 0 12px #9BCFEA, 
+                        0 0 3px rgba(255, 255, 255, 0.9) inset; 
+        }
+        
+        /* **DÖNEN MAVİ EFEKT KURALI - KESİN ÖNCELİK** */
+        #radioWidgetBlue.is-playing .play-btn-wrapper::before {
+             content: '';
+            position: absolute;
+            top: -4px; left: -4px; right: -4px; bottom: -4px;
+            border-radius: 50%;
+            animation: rotating-glow 0.8s linear infinite; 
+            z-index: 1; 
+            box-shadow: 0 0 0 3px #9BCFEA, 
+                        0 0 18px rgba(155, 207, 234, 0.9) inset; 
+        }
+
+        /* MAVİ TEMA - SES ÇUBUĞU (AÇIK MAVİ) */
+        .player-widget.blue-theme .vol-bar {
+            background-color: #70B8DF; 
+        }
+        .player-widget.blue-theme .player-status {
+            color: #E0F2F7;
+        }
+        .player-widget.blue-theme .playlists span {
+            color: #E0F2F7;
+        }
+        .player-widget.blue-theme .right-area-wrapper::before {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* TURUNCU TEMA Özel Stilleri (orange-theme) */
+        .player-widget.orange-theme {
+            background-color: #2b2b2b; /* Siyah Arka Plan */
+            border: 1px solid rgba(255, 152, 0, 0.4); /* Turuncu Çerçeve */
+            color: #FF9800; /* Turuncu Metin */
+        }
+        .player-widget.orange-theme .play-btn-wrapper {
+             box-shadow: 0 0 8px rgba(255, 152, 0, 0.7), /* Turuncu gölge */
+                         0 0 3px rgba(255, 255, 255, 0.9) inset;
+        }
+        .player-widget.orange-theme .playback svg circle {
+            fill: #E65100; /* Koyu Turuncu */
+        }
+        .player-widget.orange-theme .playback svg path {
+            fill: #FFFFFF;
+        }
+        
+        /* [3] TURUNCU TEMA - Oynatma Efekti (TURUNCU - Artırılmış Belirginlik) */
+        #radioWidgetOrange.is-playing .play-btn-wrapper {
+            box-shadow: 0 0 12px #FFA726, /* Parlak Turuncu gölge */
+                        0 0 3px rgba(255, 255, 255, 0.9) inset; 
+        }
+        
+        /* **DÖNEN TURUNCU EFEKT KURALI - KESİN ÖNCELİK** */
+        #radioWidgetOrange.is-playing .play-btn-wrapper::before {
+             content: '';
+            position: absolute;
+            top: -4px; left: -4px; right: -4px; bottom: -4px;
+            border-radius: 50%;
+            animation: rotating-glow 0.8s linear infinite; 
+            z-index: 1; 
+            box-shadow: 0 0 0 3px #FFA726, /* Çizgi Kalınlığı 3px ve parlak Turuncu */
+                        0 0 18px rgba(255, 167, 38, 0.9) inset; 
+        }
+
+        /* TURUNCU TEMA - SES ÇUBUĞU (TURUNCU) */
+        .player-widget.orange-theme .vol-bar {
+            background-color: #FF9800; /* Ana Turuncu renk */
+        }
+        .player-widget.orange-theme .player-status,
+        .player-widget.orange-theme .playlists span {
+             color: #FFB74D; /* Açık Turuncu ton */
+        }
+        .player-widget.orange-theme .right-area-wrapper::before {
+            background-color: rgba(255, 152, 0, 0.5); /* Turuncu Ayırıcı */
+        }
+        
+        /* Diğer Ortak Stiller */
+        .volume-control-group { display: flex; align-items: center; flex-grow: 1; max-width: 300px; margin-right: 15px; }
+        .volume-icon { width: 38px; height: 38px; margin-right: 5px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: visible; position: relative; }
+        .volume-icon svg { fill: #fff; width: 28px; height: 28px; position: absolute; }
+        .volume-icon svg:not(.active) { display: none; }
+        .volume-slider-area { display: flex; flex-direction: column; flex-grow: 1; justify-content: center; height: 100%; }
+        .vol-progress { width: 100%; height: 7px; background: rgba(255, 255, 255, 0.3); border-radius: 4px; position: relative; margin-bottom: 5px; }
+        .vol-bar { height: 100%; width: 50%; border-radius: 4px; position: relative; }
+        .circle-control { width: 12px; height: 12px; border-radius: 50%; background: #fff; position: absolute; right: -6px; top: 50%; transform: translateY(-50%); cursor: pointer; box-shadow: 0 0 3px rgba(0, 0, 0, 0.5); }
+        .player-status { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; width: 100%; }
+        .right-area-wrapper { margin-left: auto; display: flex; align-items: center; height: 100%; flex-shrink: 0; padding-left: 15px; position: relative; }
+        .right-area-wrapper::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 1px; height: 80%; }
+        .playlists { display: flex; flex-direction: column; align-items: flex-end; }
+        .playlists span { font-size: 13px; margin-bottom: 3px; white-space: nowrap; line-height: 1.2; }
+        .playlists p { margin: 0; padding: 0; height: 0; min-height: 0;}
+        .playlists-icons { display: flex; align-items: center; margin-top: 2px; }
+        .playlists-icons a { margin-left: 8px; display: block; opacity: 0.9; transition: opacity 0.2s; flex-shrink: 0;}
+        .playlists-icons img { width: 30px; height: 30px;}
+        .magic-streams { font-size: 10px; color: #666; position: absolute; bottom: 5px; right: 15px; z-index: 5; }
+    </style>
+</head>
+<body>
+
+<div class="radio-player-container">
+        <div class="player-widget" id="radioWidgetBlack">
+            <div class="playback">
+                <div class="play-btn-wrapper" id="toggleBtnWrapperBlack">
+                    <div class="play" id="playBtnBlack" title="Start playing">          
+                        <svg width="50" height="50" version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 68 68" xml:space="preserve">
+                            <circle cx="34" cy="34" r="32" />          
+                            <path d="M47.9,32.9L31.4,20c-0.9-0.9-2.5-0.9-3.4,0l0,0c-0.4,0.4-0.9,0.9-0.9,1.3v25.3c0,0.4,0.4,0.9,0.9,1.3l0,0 c0.9,0.9,2.5,0.9,3.4,0L47.9,35C48.7,34.6,48.7,33.8,47.9,32.9L47.9,32.9z" />          
+                        </svg>
+                    </div>
+                    <div class="stop" id="stopBtnBlack" title="Stop playing">          
+                        <svg width="50" height="50" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 68 68" xml:space="preserve">
+                            <circle cx="34" cy="34" r="32" />          
+                            <path d="M42.7,44.7H25.3c-1.1,0-1.9-0.9-1.9-1.9V25.3c0-1.1,0.9-1.9,1.9-1.9h17.5c1.1,0,1.9,0.9,1.9,1.9v17.5 C44.7,43.8,43.8,44.7,42.7,44.7z" />          
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="volume-control-group">
+                <div class="volume-icon" id="volumeMuteIconBlack">
+                    <svg id="volumeIconBlack" class="active" height="28" width="28" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 18v12h8l10 10V8L14 18H6zm27 6c0-3.53-2.04-6.58-5-8.05v16.11c2.96-1.48 5-4.53 5-8.06zM28 6.46v4.13c5.78 1.72 10 7.07 10 13.41s-4.22 11.69-10 13.41v4.13c8.01-1.82 14-8.97 14-17.54S36.01 8.28 28 6.46z" />
+                    </svg>
+                    <svg id="muteIconBlack" height="28" width="28" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M33 24c0-3.53-2.04-6.58-5-8.05v4.42l4.91 4.91c.06-.42.09-.85.09-1.28zm5 0c0 1.88-.41 3.65-1.08 5.28l3.03 3.03C41.25 29.82 42 27 42 24c0-8.56-5.99-15.72-14-17.54v4.13c5.78 1.72 10 7.07 10 13.41zM8.55 6L6 8.55 15.45 18H6v12h8l10 10V26.55l8.51 8.51c-1.34 1.03-2.85 1.86-4.51 2.36v4.13c2.75-.63 5.26-1.89 7.37-3.62L39.45 42 42 39.45l-18-18L8.55 6zM24 8l-4.18 4.18L24 16.36V8z" />
+                    </svg>
+                </div>
+                <div class="volume-slider-area">
+                    <div class="vol-progress" id="volumeSliderProgressBlack">
+                        <div class="vol-bar" id="volumeBarBlack">
+                            <div class="circle-control" id="volumeCircleBlack"></div>
+                        </div>
+                    </div>
+                    <div class="player-status" id="statusTextBlack">Player stopped.</div>
+                </div>
+            </div>
+            <div class="right-area-wrapper">
+                <div class="playlists">
+                    <span>Listen in your favourite player</span>
+                    <div class="playlists-icons">
+                         <a tabindex="1" target="_blank" href="https://eu8.fastcast4u.com/tunein/dilber.pls" title="Winamp">
+                            <img src="https://fastcast4u.com/player/dilber/assets/img/player-winamp-icon.svg" alt="Winamp">
+                         </a>
+                         <a tabindex="1" target="_blank" href="https://eu8.fastcast4u.com/tunein/dilber.asx" title="Windows Media Player">
+                            <img src="https://fastcast4u.com/player/dilber/assets/img/player-wmp-icon.svg" alt="WMP">
+                         </a>
+                         <a tabindex="1" target="_blank" href="https://eu8.fastcast4u.com/tunein/dilber.m3u" title="QuickTime">
+                            <img src="https://fastcast4u.com/player/dilber/assets/img/player-quicktime-icon.svg" alt="QuickTime">
+                         </a>
+                         <a tabindex="1" target="_blank" href="https://eu8.fastcast4u.com/tunein/dilber.xspf" title="VLC Player">
+                            <img src="https://fastcast4u.com/player/dilber/assets/img/player-vlc-icon.svg" alt="VLC">
+                         </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="magic-streams">Magic Streams</div>
+    </div>
+<div class="radio-player-container">
+        <div class="player-widget blue-theme" id="radioWidgetBlue">
+            <div class="playback">
+                <div class="play-btn-wrapper" id="toggleBtnWrapperBlue">
+                    <div class="play" id="playBtnBlue" title="Start playing">          
+                        <svg width="50" height="50" version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 68 68" xml:space="preserve">
+                            <circle cx="34" cy="34" r="32" />          
+                            <path d="M47.9,32.9L31.4,20c-0.9-0.9-2.5-0.9-3.4,0l0,0c-0.4,0.4-0.9,0.9-0.9,1.3v25.3c0,0.4,0.4,0.9,0.9,1.3l0,0 c0.9,0.9,2.5,0.9,3.4,0L47.9,35C48.7,34.6,48.7,33.8,47.9,32.9L47.9,32.9z" />          
+                        </svg>
+                    </div>
+                    <div class="stop" id="stopBtnBlue" title="Stop playing">          
+                        <svg width="50" height="50" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 68 68" xml:space="preserve">
+                            <circle cx="34" cy="34" r="32" />          
+                            <path d="M42.7,44.7H25.3c-1.1,0-1.9-0.9-1.9-1.9V25.3c0-1.1,0.9-1.9,1.9-1.9h17.5c1.1,0,1.9,0.9,1.9,1.9v17.5 C44.7,43.8,43.8,44.7,42.7,44.7z" />          
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="volume-control-group">
+                <div class="volume-icon" id="volumeMuteIconBlue">
+                    <svg id="volumeIconBlue" class="active" height="28" width="28" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 18v12h8l10 10V8L14 18H6zm27 6c0-3.53-2.04-6.58-5-8.05v16.11c2.96-1.48 5-4.53 5-8.06zM28 6.46v4.13c5.78 1.72 10 7.07 10 13.41s-4.22 11.69-10 13.41v4.13c8.01-1.82 14-8.97 14-17.54S36.01 8.28 28 6.46z" />
+                    </svg>
+                    <svg id="muteIconBlue" height="28" width="28" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M33 24c0-3.53-2.04-6.58-5-8.05v4.42l4.91 4.91c.06-.42.09-.85.09-1.28zm5 0c0 1.88-.41 3.65-1.08 5.28l3.03 3.03C41.25 29.82 42 27 42 24c0-8.56-5.99-15.72-14-17.54v4.13c5.78 1.72 10 7.07 10 13.41zM8.55 6L6 8.55 15.45 18H6v12h8l10 10V26.55l8.51 8.51c-1.34 1.03-2.85 1.86-4.51 2.36v4.13c2.75-.63 5.26-1.89 7.37-3.62L39.45 42 42 39.45l-18-18L8.55 6zM24 8l-4.18 4.18L24 16.36V8z" />
+                    </svg>
+                </div>
+                <div class="volume-slider-area">
+                    <div class="vol-progress" id="volumeSliderProgressBlue">
+                        <div class="vol-bar" id="volumeBarBlue">
+                            <div class="circle-control" id="volumeCircleBlue"></div>
+                        </div>
+                    </div>
+                    <div class="player-status" id="statusTextBlue">Player stopped.</div>
+                </div>
+            </div>
+            <div class="right-area-wrapper">
+                <div class="playlists">
+                    <span>Listen in your favourite player</span>
+                    <div class="playlists-icons">
+                         <a tabindex="1" target="_blank" href="https://eu8.fastcast4u.com/tunein/dilber.pls" title="Winamp">
+                            <img src="https://fastcast4u.com/player/dilber/assets/img/player-winamp-icon.svg" alt="Winamp">
+                         </a>
+                         <a tabindex="1" target="_blank" href="https://eu8.fastcast4u.com/tunein/dilber.asx" title="Windows Media Player">
+                            <img src="https://fastcast4u.com/player/dilber/assets/img/player-wmp-icon.svg" alt="WMP">
+                         </a>
+                         <a tabindex="1" target="_blank" href="https://eu8.fastcast4u.com/tunein/dilber.m3u" title="QuickTime">
+                            <img src="https://fastcast4u.com/player/dilber/assets/img/player-quicktime-icon.svg" alt="QuickTime">
+                         </a>
+                         <a tabindex="1" target="_blank" href="https://eu8.fastcast4u.com/tunein/dilber.xspf" title="VLC Player">
+                            <img src="https://fastcast4u.com/player/dilber/assets/img/player-vlc-icon.svg" alt="VLC">
+                         </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="magic-streams">Magic Streams</div>
+    </div>
+<div class="radio-player-container">
+        <div class="player-widget orange-theme" id="radioWidgetOrange">
+            <div class="playback">
+                <div class="play-btn-wrapper" id="toggleBtnWrapperOrange">
+                    <div class="play" id="playBtnOrange" title="Start playing">          
+                        <svg width="50" height="50" version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 68 68" xml:space="preserve">
+                            <circle cx="34" cy="34" r="32" />          
+                            <path d="M47.9,32.9L31.4,20c-0.9-0.9-2.5-0.9-3.4,0l0,0c-0.4,0.4-0.9,0.9-0.9,1.3v25.3c0,0.4,0.4,0.9,0.9,1.3l0,0 c0.9,0.9,2.5,0.9,3.4,0L47.9,35C48.7,34.6,48.7,33.8,47.9,32.9L47.9,32.9z" />          
+                        </svg>
+                    </div>
+                    <div class="stop" id="stopBtnOrange" title="Stop playing">          
+                        <svg width="50" height="50" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 68 68" xml:space="preserve">
+                            <circle cx="34" cy="34" r="32" />          
+                            <path d="M42.7,44.7H25.3c-1.1,0-1.9-0.9-1.9-1.9V25.3c0-1.1,0.9-1.9,1.9-1.9h17.5c1.1,0,1.9,0.9,1.9,1.9v17.5 C44.7,43.8,43.8,44.7,42.7,44.7z" />          
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="volume-control-group">
+                <div class="volume-icon" id="volumeMuteIconOrange">
+                    <svg id="volumeIconOrange" class="active" height="28" width="28" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 18v12h8l10 10V8L14 18H6zm27 6c0-3.53-2.04-6.58-5-8.05v16.11c2.96-1.48 5-4.53 5-8.06zM28 6.46v4.13c5.78 1.72 10 7.07 10 13.41s-4.22 11.69-10 13.41v4.13c8.01-1.82 14-8.97 14-17.54S36.01 8.28 28 6.46z" />
+                    </svg>
+                    <svg id="muteIconOrange" height="28" width="28" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M33 24c0-3.53-2.04-6.58-5-8.05v4.42l4.91 4.91c.06-.42.09-.85.09-1.28zm5 0c0 1.88-.41 3.65-1.08 5.28l3.03 3.03C41.25 29.82 42 27 42 24c0-8.56-5.99-15.72-14-17.54v4.13c5.78 1.72 10 7.07 10 13.41zM8.55 6L6 8.55 15.45 18H6v12h8l10 10V26.55l8.51 8.51c-1.34 1.03-2.85 1.86-4.51 2.36v4.13c2.75-.63 5.26-1.89 7.37-3.62L39.45 42 42 39.45l-18-18L8.55 6zM24 8l-4.18 4.18L24 16.36V8z" />
+                    </svg>
+                </div>
+                <div class="volume-slider-area">
+                    <div class="vol-progress" id="volumeSliderProgressOrange">
+                        <div class="vol-bar" id="volumeBarOrange">
+                            <div class="circle-control" id="volumeCircleOrange"></div>
+                        </div>
+                    </div>
+                    <div class="player-status" id="statusTextOrange">Player stopped.</div>
+                </div>
+            </div>
+            <div class="right-area-wrapper">
+                <div class="playlists">
+                    <span>Listen in your favourite player</span>
+                    <div class="playlists-icons">
+                         <a tabindex="1" target="_blank" href="https://eu8.fastcast4u.com/tunein/dilber.pls" title="Winamp">
+                            <img src="https://fastcast4u.com/player/dilber/assets/img/player-winamp-icon.svg" alt="Winamp">
+                         </a>
+                         <a tabindex="1" target="_blank" href="https://eu8.fastcast4u.com/tunein/dilber.asx" title="Windows Media Player">
+                            <img src="https://fastcast4u.com/player/dilber/assets/img/player-wmp-icon.svg" alt="WMP">
+                         </a>
+                         <a tabindex="1" target="_blank" href="https://eu8.fastcast4u.com/tunein/dilber.m3u" title="QuickTime">
+                            <img src="https://fastcast4u.com/player/dilber/assets/img/player-quicktime-icon.svg" alt="QuickTime">
+                         </a>
+                         <a tabindex="1" target="_blank" href="https://eu8.fastcast4u.com/tunein/dilber.xspf" title="VLC Player">
+                            <img src="https://fastcast4u.com/player/dilber/assets/img/player-vlc-icon.svg" alt="VLC">
+                         </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="magic-streams">Magic Streams</div>
+    </div>
+<audio id="radio-audio-black" crossorigin="anonymous">
+        <source src="https://eu8.fastcast4u.com/proxy/dilber?mp=/1" type="audio/mpeg">
+    </audio>
+    <audio id="radio-audio-blue" crossorigin="anonymous">
+        <source src="https://eu8.fastcast4u.com/proxy/dilber?mp=/1" type="audio/mpeg">
+    </audio>
+    <audio id="radio-audio-orange" crossorigin="anonymous">
+        <source src="https://eu8.fastcast4u.com/proxy/dilber?mp=/1" type="audio/mpeg">
+    </audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Siyah Player için DOM Elementleri
+            const audioBlack = document.getElementById('radio-audio-black');
+            const radioWidgetBlack = document.getElementById('radioWidgetBlack');
+            const toggleBtnWrapperBlack = document.getElementById('toggleBtnWrapperBlack');
+            const statusTextBlack = document.getElementById('statusTextBlack');
+            const volumeMuteIconContainerBlack = document.getElementById('volumeMuteIconBlack');
+            const volumeIconBlack = document.getElementById('volumeIconBlack');
+            const muteIconBlack = document.getElementById('muteIconBlack');
+            const volumeSliderProgressBlack = document.getElementById('volumeSliderProgressBlack');
+            const volumeBarBlack = document.getElementById('volumeBarBlack');
+            
+            // Mavi Player için DOM Elementleri
+            const audioBlue = document.getElementById('radio-audio-blue');
+            const radioWidgetBlue = document.getElementById('radioWidgetBlue');
+            const toggleBtnWrapperBlue = document.getElementById('toggleBtnWrapperBlue');
+            const statusTextBlue = document.getElementById('statusTextBlue');
+            const volumeMuteIconContainerBlue = document.getElementById('volumeMuteIconBlue');
+            const volumeIconBlue = document.getElementById('volumeIconBlue');
+            const muteIconBlue = document.getElementById('muteIconBlue');
+            const volumeSliderProgressBlue = document.getElementById('volumeSliderProgressBlue');
+            const volumeBarBlue = document.getElementById('volumeBarBlue');
+            
+            // Turuncu Player için DOM Elementleri (YENİ)
+            const audioOrange = document.getElementById('radio-audio-orange');
+            const radioWidgetOrange = document.getElementById('radioWidgetOrange');
+            const toggleBtnWrapperOrange = document.getElementById('toggleBtnWrapperOrange');
+            const statusTextOrange = document.getElementById('statusTextOrange');
+            const volumeMuteIconContainerOrange = document.getElementById('volumeMuteIconOrange');
+            const volumeIconOrange = document.getElementById('volumeIconOrange');
+            const muteIconOrange = document.getElementById('muteIconOrange');
+            const volumeSliderProgressOrange = document.getElementById('volumeSliderProgressOrange');
+            const volumeBarOrange = document.getElementById('volumeBarOrange');
+
+
+            // Player durumlarını ve ayarlarını yöneten jenerik fonksiyon
+            function initializePlayer(audioElement, widgetElement, toggleBtn, statusTxt, volumeMuteIconCont, volIcon, muteIc, volSliderProgress, volBar, themeName) {
+                let isPlaying = false; 
+                let elapsed = 0;
+                let lastKnownVolume = 0.5; 
+                let volumeChangeTimer = null;
+                let isDragging = false;
+
+                audioElement.volume = lastKnownVolume;
+                updateVolumeUI(lastKnownVolume);
+
+                function getVolumePercent(volume) {
+                    return Math.round(volume * 100); 
+                }
+                
+                function updateVolumeUI(volume) {
+                    const percent = getVolumePercent(volume);
+                    volBar.style.width = `${percent}%`;
+                    
+                    if (volume < 0.01) { 
+                        muteIc.classList.add('active');
+                        volIcon.classList.remove('active');
+                    } else {
+                        muteIc.classList.remove('active');
+                        volIcon.classList.add('active');
+                    }
+                }
+                
+                function updateStatusText(messageType, currentVolumePercent = 0) {
+                    if (!isPlaying) {
+                        statusTxt.textContent = 'Player stopped.'; 
+                        return;
+                    }
+                    
+                    let streamText = `Playing GURBETTEYİM FM `;
+                    let timeText = `${Math.floor(elapsed / 60).toString().padStart(2, '0')}:${(elapsed % 60).toString().padStart(2, '0')}`;
+                    
+                    if (messageType === 'volume') {
+                         statusTxt.textContent = `Volume %${Math.round(currentVolumePercent)}`;
+                    } else {
+                         statusTxt.textContent = streamText + timeText;
+                    }
+                }
+
+                function updatePlayerState(isManualUpdate = false) {
+                    if (isPlaying) {
+                        widgetElement.classList.add('is-playing');
+                        if (!volumeChangeTimer) {
+                            updateStatusText('stream');
+                        }
+                    } else {
+                        widgetElement.classList.remove('is-playing');
+                        statusTxt.textContent = 'Player stopped.'; 
+                    }
+                    if (isManualUpdate) {
+                        updateVolumeUI(audioElement.volume);
+                    }
+                }
+                
+                toggleBtn.addEventListener('click', () => {
+                    if (isPlaying) {
+                        isPlaying = false; 
+                        elapsed = 0;
+                        updatePlayerState(true); 
+                        
+                        audioElement.pause(); 
+                        audioElement.currentTime = 0; 
+                        
+                    } else {
+                        isPlaying = true; 
+                        updatePlayerState(true); 
+                        
+                        if (audioElement.volume < 0.01) {
+                             audioElement.volume = lastKnownVolume > 0.01 ? lastKnownVolume : 0.5;
+                             updateVolumeUI(audioElement.volume);
+                        }
+                        
+                        audioElement.load(); 
+                        audioElement.play().catch(error => {
+                            console.error(`[${themeName} Player] Oynatma hatası:`, error);
+                            isPlaying = false;
+                            updatePlayerState(true);
+                            statusTxt.textContent = 'Oynatma başlatılamadı.';
+                        });
+                    }
+                });
+
+                volumeMuteIconCont.addEventListener('click', () => {
+                    if (volumeChangeTimer) clearTimeout(volumeChangeTimer);
+                    
+                    if (audioElement.volume > 0.01) {
+                        lastKnownVolume = audioElement.volume; 
+                        audioElement.volume = 0;
+                    } else {
+                        audioElement.volume = lastKnownVolume > 0.01 ? lastKnownVolume : 0.5;
+                    }
+                    
+                    updateVolumeUI(audioElement.volume);
+                    updateStatusText('volume', getVolumePercent(audioElement.volume));
+                    
+                    volumeChangeTimer = setTimeout(() => {
+                        volumeChangeTimer = null;
+                        updateStatusText('stream');
+                    }, 2000);
+                });
+                
+                const startDrag = (e) => {
+                    e.preventDefault();
+                    isDragging = true;
+                    document.addEventListener('mousemove', onDrag);
+                    document.addEventListener('mouseup', stopDrag);
+                    document.addEventListener('touchmove', onDrag);
+                };
+
+                const onDrag = (e) => {
+                    if (!isDragging) return;
+                    
+                    if (volumeChangeTimer) clearTimeout(volumeChangeTimer);
+                    
+                    const rect = volSliderProgress.getBoundingClientRect();
+                    let clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+                    
+                    let newVolume = (clientX - rect.left) / rect.width;
+                    newVolume = Math.max(0, Math.min(1, newVolume)); 
+                    
+                    audioElement.volume = newVolume.toFixed(2);
+                    lastKnownVolume = audioElement.volume;
+                    
+                    updateVolumeUI(audioElement.volume);
+                    updateStatusText('volume', getVolumePercent(audioElement.volume)); 
+                };
+
+                const stopDrag = () => {
+                    isDragging = false;
+                    document.removeEventListener('mousemove', onDrag);
+                    document.removeEventListener('mouseup', stopDrag);
+                    document.removeEventListener('touchmove', onDrag);
+                    
+                    volumeChangeTimer = setTimeout(() => {
+                        volumeChangeTimer = null;
+                        updateStatusText('stream');
+                    }, 2000);
+                };
+
+                volSliderProgress.addEventListener('mousedown', startDrag);
+                volSliderProgress.addEventListener('touchstart', startDrag);
+                
+                updatePlayerState(true);
+
+                setInterval(() => {
+                    if (isPlaying && !volumeChangeTimer) {
+                         elapsed++;
+                         updateStatusText('stream');
+                    } else if (!isPlaying) {
+                        elapsed = 0;
+                    }
+                }, 1000); 
+            }
+
+            // Player'ları başlat
+            initializePlayer(audioBlack, radioWidgetBlack, toggleBtnWrapperBlack, statusTextBlack, volumeMuteIconContainerBlack, volumeIconBlack, muteIconBlack, volumeSliderProgressBlack, volumeBarBlack, 'Black');
+            initializePlayer(audioBlue, radioWidgetBlue, toggleBtnWrapperBlue, statusTextBlue, volumeMuteIconContainerBlue, volumeIconBlue, muteIconBlue, volumeSliderProgressBlue, volumeBarBlue, 'Blue');
+            initializePlayer(audioOrange, radioWidgetOrange, toggleBtnWrapperOrange, statusTextOrange, volumeMuteIconContainerOrange, volumeIconOrange, muteIconOrange, volumeSliderProgressOrange, volumeBarOrange, 'Orange');
+        });
+    </script>
+</body>
+</html>
