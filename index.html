@@ -5,23 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mehmet3620 Uygulama Arşivi</title>
     <style>
-        body { background-color: #1a1a1a; color: #d4af37; font-family: 'Segoe UI', sans-serif; text-align: center; padding: 50px; }
-        h1 { border-bottom: 2px solid #d4af37; display: inline-block; padding-bottom: 10px; }
-        .container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 30px; }
-        .box { background: #2a2a2a; border: 1px solid #d4af37; padding: 20px; border-radius: 10px; width: 200px; 
-               text-decoration: none; color: white; transition: 0.3s; font-weight: bold; }
+        body { background-color: #1a1a1a; color: #d4af37; font-family: 'Segoe UI', sans-serif; text-align: center; padding: 30px; }
+        h1 { border-bottom: 2px solid #d4af37; display: inline-block; padding-bottom: 10px; margin-bottom: 30px; }
+        
+        .section-title { 
+            background: #d4af37; color: #1a1a1a; padding: 10px; border-radius: 5px; 
+            margin-top: 40px; font-weight: bold; width: 100%; max-width: 800px; 
+            margin-left: auto; margin-right: auto; text-transform: uppercase;
+        }
+
+        .container { 
+            display: flex; flex-wrap: wrap; justify-content: center; 
+            gap: 20px; margin-top: 20px; margin-bottom: 20px;
+        }
+
+        .box { 
+            background: #2a2a2a; border: 1px solid #d4af37; padding: 15px; 
+            border-radius: 10px; width: 220px; text-decoration: none; 
+            color: white; transition: 0.3s; font-weight: bold; 
+            display: flex; align-items: center; justify-content: center; min-height: 50px;
+        }
+
         .box:hover { background: #d4af37; color: black; transform: translateY(-5px); }
     </style>
 </head>
 <body>
 
     <h1>Mehmet3620 Proje Arşivi</h1>
-    <p>Geliştirdiğim uygulamalara aşağıdan ulaşabilirsiniz:</p>
 
+    <div class="section-title">İslami Uygulamalar</div>
     <div class="container">
         <a href="https://mehmet3620.github.io/mushaf-resimleri/" class="box" style="border-color: #ffcc00;">Kuran-ı Kerim (Mushaf)</a>
+    </div>
+
+    <div class="section-title">Radyo Uygulamaları</div>
+    <div class="container">
         <a href="altin_renkli_player/" class="box">Altın Renkli Player</a>
         <a href="jv_player/" class="box">Jv Player Reklamsız</a>
+    </div>
+
+    <div class="section-title">Karışık Uygulamalar</div>
+    <div class="container">
         <a href="sibel/" class="box">Sibel Uygulaması</a>
     </div>
 
