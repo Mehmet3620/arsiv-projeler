@@ -1,0 +1,173 @@
+/* Temel Font ve Arka Plan */
+body, html {
+    font-family: "Roboto", sans-serif; 
+    font-weight: 300;
+    font-size: 10pt;
+    padding: 0;
+    margin: 0;
+    color: #fff;
+    /* DOSYA İSMİ DÜZELTİLDİ: background.jpg */
+    background: #212121 url("../img/background.jpg") repeat;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Player Ana Gövde - Mavi Metalik ve Üstten Odaklı Işık */
+.player {
+    padding: 15px 0 5px;
+    max-width: 720px;
+    height: 78px;
+    /* Üst-orta kısımda yoğunlaşan parlama (radial) ve derin mavi geçiş (linear) */
+    background: 
+        radial-gradient(ellipse at top, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%), 
+        linear-gradient(to bottom, #1e88e5 0%, #1565c0 25%, #0d47a1 100%), 
+        url("../img/sprite.png") no-repeat center -25px;
+    border-top: 1px solid #64b5f6;
+    border-bottom: 1px solid #001529;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.7);
+    margin: 30px auto;
+    position: relative;
+    border-radius: 4px;
+}
+
+/* Oynatma Grubu - Buton Yeri Sabit (10px) */
+.player .playback {
+    position: absolute;
+    left: 0;
+    top: 10px; 
+    padding: 0 10px;
+    width: 68px;
+    height: 78px;
+    text-align: center;
+}
+
+.player .playback .play, .player .playback .stop {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    width: 72px;
+    height: 72px;
+    background: url("../img/sprite.png") no-repeat;
+    transition: transform 200ms ease;
+}
+
+.player .playback .play { background-position: -1px -210px; }
+.player .playback .play:hover { background-position: -83px -210px; transform: scale(1.05); }
+
+/* Stop butonu ve dönen yeşil efekt */
+.player .playback .stop { background-position: -165px -210px; }
+.player .playback .stop:before {
+    display: block;
+    width: 72px;
+    height: 72px;
+    position: absolute;
+    content: " ";
+    left: 0;
+    top: 0;
+    background: transparent url("../img/sprite.png") no-repeat -330px -210px;
+    animation: playspin 3s infinite linear;
+}
+
+/* Ses Kontrol Alanı */
+.player .volume-control {
+    position: absolute;
+    padding: 25px 10px;
+    left: 90px;
+    right: 245px;
+    height: 28px;
+}
+
+.player .volume-slider .vol-progress {
+    margin: 0 5px;
+    height: 8px;
+    padding: 1px;
+    background: #001529; 
+    cursor: pointer;
+    box-shadow: inset 0 2px 3px rgba(0,0,0,0.8);
+    border-radius: 4px;
+    position: relative;
+}
+
+.player .volume-slider .vol-bar {
+    position: relative;
+    display: block;
+    height: 100%;
+    background: #00e600; 
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 230, 0, 0.3);
+}
+
+/* Topuz */
+.player .volume-slider .circle-control {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    display: block;
+    width: 23px;
+    height: 23px;
+    background: transparent url("../img/sprite.png") no-repeat -160px 0;
+    z-index: 10;
+    cursor: pointer;
+}
+
+/* DURUM YAZISI - Net Kırık Beyaz */
+.player .player-status {
+    color: #eeeeee; 
+    font-size: 9.5pt;
+    margin-top: 8px;
+    text-align: center;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+
+/* Playlist Alanı */
+.player .playlists {
+    display: inline-block;
+    width: 220px;
+    float: right;
+    height: 55px;
+    margin: 6px 5px 0 0;
+    text-align: center;
+    border-left: 1px solid rgba(255,255,255,0.15);
+}
+
+.player .playlists span {
+    display: block;
+    font-size: 8.5pt;
+    color: #d1d9e6; 
+    margin-bottom: 6px;
+}
+
+.player .playlists .icons-row a {
+    display: inline-block;
+    margin: 0 4px;
+    transition: all 200ms ease;
+    opacity: 0.8;
+}
+
+.player .playlists .icons-row a:hover {
+    opacity: 1;
+    transform: translateY(-3px);
+}
+
+/* POWERED BY */
+.player .powered-by {
+    position: absolute;
+    right: 10px;
+    bottom: 2px;
+    font-size: 7pt;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+}
+
+/* Animasyon */
+@keyframes playspin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Mobil Uyumluluk */
+@media (max-width: 400px) {
+    .player { height: auto; text-align: center; }
+    .player .volume-control { position: static; width: auto; margin: 10px 20px; }
+    .player .playback { position: static; margin: 0 auto; }
+    .player .playlists { float: none; width: 100%; margin: 15px 0; border-left: none; box-shadow: none; }
+}
