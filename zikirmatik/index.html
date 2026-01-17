@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zikirmatik Widget</title>
+    
+    <style>
+        /* --- Temel Değişkenler ve Sıfırlama --- */
+        :root {
+            --background-color: transparent;      
+            --text-light: #f4f4f4;    
+            --accent-color: #00bcd4; 
+            --panel-bg: #4a4a4a;      
+            --shadow: 0 6px 15px rgba(0, 0, 0, 0.7);
+            --success-color: #4caf50; 
+            --warning-color: #ff9800; 
+        }
+        
+        body {
+            background-color: #222; 
+        }
+
+        /* --- Genel Konteyner --- */
+        .zikirmatik-wrapper {
+            width: 350px; 
+            margin: 20px auto; 
+            padding: 20px;
+            background: var(--bg-main);
+            color: var(--text-light);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            box-sizing: border-box; 
+        }
+        
+        h3 {
+            color: var(--accent-color);
+            margin-top: 0;
+            border-bottom: 2px solid var(--panel-bg);
+            padding-bottom: 10px;
+        }
+
+        /* --- Zikir Seçim Alanı --- */
+        .zikir-secim {
+            margin-bottom: 20px;
+        }
+
+        #zikir-listesi {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--panel-bg);
+            background-color: var(--panel-bg);
+            color: var(--text-light);
+            font-size: 1em;
+            cursor: pointer;
+            appearance: none; 
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="rgb(244, 244, 244)" d="M4 6l4 4 4-4z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 30px;
+        }
+
+        /* --- Sayaç Alanı Kapsayıcısı --- */
+        .sayac-gosterge {
+            margin: 20px 0;
+            background-color: var(--panel-bg);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+            position: relative;
+            height: 60px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #sayac, #mesaj {
+            position: absolute;
+            width: 100%;
+            font-weight: bold;
+            line-height: 1.2;
+            transition: all 0.3s;
+        }
+
+        #sayac {
+            font-size: 3.5em;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+        }
+        
+        #mesaj {
+            font-size: 1.2em; 
+            color: #ffeb3b; 
+            text-shadow: 0 0 5px rgba(255, 235, 59, 0.5);
+            opacity: 0; 
+        }
+        
+        /* --- Uyarı Mesaj Alanı --- */
+        #uyariMesaji {
+            height: 20px; 
+            margin-top: -10px; 
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: var(--success-color);
+            opacity: 0; 
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        /* --- Sıfırlama Onayı Alanı --- */
+        #sifirlaOnay {
+            background-color: var(--warning-color);
+            color: var(--text-light);
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            display: none; 
+            transition: all 0.3s;
+        }
+        
+        #sifirlaOnay button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        #onayEvet {
+            background-color: #f44336; 
+            color: var(--text-light);
+        }
+        
+        #onayHayir {
+            background-color: #ccc;
+            color: #333;
+        }
+
+
+        /* --- Ana Tıklama Butonu (Tesbih) --- */
+        #zikir-butonu {
+            width: 80%; 
+            height: 80px; 
+            background-color: var(--accent-color);
+            color: var(--bg-main);
+            border: none;
+            border-radius: 40px; 
+            font-size: 1.2em; 
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.1s, transform 0.1s, box-shadow 0.1s;
+            box-shadow: 0 6px 0 #0097a7; 
+            position: relative;
+            top: 0;
+            line-height: 1.2; 
+            padding: 5px; 
+        }
+
+        #zikir-butonu:active {
+            background-color: #007c92;
+            box-shadow: 0 1px 0 #0097a7;
+            transform: translateY(5px); 
+        }
+
+        /* --- Kontrol Butonları (3 Butonlu Düzen) --- */
+        .kontrol-butonlari {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .kontrol-butonlari button {
+            flex-grow: 1; 
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 0.9em; 
+        }
+        
+        #sifirla-butonu {
+            background-color: #f44336;
+            color: var(--text-light);
+        }
+        #sifirla-butonu:hover:not(:disabled) { background-color: #d32f2f; }
+        
+        #kaydet-butonu { 
+            background-color: #ff9800; 
+            color: var(--text-light);
+        }
+        #kaydet-butonu:hover { background-color: #fb8c00; }
+
+
+        #hedef-butonu {
+            background-color: #4caf50;
+            color: var(--text-light);
+        }
+
+        #hedef-butonu:hover { background-color: #388e3c; }
+
+        .kontrol-butonlari button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* --- Hedef Göstergesi --- */
+        .hedef-gosterge {
+            margin-top: 15px; 
+            font-size: 1.0em; 
+            color: #aaa;
+            background-color: var(--panel-bg);
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        #hedef {
+            color: var(--text-light);
+            font-weight: bold;
+            color: #ffeb3b; 
+        }
+
+        /* --- Footer İmza Stili (Sağa Hizalı ve Çizgili) --- */
+        #footer-imza {
+            text-align: right; 
+            margin-top: 20px;
+            padding-top: 10px; 
+            font-size: 0.7em; 
+            color: #9e9e9e; 
+            opacity: 0.7; 
+            border-top: 1px solid #5a5a5a; 
+        }
+    </style>
+</head>
+<body>
+
+<div class="zikirmatik-wrapper">
+    <h3>DİJİTAL ZİKİRMATİK</h3>
+
+    <div class="zikir-secim">
+        <label for="zikir-listesi" style="display: block; margin-bottom: 8px;">Zikir/Tesbih Seçiniz:</label>
+        <select id="zikir-listesi">
+            <option value="Sübhanallah">Sübhanallah</option>
+            <option value="Elhamdülillah">Elhamdülillah</option>
+            <option value="Allahu Ekber">Allahu Ekber</option>
+            <option value="Lâ İlahe İllallah">Lâ İlahe İllallah</option>
+            <option value="Estağfirullah">Estağfirullah</option>
+            <option value="Salavat">Allahümme salli ala seyyidina Muhammed</option>
+            <option value="Lâ Havle">Lâ Havle velâ Kuvvete İllâ Billâh</option>
+            <option value="Hasbunallah">Hasbunallâhu ve Ni'mel Vekîl</option>
+            <option value="Subhânallahi ve Bihamdihî">Subhânallahi ve Bihamdihî</option>
+            <option value="Kendi Zikriniz">Kendi Zikriniz (Sayaç)</option>
+        </select>
+    </div>
+
+    <div id="uyariMesaji"></div>
+
+    <div class="sayac-gosterge">
+        <div id="sayac">0</div>
+        <div id="mesaj" style="opacity:0;">Allah Zikrinizi Kabul Etsin</div>
+    </div>
+    
+    <button id="zikir-butonu">Sübhanallah</button>
+    
+    <div class="hedef-gosterge">
+        Hedef: <span id="hedef">33</span> 
+    </div>
+
+    <div id="sifirlaOnay">
+        Kaydedilen sayacınız silinecektir. Emin misiniz?
+        <button id="onayEvet">Evet</button>
+        <button id="onayHayir">Hayır</button>
+    </div>
+    
+    <div class="kontrol-butonlari">
+        <button id="sifirla-butonu">Sıfırla</button>
+        <button id="kaydet-butonu">Kaydet</button> 
+        <button id="hedef-butonu">Hedefi 99 Yap</button> </div>
+    
+    <div id="footer-imza">
+        Powered by Dost Yurdu Radyo
+    </div>
+</div>
+
+<script>
+    const zikirButonu = document.getElementById('zikir-butonu');
+    const sayacEl = document.getElementById('sayac');
+    const mesajEl = document.getElementById('mesaj');
+    const sifirlaButonu = document.getElementById('sifirla-butonu');
+    const kaydetButonu = document.getElementById('kaydet-butonu'); 
+    const hedefButonu = document.getElementById('hedef-butonu');
+    const hedefEl = document.getElementById('hedef');
+    const zikirListesi = document.getElementById('zikir-listesi');
+    const uyariMesajiEl = document.getElementById('uyariMesaji');
+    const sifirlaOnayEl = document.getElementById('sifirlaOnay');
+    const onayEvetButonu = document.getElementById('onayEvet');
+    const onayHayirButonu = document.getElementById('onayHayir');
+    
+    let sayac = 0;
+    let hedef = 33;
+    let mevcutZikir = zikirListesi.value;
+    const localStorageKeyPrefix = 'zikirmatik_count_'; 
+    
+    
+    function uyariGoster(mesaj, tip = 'success') {
+        uyariMesajiEl.style.opacity = 0;
+        
+        if (tip === 'error' || tip === 'warning') {
+            uyariMesajiEl.style.color = '#f44336';
+        } else if (tip === 'info') {
+            uyariMesajiEl.style.color = '#2196f3'; 
+        } else {
+            uyariMesajiEl.style.color = 'var(--success-color)';
+        }
+        
+        uyariMesajiEl.textContent = mesaj;
+        uyariMesajiEl.style.opacity = 1; 
+        
+        setTimeout(() => {
+            uyariMesajiEl.style.opacity = 0;
+        }, 3000);
+    }
+    
+    function sayacVeMesajGoster(gosterSayac = true) {
+        if (gosterSayac) {
+            sayacEl.style.opacity = 1;
+            mesajEl.style.opacity = 0;
+        } else {
+            sayacEl.style.opacity = 0;
+            mesajEl.style.opacity = 1;
+        }
+    }
+    
+    function sifirlaKontrolButonlari(devreDisi) {
+        zikirButonu.disabled = devreDisi;
+        hedefButonu.disabled = devreDisi;
+        sifirlaButonu.disabled = devreDisi;
+        kaydetButonu.disabled = devreDisi; 
+        zikirListesi.disabled = devreDisi;
+    }
+
+    function sayacGuncelle() {
+        sayacEl.textContent = sayac;
+        
+        // Zikir tam hedefe ulaştığında
+        if (sayac > 0 && sayac === hedef) {
+            sayacVeMesajGoster(false); 
+            uyariGoster(`🎉 ${hedef} adet ${mevcutZikir} tamamlandı!`);
+            
+        } else {
+            sayacVeMesajGoster(true);
+            if (sayacEl.style.color !== 'var(--accent-color)') {
+                sayacEl.style.color = 'var(--accent-color)'; 
+            }
+        }
+    }
+
+    // --- Yükleme ve Kaydetme Fonksiyonları ---
+
+    function yukle() {
+        const key = localStorageKeyPrefix + zikirListesi.value;
+        const savedCount = localStorage.getItem(key);
+        
+        if (savedCount !== null && !isNaN(parseInt(savedCount))) {
+            sayac = parseInt(savedCount);
+            if (sayac > 0) {
+                 uyariGoster(`Kaldığınız yerden devam: ${mevcutZikir} için sayaç ${sayac}.`, 'info');
+            }
+        } else {
+            sayac = 0;
+        }
+        sayacGuncelle();
+    }
+    
+    function kaydet() {
+        const key = localStorageKeyPrefix + zikirListesi.value;
+        if (sayac > 0) {
+            localStorage.setItem(key, sayac);
+            uyariGoster(`${mevcutZikir} için ${sayac} adedi başarıyla kaydedildi!`, 'success');
+        } else {
+            localStorage.removeItem(key);
+            uyariGoster(`Sayaç sıfır, kaydedilecek bir değer yok.`, 'warning');
+        }
+    }
+
+
+    // --- Olay Dinleyicileri ---
+
+    zikirButonu.addEventListener('click', () => {
+        if (sayac >= hedef && sifirlaOnayEl.style.display !== 'block') {
+            uyariGoster(`Hedef (${hedef}) tamamlandı! Devam etmek için sıfırlayın.`, 'error');
+            return; 
+        }
+
+        if(sifirlaOnayEl.style.display === 'block') return; 
+        
+        sayac++;
+        sayacGuncelle();
+    });
+    
+    // Kaydet butonuna basıldığında
+    kaydetButonu.addEventListener('click', kaydet);
+
+
+    // Sıfırla butonuna basıldığında onay kutusunu göster
+    sifirlaButonu.addEventListener('click', () => {
+        if (sayac === 0) {
+             uyariGoster("Sayaç zaten sıfır.", 'error');
+             return;
+        }
+        sifirlaOnayEl.style.display = 'block';
+        sifirlaKontrolButonlari(true);
+        uyariMesajiEl.style.opacity = 0; 
+    });
+    
+    // Onay: EVET (Sıfırla ve Kaydı Sil)
+    onayEvetButonu.addEventListener('click', () => {
+        sayac = 0;
+        sayacGuncelle();
+        
+        // Kaydedilen sayacı da sil
+        const key = localStorageKeyPrefix + zikirListesi.value;
+        localStorage.removeItem(key); 
+        
+        sifirlaOnayEl.style.display = 'none';
+        sifirlaKontrolButonlari(false);
+        uyariGoster("Sayaç ve kaydedilen değer başarıyla sıfırlandı.");
+    });
+    
+    // Onay: HAYIR
+    onayHayirButonu.addEventListener('click', () => {
+        sifirlaOnayEl.style.display = 'none';
+        sifirlaKontrolButonlari(false);
+    });
+
+    // --- HEDEF DEĞİŞTİRME (33 <-> 99 <-> 1000) ---
+    hedefButonu.addEventListener('click', () => {
+        let yeniHedef;
+        let sonrakiButonMetni;
+        
+        if (hedef === 33) {
+            yeniHedef = 99;
+            sonrakiButonMetni = "Hedefi 1000 Yap";
+        } else if (hedef === 99) {
+            yeniHedef = 1000;
+            sonrakiButonMetni = "Hedefi 33 Yap";
+        } else { // hedef === 1000
+            yeniHedef = 33;
+            sonrakiButonMetni = "Hedefi 99 Yap";
+        }
+        
+        hedef = yeniHedef;
+        hedefButonu.textContent = sonrakiButonMetni;
+        hedefEl.textContent = hedef;
+        sayacGuncelle(); 
+        uyariGoster(`Yeni hedef ${hedef} olarak ayarlandı.`);
+    });
+    
+    // Zikir Seçimi Değiştirme
+    zikirListesi.addEventListener('change', (e) => {
+        const selectedOption = e.target.options[e.target.selectedIndex];
+        mevcutZikir = selectedOption.text.includes('(Salavat)') ? 'Salavat' : selectedOption.text;
+        
+        // Zikir butonu metin ayarı
+        if (e.target.value === "Kendi Zikriniz") {
+             zikirButonu.textContent = "Tıkla!";
+        } else if (e.target.value === "Salavat") {
+             zikirButonu.textContent = "Salavat Çek";
+        } else if (e.target.value === "Lâ Havle") {
+             zikirButonu.textContent = "Lâ Havle Çek";
+        } else if (e.target.value === "Hasbunallah") {
+             zikirButonu.textContent = "Hasbunallah Çek";
+        }
+        else {
+             zikirButonu.textContent = e.target.value;
+        }
+        
+        // Yeni seçilen zikirin kaydedilmiş sayısını yükle
+        yukle(); 
+        
+        uyariGoster(`Zikir '${mevcutZikir}' olarak değiştirildi.`);
+    });
+
+    // --- Başlangıç Ayarları ---
+    function baslangicAyarlari() {
+        // Başlangıç hedefi 33 olduğu için butonun sonraki hedefi göstermesi gerekir.
+        hedefButonu.textContent = "Hedefi 99 Yap"; 
+        hedefEl.textContent = hedef;
+        zikirButonu.textContent = zikirListesi.value;
+        sayacVeMesajGoster(true);
+        yukle(); 
+    }
+    
+    window.onload = baslangicAyarlari;
+
+</script>
+
+</body>
+</html>
