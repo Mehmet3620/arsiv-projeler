@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Film Robotu & Sosyal Panel - Seyyah</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --outer-bg: #0f111a;    
+            --panel-bg: #1c1f2b;    
+            --border-color: #2a2f3d; 
+            --btn-green: #1a8a54;
+            --btn-gray: #5a6268;
+            --btn-orange: #e67e22;
+            --text-color: #ffffff;
+            --telegram-color: #0088cc;
+            --instagram-color: #e1306c;
+            --whatsapp-color: #25d366;
+            --facebook-color: #1877f2;
+            --x-color: #000000;
+            --accent-yellow: #f1c40f;
+        }
+
+        body {
+            background-color: transparent;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 50px 0 0 50px; /* Üstten ve Soldan 50px boşluk */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        /* ORTAK ÇERÇEVE YAPISI */
+        .widget-frame {
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 10px;
+            background: var(--outer-bg);
+            width: 260px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+
+        .widget-panel {
+            background-color: var(--panel-bg);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* FİLM ROBOTU ÖZEL STİLLERİ */
+        .request-btn {
+            background-color: var(--btn-green);
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+
+        .header-title {
+            color: var(--text-color);
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group { margin-bottom: 10px; }
+
+        .custom-select {
+            width: 100%;
+            padding: 9px;
+            border-radius: 6px;
+            border: 1px solid #333;
+            background-color: #f8f9fa;
+            color: #333;
+            font-size: 13px;
+            font-weight: 600;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .btn-container { display: flex; gap: 6px; margin-top: 15px; }
+
+        .btn-action {
+            border: none; padding: 10px; border-radius: 6px;
+            font-weight: bold; cursor: pointer; font-size: 13px; color: white;
+        }
+
+        .btn-find { flex: 2; background-color: var(--btn-green); }
+        .btn-reset { flex: 1; background-color: var(--btn-gray); }
+        .btn-random { width: 100%; background-color: var(--btn-orange); margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+        /* SOSYAL PANEL ÖZEL STİLLERİ */
+        .social-widget { margin-top: 20px; } /* Robot ile arasındaki 20px boşluk */
+
+        .announcement-box {
+            background: rgba(241, 196, 15, 0.1);
+            border-left: 3px solid var(--accent-yellow);
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .announcement-title {
+            color: var(--accent-yellow);
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center; gap: 5px; margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .announcement-text { color: #ccc; font-size: 11px; line-height: 1.4; }
+
+        .social-container { display: flex; flex-direction: column; gap: 6px; }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            font-size: 13px;
+            transition: transform 0.2s, opacity 0.3s;
+        }
+
+        .social-btn:hover { opacity: 0.9; transform: scale(1.02); }
+        .social-btn i { font-size: 16px; width: 25px; }
+
+        .btn-tg { background-color: var(--telegram-color); }
+        .btn-ig { background-color: var(--instagram-color); }
+        .btn-wa { background-color: var(--whatsapp-color); }
+        .btn-fb { background-color: var(--facebook-color); }
+        .btn-x  { background-color: var(--x-color); border: 1px solid #333; }
+
+        .footer-tag {
+            text-align: center; font-size: 9px; color: #666; margin-top: 10px; letter-spacing: 0.5px; font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="widget-frame">
+    <a href="https://film20k.blogspot.com/p/film-istek.html" class="request-btn">
+        <i class="fas fa-plus-square"></i> Film İstek 🙂
+    </a>
+
+    <div class="widget-panel">
+        <div class="header-title">🎬 Film Robotu</div>
+        
+        <form id="filmRobotuForm">
+            <div class="form-group">
+                <select id="imdb_range" class="custom-select">
+                    <option value="">IMDB Puanı</option>
+                    <option value="5">5 ve üzeri</option><option value="6">6 ve üzeri</option>
+                    <option value="7">7 ve üzeri</option><option value="8">8 ve üzeri</option>
+                    <option value="9">9 ve üzeri</option><option value="10">10 ve üzeri</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <select id="yil" class="custom-select">
+                    <option value="">Yapım Yılı</option>
+                    <option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option><option value="2018">2018</option><option value="2017">2017</option><option value="2016">2016</option><option value="2015">2015</option><option value="2014">2014</option><option value="2013">2013</option><option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option><option value="1999">1999</option><option value="1998">1998</option><option value="1997">1997</option><option value="1996">1996</option><option value="1995">1995</option><option value="1994">1994</option><option value="1993">1993</option><option value="1992">1992</option><option value="1991">1991</option><option value="1990">1990</option><option value="1989">1989</option><option value="1988">1988</option><option value="1987">1987</option><option value="1986">1986</option><option value="1985">1985</option><option value="1984">1984</option><option value="1983">1983</option><option value="1982">1982</option><option value="1981">1981</option><option value="1980">1980</option><option value="1979">1979</option><option value="1978">1978</option><option value="1977">1977</option><option value="1976">1976</option><option value="1975">1975</option><option value="1974">1974</option><option value="1973">1973</option><option value="1972">1972</option><option value="1971">1971</option><option value="1970">1970</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <select id="kategori" class="custom-select">
+                    <option value="">Film Türü</option>
+                    <option value="Aile Filmleri">Aile</option><option value="Aksiyon Filmleri">Aksiyon</option>
+                    <option value="Animasyon Filmleri">Animasyon</option><option value="Belgesel">Belgesel</option>
+                    <option value="Bilim Kurgu Filmleri">Bilim Kurgu</option><option value="Biyografi Filmleri">Biyografi</option>
+                    <option value="Çocuk Filmleri">Çocuk</option><option value="Disney Filmleri">Disney</option>
+                    <option value="Diziler">Diziler</option><option value="Dram Filmleri">Dram</option>
+                    <option value="Fantastik Filmler">Fantastik</option><option value="Fragmanlar">Fragmanlar</option>
+                    <option value="Gerilim Filmleri">Gerilim</option><option value="Gizem Filmleri">Gizem</option>
+                    <option value="Hint Filmleri">Hint</option><option value="Komedi Filmleri">Komedi</option>
+                    <option value="Korku Filmleri">Korku</option><option value="Macera Filmleri">Macera</option>
+                    <option value="Marvel Filmleri">Marvel</option><option value="Müzik Filmleri">Müzik</option>
+                    <option value="Polisiye Filmler">Polisiye</option><option value="Romantik Filmler">Romantik</option>
+                    <option value="Savaş Filmleri">Savaş</option><option value="Spor Filmleri">Spor</option>
+                    <option value="Suç Filmleri">Suç</option><option value="Tarih Filmleri">Tarih</option>
+                    <option value="Western Filmleri">Western</option><option value="Yarış">Yarış</option>
+                    <option value="Yerli Filmler">Yerli</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <select id="dil" class="custom-select">
+                    <option value="">Film Dili</option>
+                    <option value="Orijinal Dil">Orijinal Dil</option>
+                    <option value="Türkçe Alt Yazılı">Türkçe Alt Yazılı</option>
+                    <option value="Türkçe Dublaj">Türkçe Dublaj</option>
+                </select>
+            </div>
+
+            <div class="btn-container">
+                <button type="button" onclick="filmBul()" class="btn-action btn-find">Film Bul</button>
+                <button type="reset" class="btn-action btn-reset">Sıfırla</button>
+            </div>
+
+            <button type="button" onclick="rastgeleGit()" class="btn-action btn-random">
+                <i class="fas fa-dice"></i> Rastgele Getir
+            </button>
+        </form>
+    </div>
+    <div class="footer-tag">Powered by Seyyah</div>
+</div>
+
+<div class="widget-frame social-widget">
+    <div class="widget-panel">
+        <div class="announcement-box">
+            <div class="announcement-title">
+                <i class="fas fa-bullhorn"></i> Hızlı Duyuru
+            </div>
+            <div class="announcement-text">
+                En güncel filmler ve yayınlanan içeriklerden haberdar olmak için bizi takip edin!
+            </div>
+        </div>
+
+        <div class="social-container">
+            <a href="#" class="social-btn btn-wa" target="_blank">
+                <i class="fab fa-whatsapp"></i> WhatsApp Hattı
+            </a>
+            <a href="#" class="social-btn btn-tg" target="_blank">
+                <i class="fab fa-telegram-plane"></i> Telegram Grubu
+            </a>
+            <a href="#" class="social-btn btn-ig" target="_blank">
+                <i class="fab fa-instagram"></i> Instagram
+            </a>
+            <a href="#" class="social-btn btn-fb" target="_blank">
+                <i class="fab fa-facebook-f"></i> Facebook
+            </a>
+            <a href="#" class="social-btn btn-x" target="_blank">
+                <i class="fab fa-x-twitter"></i> X (Twitter)
+            </a>
+        </div>
+    </div>
+    <div class="footer-tag">Powered by Seyyah</div>
+</div>
+
+<script>
+const site = "https://film20k.blogspot.com";
+
+function filmBul() {
+    const k = document.getElementById('kategori').value;
+    const y = document.getElementById('yil').value;
+    const i = document.getElementById('imdb_range').value;
+    const d = document.getElementById('dil').value;
+
+    let targetUrl = site;
+
+    if (k !== "") {
+        targetUrl += "/search/label/" + encodeURIComponent(k);
+        let q = [];
+        if (y !== "") q.push(y);
+        if (i !== "") q.push("imdb " + i);
+        if (d !== "") q.push(d);
+        if (q.length > 0) targetUrl += "?q=" + encodeURIComponent(q.join(" "));
+    } else {
+        let q = [];
+        if (y !== "") q.push(y);
+        if (i !== "") q.push("imdb " + i);
+        if (d !== "") q.push(d);
+        if (q.length > 0) {
+            targetUrl += "/search?q=" + encodeURIComponent(q.join(" "));
+        } else {
+            alert("Lütfen bir kriter seçin!");
+            return;
+        }
+    }
+    window.location.href = targetUrl;
+}
+
+function rastgeleGit() {
+    const etiketler = ["Aile Filmleri", "Aksiyon Filmleri", "Animasyon Filmleri", "Bilim Kurgu Filmleri", "Korku Filmleri", "Komedi Filmleri", "Macera Filmleri", "Yerli Filmler"];
+    const secilen = etiketler[Math.floor(Math.random() * etiketler.length)];
+    window.location.href = site + "/search/label/" + encodeURIComponent(secilen);
+}
+</script>
+
+</body>
+</html>
