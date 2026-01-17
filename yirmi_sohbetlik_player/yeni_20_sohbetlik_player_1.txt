@@ -1,0 +1,32 @@
+<script>
+            // d: kısmına istediğin süreyi yazabilirsin
+            const list = [
+                {n: "Dost Yurdu Radyo", l: "https://eu1.fastcast4u.com/proxy/qpnslltp?mp=/1", d: "CANLI"}, 
+                {n: "Zakir Tama - Elhamdulillah", l: "https://ia903209.us.archive.org/1/items/zakir-tama-elhamdulillah/Zakir%20Tama%20-%20Elhamdulillah.mp3", d: "05:10"}, 
+                {n: "Manevi Sohbetler", l: "link.mp3", d: "12:30"}, 
+                {n: "Gönül Sadası", l: "link.mp3", d: "08:45"}, 
+                {n: "Dua Saati", l: "link.mp3", d: "15:00"}, 
+                {n: "İslamın Nuru", l: "link.mp3", d: "10:20"}, 
+                {n: "Bereketli Vakitler", l: "link.mp3", d: "07:15"}, 
+                {n: "Asr-ı Saadet", l: "link.mp3", d: "20:00"}, 
+                {n: "Kandil Özel", l: "link.mp3", d: "18:40"}, 
+                {n: "Sabır Pınarı", l: "link.mp3", d: "09:55"}, 
+                {n: "Mevlana Esintisi", l: "link.mp3", d: "11:12"}, 
+                {n: "Hicret Yolu", l: "link.mp3", d: "14:22"}, 
+                {n: "Rahmet Damlası", l: "link.mp3", d: "06:30"}, 
+                {n: "Tevbe Kapısı", l: "link.mp3", d: "13:45"}, 
+                {n: "Aşk-ı Muhabbet", l: "link.mp3", d: "16:10"}, 
+                {n: "Vuslat Gecesi", l: "link.mp3", d: "08:20"}, 
+                {n: "Cuma Nuru", l: "link.mp3", d: "05:55"}, 
+                {n: "Ehl-i Beyt", l: "link.mp3", d: "12:15"}, 
+                {n: "Huzura Yolculuk", l: "link.mp3", d: "12:00"},
+                {n: "Hikmetli Sözler", l: "link.mp3", d: "09:00"},				
+                {n: "Dost Sofrası", l: "link.mp3", d: "10:45"}
+            ];
+            list.forEach((s, i) => {
+                document.write(`<div class="pl-item" id="t-${i}" onclick="playTrack(${i})">
+                    <span>${(i+1).toString().padStart(2,'0')}. ${s.n}</span>
+                    <span style="color:#700; font-size:9px;">${s.d}</span>
+                </div>`);
+            });
+        </script>

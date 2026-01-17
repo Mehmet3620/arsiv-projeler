@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { background: #0a0a0a; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .dost-yurdu-v2 { width: 398px; height: 329px; background: #1e1e1e; border: 1px solid #111; border-radius: 4px; display: flex; flex-direction: column; overflow: hidden; font-family: 'Segoe UI', Arial, sans-serif; box-shadow: 0 2px 8px rgba(0,0,0,0.8); }
+        .top-line { height: 2px; background: #b00000; width: 100%; opacity: 0.8; }
+        .head { background: #181818; padding: 5px 12px; display: flex; justify-content: space-between; align-items: center; }
+        .head span { color: #777; font-size: 9px; letter-spacing: 1px; }
+        
+        .lcd-screen { background: #0d0d0d; margin: 8px 12px; padding: 10px; height: 45px; border: 1px solid #2a2a2a; border-radius: 2px; display: flex; flex-direction: column; justify-content: center; }
+        .track-txt { color: #d0d0d0; font-size: 11px; font-weight: 300; overflow: hidden; white-space: nowrap; margin-bottom: 2px; }
+        
+        .time-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+        .left-group { display: flex; align-items: center; }
+        .playing-label { color: #555; font-size: 9px; font-family: monospace; }
+        .spectrum-box { display: flex; align-items: flex-end; gap: 1px; height: 8px; margin-left: 8px; }
+        .spec-bar { width: 1px; background: #400; height: 2px; transition: 0.1s; }
+        .spec-bar.active { background: #b00; }
+        .time-display { color: #555; font-size: 9px; font-family: monospace; }
+
+        /* TEKRAR İNCE VE TIKLANABİLİR ÇUBUK */
+        .prog-bg { height: 10px; background: transparent; margin-top: 2px; cursor: pointer; position: relative; display: flex; align-items: center; }
+        .prog-line-bg { height: 2px; background: #222; width: 100%; position: absolute; }
+        .prog-bar { height: 2px; background: #f00; width: 0%; box-shadow: 0 0 5px #f00; transition: width 0.1s linear; position: absolute; pointer-events: none; }
+
+        .controls-row { display: flex; align-items: center; justify-content: space-between; padding: 0 20px 10px 20px; }
+        .m-btn { width: 30px; height: 30px; background: linear-gradient(145deg, #333, #1a1a1a); border: 1px solid #111; border-radius: 50%; color: #888; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; box-shadow: 1px 1px 3px rgba(0,0,0,0.4); }
+        .m-play { width: 38px; height: 38px; color: #aaa; }
+        
+        .vol-container { display: flex; align-items: center; gap: 8px; width: 85px; }
+        .vol-slider { -webkit-appearance: none; width: 100%; height: 2px; background: #333; outline: none; border-radius: 2px; cursor: pointer; position: relative; }
+        .vol-slider::-webkit-slider-runnable-track { background: linear-gradient(to right, #f00 var(--val), #333 var(--val)); height: 2px; border-radius: 2px; }
+        .vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; background: linear-gradient(145deg, #eee, #888); border: 1px solid #000; border-radius: 50%; margin-top: -4px; box-shadow: 1px 1px 2px #000; }
+        
+        .pl-header { background: #111; padding: 6px 15px; color: #444; font-size: 9px; border-top: 1px solid #222; }
+        /* KAYDIRMA ÇUBUĞU GERİ GELDİ */
+        .pl-scroll { flex: 1; overflow-y: scroll; background: #141414; }
+        .pl-item { display: flex; justify-content: space-between; padding: 7px 15px; border-bottom: 1px solid #1a1a1a; cursor: pointer; color: #666; font-size: 11px; font-weight: 300; }
+        .pl-item.active { color: #f00; background: #111; font-weight: 400; }
+        .pl-scroll::-webkit-scrollbar { width: 4px; }
+        .pl-scroll::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+        .pl-scroll::-webkit-scrollbar-track { background: #111; }
+        
+        .foot { background: #0d0d0d; height: 20px; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; color: #333; font-size: 8px; }
+    </style>
+</head>
+<body>
+
+<audio id="mainAudio" src=""></audio>
+
+<div class="dost-yurdu-v2">
+    <div class="top-line"></div>
+    <div class="head"><span>DOST YURDU DIGITAL</span></div>
+
+    <div class="lcd-screen">
+        <div class="track-txt" id="trackName">Dost Yurdu - Hazır</div>
+        <div class="time-row">
+            <div class="left-group">
+                <span class="playing-label">PLAYING</span>
+                <div class="spectrum-box" id="specBox"></div>
+            </div>
+            <div class="time-display"><span id="curT">00:00</span> / <span id="totalT">00:00</span></div>
+        </div>
+        <div class="prog-bg" id="progContainer">
+            <div class="prog-line-bg"></div>
+            <div class="prog-bar" id="pBar"></div>
+        </div>
+    </div>
+
+    <div class="controls-row">
+        <div class="m-btn" onclick="prev()"><i class="fas fa-step-backward"></i></div>
+        <div class="m-btn m-play" id="playBtn" onclick="toggle()"><i class="fas fa-play"></i></div>
+        <div class="m-btn" onclick="next()"><i class="fas fa-step-forward"></i></div>
+        <div class="vol-container">
+            <i class="fas fa-volume-off" style="font-size: 9px; color: #444;"></i>
+            <input type="range" class="vol-slider" id="vSld" min="0" max="1" step="0.01" value="0.7" style="--val: 70%;">
+        </div>
+    </div>
+
+    <div class="pl-header">TITLE / DOST YURDU <span style="float:right">DURATION</span></div>
+    <div class="pl-scroll" id="scrollContainer">
+        <script>
+            const list = [
+        {n: "Dost Yurdu Radyo", l: "https://eu1.fastcast4u.com/proxy/qpnslltp?mp=/1", d: "CANLI"}, 
+        {n: "Zakir Tama - Elhamdulillah", l: "https://ia903209.us.archive.org/1/items/zakir-tama-elhamdulillah/Zakir%20Tama%20-%20Elhamdulillah.mp3", d: "05:10"},
+        {n: "Mehmet Can - Sen Gülünce", l: "https://ia903203.us.archive.org/9/items/mehmet-can-sen-gulunce-m/Mehmet%20Can%20-%20Sen%20G%C3%BCl%C3%BCnce%20M.mp3", d: "05:02"},
+        {n: "Eşref Ziya - Allı Turnalar", l: "https://archive.org/download/11.-umut-murare-yetim-kalbim/01-All%C4%B1%20Turnalar.mp3", d: "04:04"}, 
+        {n: "Eşref Ziya - Kurşuna Sitem", l: "https://archive.org/download/11.-umut-murare-yetim-kalbim/01-Kur%C5%9Funa%20Sitem.mp3", d: "03:09"},
+        {n: "Mustafa Cihat - Emri Olur", l: "https://archive.org/download/11.-umut-murare-yetim-kalbim/04-Mustafa%20Cihat%20_%20Emri%20olur.mp3", d: "04:04"},
+        {n: "Uğur Işılak - Aşkım Sana Emanet", l: "https://ia601709.us.archive.org/30/items/11.-umut-murare-yetim-kalbim/02-A%C5%9Fk%C4%B1m%20Sana%20Emanet.mp3", d: "04:41"},
+        {n: "Mustafa Cihat - Seyyah", l: "https://ia601709.us.archive.org/30/items/11.-umut-murare-yetim-kalbim/10-seyyah.mp3", d: "04:19"},
+        {n: "Umut Mürare - Yetim Kalbim", l: "https://ia601709.us.archive.org/30/items/11.-umut-murare-yetim-kalbim/11.%20Umut%20M%C3%BCrare%20-%20Yetim%20Kalbim.MP3", d: "04:07"},
+        {n: "Yusuf Can - Zor Yüreğim", l: "https://archive.org/download/11.-umut-murare-yetim-kalbim/Yusuf%20Can%20-%202%20Zor%20Yuregim.mp3", d: "03:04"},
+        {n: "Uğur Işılak - Muamma", l: "https://archive.org/download/11.-umut-murare-yetim-kalbim/ugur%20isilak%20-%20muamma.mp3", d: "04:07"},
+        {n: "Eşref Ziya - Olmadı Dost", l: "https://archive.org/download/11.-umut-murare-yetim-kalbim/e%C5%9Fref%20ziya%20-%20olmad%C4%B1%20dost.mp3", d: "04:04"},
+        {n: "Eşref Ziya - Bir Garip Sevda", l: "https://archive.org/download/11.-umut-murare-yetim-kalbim/e%C5%9Fref%20ziya%20-%20bir%20garip%20sevda.mp3", d: "04:05"},
+        {n: "Uğur Işılak - Karışık Bir Duygudayım", l: "https://archive.org/download/11.-umut-murare-yetim-kalbim/Ugur%20Isilak%20-%202%20Karisik%20Bir%20Duygudayim.mp3", d: "03:07"},
+        {n: "Mehmet Gökçe - Zehra", l: "https://archive.org/download/11.-umut-murare-yetim-kalbim/MEHMET%20G%C3%96K%C3%87E-%20%20%20ZEHRA%20%20-%28Orjinal%20video%20klibi%29%20full%20hd.mp3", d: "05:05"},
+        {n: "Ömer Karaoğlu - Arzuhal", l: "https://archive.org/download/11.-umut-murare-yetim-kalbim/%C3%96mer%20Karao%C4%9Flu%20-%201%20Arzuhal.mp3", d: "03:01"}
+    ];
+
+            const sBox = document.getElementById('specBox');
+            for(let j=0; j<15; j++) { sBox.innerHTML += '<div class="spec-bar"></div>'; }
+            list.forEach((s, i) => {
+                document.write(`<div class="pl-item" id="t-${i}" onclick="playTrack(${i})">
+                    <span>${(i+1).toString().padStart(2,'0')}. ${s.n}</span>
+                    <span style="color:#700; font-size:9px;">${s.d}</span>
+                </div>`);
+            });
+        </script>
+    </div>
+    <div class="foot"><span>SYSTEM READY</span><span>DOST YURDU V2.1</span></div>
+</div>
+
+<script>
+    const audio = document.getElementById('mainAudio');
+    const pBtn = document.getElementById('playBtn');
+    const vSld = document.getElementById('vSld');
+    const progContainer = document.getElementById('progContainer');
+    const bars = document.getElementsByClassName('spec-bar');
+    let currentPos = 0;
+
+    function playTrack(i) {
+        currentPos = i;
+        document.querySelectorAll('.pl-item').forEach(x => x.classList.remove('active'));
+        const activeEl = document.getElementById('t-'+i);
+        activeEl.classList.add('active');
+        document.getElementById('trackName').innerText = list[i].n;
+        document.getElementById('totalT').innerText = list[i].d;
+        audio.src = list[i].l;
+        audio.play().catch(e => console.log("Play Hatası:", e));
+        pBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function toggle() {
+        if(audio.paused) { audio.play(); pBtn.innerHTML = '<i class="fas fa-pause"></i>'; }
+        else { audio.pause(); pBtn.innerHTML = '<i class="fas fa-play"></i>'; }
+    }
+
+    function next() { currentPos = (currentPos + 1) % list.length; playTrack(currentPos); }
+    function prev() { currentPos = (currentPos - 1 + list.length) % list.length; playTrack(currentPos); }
+    
+    progContainer.onclick = (e) => {
+        if(!audio.duration || isNaN(audio.duration)) return;
+        const rect = progContainer.getBoundingClientRect();
+        const pos = (e.clientX - rect.left) / rect.width;
+        audio.currentTime = pos * audio.duration;
+    };
+
+    audio.onended = () => next();
+
+    vSld.oninput = (e) => {
+        const val = e.target.value; audio.volume = val;
+        e.target.style.setProperty('--val', (val * 100) + '%');
+    };
+
+    audio.ontimeupdate = () => {
+        if(audio.duration && !isNaN(audio.duration)) {
+            const p = (audio.currentTime / audio.duration) * 100;
+            document.getElementById('pBar').style.width = p + '%';
+            let m = Math.floor(audio.currentTime / 60), s = Math.floor(audio.currentTime % 60);
+            document.getElementById('curT').innerText = m.toString().padStart(2,'0') + ":" + s.toString().padStart(2,'0');
+        }
+        if(!audio.paused) {
+            for(let k=0; k<bars.length; k++) {
+                bars[k].classList.add('active');
+                const h = Math.random() * (audio.volume * 8) + 2;
+                bars[k].style.height = h + 'px';
+            }
+        } else {
+            for(let k=0; k<bars.length; k++) { bars[k].style.height = '2px'; bars[k].classList.remove('active'); }
+        }
+    }
+</script>
+</body>
+</html>
