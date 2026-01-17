@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { background: #d0d0d0; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .swf-player { width: 398px; height: 500px; background: #fdfdfd; border: 1px solid #888; border-radius: 2px; display: flex; flex-direction: column; overflow: hidden; font-family: Arial, sans-serif; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+
+        .top-screen { background: linear-gradient(to bottom, #cfd9e1 0%, #e6ebf0 100%); height: 115px; padding: 10px; border-bottom: 1px solid #7a8a99; position: relative; overflow: hidden; }
+        .top-screen::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.05) 50%); background-size: 100% 3px; pointer-events: none; z-index: 1; }
+
+        .eq-display { display: flex; align-items: flex-end; gap: 2px; height: 50px; justify-content: center; margin-top: 25px; position: relative; z-index: 2; }
+        .eq-bar { width: 3px; background: #7a8a99; height: 12px; border: 1px solid rgba(255,255,255,0.2); transition: height 0.15s ease; /* Yavaşlatma için geçiş eklendi */ }
+        
+        .track-info-txt { position: absolute; bottom: 8px; left: 15px; color: #556677; font-size: 13px; font-weight: bold; z-index: 2; }
+        .time-counter { position: absolute; bottom: 8px; right: 15px; color: #445566; font-size: 15px; font-weight: bold; z-index: 2; font-family: monospace; }
+
+        .prog-container { height: 14px; background: #333; cursor: pointer; position: relative; border-top: 1px solid #000; }
+        .prog-bar-fill { height: 100%; background: #556677; width: 0%; pointer-events: none; }
+
+        .controls-section { background: #f7f7f7; padding: 12px 15px; display: flex; align-items: center; gap: 12px; border-bottom: 3px solid #ddd; }
+        .swf-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid #bbb; background: linear-gradient(to bottom, #fff 0%, #d8dee3 100%); color: #444; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.2); font-size: 11px; }
+        .play-pause { width: 40px; height: 40px; font-size: 14px; }
+
+        .vol-wrap { flex: 1; display: flex; align-items: center; }
+        .swf-slider { -webkit-appearance: none; width: 100%; height: 6px; background: #b8c6d1; border-radius: 10px; outline: none; border: 1px solid #99aabb; }
+        .swf-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: radial-gradient(circle, #fff 20%, #99aabb 100%); border: 1px solid #778899; border-radius: 50%; cursor: pointer; }
+
+        .scroll-list { flex: 1; overflow-y: scroll; background: #fff; }
+        .list-track { display: flex; justify-content: space-between; padding: 10px 15px; border-bottom: 1px solid #e0e0e0; font-size: 12px; color: #555; cursor: pointer; }
+        .list-track:nth-child(even) { background: #f2f4f6; }
+        .list-track.active { background: #7a8a99 !important; color: #fff !important; font-weight: bold; }
+        
+        /* FOOTER DÜZENLEMESİ */
+        .swf-foot { background: #e8e8e8; height: 22px; font-size: 10px; color: #666; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-top: 1px solid #ccc; font-weight: bold; }
+        
+        .scroll-list::-webkit-scrollbar { width: 12px; }
+        .scroll-list::-webkit-scrollbar-track { background: #eee; }
+        .scroll-list::-webkit-scrollbar-thumb { background: #999; border: 2px solid #eee; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<audio id="playerAudio" preload="auto"></audio>
+
+<div class="swf-player">
+    <div class="top-screen">
+        <div class="eq-display" id="eqMain"></div>
+        <div class="track-info-txt" id="curTitle">Dost Yurdu'na Hoşgeldiniz...</div>
+        <div class="time-counter" id="timer">00:00 / 00:00</div>
+    </div>
+    <div class="prog-container" id="pSeek"><div class="prog-bar-fill" id="pBar"></div></div>
+    <div class="controls-section">
+        <div class="swf-btn" onclick="prev()"><i class="fas fa-backward"></i></div>
+        <div class="swf-btn play-pause" id="pToggle" onclick="toggle()"><i class="fas fa-play"></i></div>
+        <div class="swf-btn" onclick="next()"><i class="fas fa-forward"></i></div>
+        <div class="vol-wrap"><input type="range" class="swf-slider" id="vControl" min="0" max="1" step="0.01" value="0.7"></div>
+    </div>
+    <div class="scroll-list" id="plBox"></div>
+    <div class="swf-foot">
+        <span>SWF HI-FI ENGINE V3.3</span>
+        <span>DOST YURDU</span>
+    </div>
+</div>
+
+<script>
+    const songs = [
+        {n: "Dost Yurdu Radyo", l: "https://eu1.fastcast4u.com/proxy/qpnslltp?mp=/1", d: "CANLI"}, 
+        {n: "Zakir Tama - Elhamdulillah", l: "https://ia903209.us.archive.org/1/items/zakir-tama-elhamdulillah/Zakir%20Tama%20-%20Elhamdulillah.mp3", d: "05:10"}, 
+        {n: "Süleymaniye Hadis Dersleri", l: "https://ia800202.us.archive.org/34/items/suleymaniyehadisdersleri/Suleymaniye01.mp3", d: "45:30"}, 
+        {n: "Allahın Sevdiği Kullar", l: "https://dn710608.ca.archive.org/0/items/erenbilge/ALLAH-in_Sevdigi_Kullari_64kb.mp3", d: "50:45"},
+        {n: "Kur'an Kıssaları", l: "https://ia801200.us.archive.org/16/items/Kuran_Kissalari/03_Adem_as_kissasi_Insanin_yaratilisi.mp3", d: "15:00"},
+        {n: "Riyazus-Salihin Dersleri", l: "https://ia800605.us.archive.org/15/items/Riyazus-Salihin/003-Riyazus-Salihin.mp3", d: "38:17"},
+        {n: "Muslumanin Gayesi", l: "https://ia801603.us.archive.org/10/items/Timurtas-Ucar-Hoca/Muslumanin_Gayesi_Allah_in_Rizasidir.mp3", d: "55:57"},
+        {n: "ALLAH'in Rızası", l: "https://dn710608.ca.archive.org/0/items/erenbilge/ALLAH-in_rizasini_kazanmak.mp3", d: "18:40"},
+        {n: "Allah İçin Sevmek", l: "https://dn710608.ca.archive.org/0/items/erenbilge/Allah-icin-sevmek-1.mp3", d: "55:58"},
+        {n: "Kadin Erkek Hakları", l: "https://dn710608.ca.archive.org/0/items/erenbilge/Kadin-Erkek-Haklari.mp3", d: "59:21"}
+    ];
+
+    const audio = document.getElementById('playerAudio');
+    const pToggle = document.getElementById('pToggle');
+    const timer = document.getElementById('timer');
+    const pBar = document.getElementById('pBar');
+    const vControl = document.getElementById('vControl');
+    const curTitleDisplay = document.getElementById('curTitle');
+    let idx = -1;
+
+    const eqMain = document.getElementById('eqMain');
+    for(let i=0; i<50; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'eq-bar';
+        eqMain.appendChild(bar);
+    }
+    const bars = document.getElementsByClassName('eq-bar');
+
+    const plBox = document.getElementById('plBox');
+    songs.forEach((s, i) => {
+        const item = document.createElement('div');
+        item.className = 'list-track';
+        item.id = 'trk-' + i;
+        item.innerHTML = `<span>${(i+1).toString().padStart(2,'0')}. ${s.n}</span><span>${s.d}</span>`;
+        item.onclick = () => play(i);
+        plBox.appendChild(item);
+    });
+
+    function play(i) {
+        idx = i;
+        document.querySelectorAll('.list-track').forEach(el => el.classList.remove('active'));
+        document.getElementById('trk-'+i).classList.add('active');
+        curTitleDisplay.innerText = (i+1).toString().padStart(2,'0') + ". " + songs[idx].n;
+        audio.src = songs[i].l;
+        audio.load();
+        audio.play();
+        pToggle.innerHTML = '<i class="fas fa-pause"></i>';
+    }
+
+    function toggle() {
+        if(idx === -1) { play(0); return; }
+        if(audio.paused) { audio.play(); pToggle.innerHTML = '<i class="fas fa-pause"></i>'; }
+        else { audio.pause(); pToggle.innerHTML = '<i class="fas fa-play"></i>'; }
+    }
+
+    function next() { idx = (idx + 1) % songs.length; play(idx); }
+    function prev() { idx = (idx - 1 + songs.length) % songs.length; play(idx); }
+
+    document.getElementById('pSeek').onclick = (e) => {
+        if(!audio.duration || isNaN(audio.duration)) return;
+        const rect = e.currentTarget.getBoundingClientRect();
+        const pos = (e.clientX - rect.left) / rect.width;
+        audio.currentTime = pos * audio.duration;
+    };
+
+    audio.onended = () => next();
+
+    // Yavaşlatılmış ve Daha Akıcı Ekolayzer (Interval ile hız kontrolü)
+    setInterval(() => {
+        if(!audio.paused) {
+            for(let b of bars) {
+                const h = Math.random() * 40 + 5;
+                b.style.height = h + "px";
+            }
+        } else {
+            for(let b of bars) b.style.height = "10px";
+        }
+    }, 120); // 120ms hızı ideal ve göz yormayan bir ritim sağlar
+
+    audio.ontimeupdate = () => {
+        const c = audio.currentTime || 0;
+        const d = audio.duration || 0;
+        pBar.style.width = (d > 0) ? (c/d * 100) + "%" : "0%";
+        const format = (t) => Math.floor(t/60).toString().padStart(2,'0') + ":" + Math.floor(t%60).toString().padStart(2,'0');
+        
+        if (songs[idx]?.d === "CANLI" || d === Infinity || isNaN(d) || d === 0) {
+            timer.innerText = format(c) + " / CANLI";
+        } else {
+            timer.innerText = format(c) + " / " + format(d);
+        }
+    };
+
+    vControl.oninput = (e) => audio.volume = e.target.value;
+</script>
+</body>
+</html>
