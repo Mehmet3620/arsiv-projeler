@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radyo Oynatıcı</title>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <style>
+        html, body {
+            height: 100%;
+        }
+        #icerik {
+            min-height: 100%;
+            height: auto !important;
+            height: 100%;
+            margin: 0 auto -50px;
+            background-color: #000;
+            background-size: contain;
+            background-position: center center;
+            background-repeat: no-repeat;
+        }
+		
+		#icerik iframe {
+    width: 100%;
+    height: calc(100vh - 50px);
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: none;
+}
+        #player {
+            height: 50px;
+            color: #FFF;
+            background: #333;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 999;
+            border-top: 4px solid #D9534F; /* Her zaman kırmızı */
+        }
+        #player #bilgiler {
+            width: 47%;
+            float: left;
+        }
+        #player #bilgiler #kapak {
+            width: 54px;
+            height: 54px;
+            margin-top: -8px;
+            background: #AAA;
+            border: 3px solid #FFF;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            float: left;
+        }
+        #player #bilgiler #kapak img {
+            width: 100%;
+            height: 100%;
+        }
+        #player #bilgiler .radyo {
+            color: #FFF;
+            margin: 2px 0 0 15px;
+            display: inline-block;
+        }
+        #player #bilgiler .radyo {
+            -webkit-animation: glowOff .5s infinite alternate;
+        }
+        #player #bilgiler .sarki {
+            font-size: 12px;
+            margin: 2px 0 0 15px;
+            display: inline-block;
+        }
+        #player #bilgiler .sarki strong {
+            color: #999;
+        }
+        #player #bilgiler .liste, #player #bilgiler .istek {
+            width: 32px;
+            height: 32px;
+            margin: -14px 1px 0 0;
+            text-align: center;
+            color: #999;
+            text-shadow: 0 0 0px #000;
+            font-size: 16px;
+            line-height: 2.2;
+            float: right;
+            cursor: pointer;
+        }
+        #player #bilgiler .istek i {
+            width: 100%;
+            height: 100%;
+            display: block;
+            line-height: 1.9;
+        }
+        #player #kontrol {
+            width: 50px;
+            height: 46px;
+            position: absolute;
+            left: 50%;
+            margin-left: -25px;
+            background: #D9534F;
+            text-align: center;
+            font-size: 24px;
+            line-height: 2.2;
+            cursor: pointer;
+        }
+        #player #kontrol:hover, #player #bilgiler .liste:hover, #player #bilgiler .istek:hover, #player #sag .yenile:hover, #player #sag .sessiz:hover, #player #sosyal li:hover, #player #sosyal li:hover > a {
+            cursor: pointer;
+            background: #D9534F;
+            color: #FFF;
+        }
+        #player #sag .yenile {
+            width: 32px;
+            height: 32px;
+            margin: 8px 1px 0 70px;
+            text-align: center;
+            color: #999;
+            text-shadow: 0 0 0px #000;
+            font-size: 16px;
+            line-height: 2.2;
+            float: left;
+            cursor: pointer;
+        }
+        #player #sag .sessiz {
+            width: 32px;
+            height: 32px;
+            margin: 8px 1px 0 10px;
+            text-align: center;
+            color: #999;
+            text-shadow: 0 0 0px #000;
+            font-size: 16px;
+            line-height: 2.2;
+            float: left;
+            cursor: pointer;
+        }
+        #mesaj {
+            width: 280px;
+            margin: 6px 5px 0 5px;
+            padding: 5px 10px;
+            color: #999;
+            display: inline-block;
+            background: #222;
+            float: left;
+        }
+        #sosyal {
+            float: right;
+            text-align: center;
+            line-height: 2.2;
+        }
+        #sosyal li {
+            width: 32px;
+            height: 32px;
+            margin: 8px 6px 0 6px;
+            float: left;
+            list-style-type: none;
+        }
+        #sosyal li a {
+            color: #999;
+        }
+        #sosyal li:first-child {
+            margin-left: 0;
+        }
+        #sosyal li:last-child {
+            margin-right: 0;
+        }
+        .player {
+            display: none;
+        }
+        @-webkit-keyframes glowOff {
+            to {
+                text-shadow: 0 0 10px #D9534F;
+            }
+        }
+        #gecmis {
+            width: 360px;
+            height: 200px;
+            margin: 0;
+            padding: 0;
+            background: #333;
+            overflow: auto;
+            position: absolute;
+            left: 50%;
+            bottom: 46px;
+            margin-left: -180px;
+            display: none;
+        }
+        #gecmis li {
+            color: #999;
+            padding: 4px 10px;
+            list-style-type: none;
+        }
+        #gecmis li:nth-child(odd) {
+            background: #222;
+        }
+        .modal-title {
+            color: #333;
+        }
+        * {
+            border-radius: 0 !important;
+        }
+
+        /* Yeni İstek Paneli CSS'i */
+        #istek-paneli {
+            position: absolute;
+            bottom: 46px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 360px;
+            padding: 20px;
+            background: #333;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 1000;
+        }
+        #istek-paneli .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        #istek-paneli h4 {
+            margin-top: 0;
+            color: #fff;
+        }
+        #istek-paneli .alert {
+            background-color: #f2dede;
+            border-color: #ebccd1;
+            color: #a94442;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div id="icerik">
+    <iframe src="https://allaturkaa.de/forum/" style="width:100%; height:100%; border:none;"></iframe>
+</div>
+
+
+<footer id="player">
+    <audio id="radio-audio" crossorigin="anonymous">
+        <source src="https://eu4.fastcast4u.com/proxy/okyanus35?mp=/1" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <div id="bilgiler">
+            <div id="kapak">
+                <img src="https://allaturkaa.de/forum/wcf/images/allaturkaa/logo.png" alt="Radyo Allaturka Logo" />
+            </div>
+            <div class="radyo"><strong>Radyo Allaturka</strong></div>
+            <br>
+            <div class="sarki">
+                <a href="https://eu4.fastcast4u.com/tunein/okyanus35.pls" class="cc_streaminfo" data-type="song" data-username="okyanus35">Keyifli Dinlemeler</a>
+                <span id="song-title">Keyifli Dinlemeler</span>
+            </div>
+            
+            <div class="liste" data-toggle="tooltip" data-placement="top" title="Önceki Şarkılar"><i class="fa fa-bars"></i></div>
+            <div class="istek" data-toggle="tooltip" data-placement="top" title="İstek Gönder"><i class="fa fa-envelope"></i></div>
+        </div>
+
+        <div id="kontrol" data-toggle="tooltip" data-placement="top" title="Oynat / Durdur">
+            <i class="play fa fa-play"></i>
+        </div>
+
+        <div id="sag">
+            <div class="yenile" data-toggle="tooltip" data-placement="top" title="Yenile"><i class="fa fa-refresh"></i></div>
+            <div class="sessiz" data-toggle="tooltip" data-placement="top" title="Sessiz"><i class="fa fa-volume-up"></i></div>
+            <div id="mesaj">
+                <marquee id="song-marquee" direction="left" scrollamount="3">
+                    <a href="https://eu4.fastcast4u.com/tunein/okyanus35.pls" class="cc_streaminfo" data-type="song" data-username="okyanus35">Keyifli Dinlemeler</a>
+                </marquee>
+            </div>
+            <div id="sosyal">
+                <li><a href="https://www.facebook.com/radyoallaturka" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                <li><a href="https://twitter.com/RadyoAllaturka" target="_blank"><i class="fa fa-twitter"></i></a></li>
+            </div>
+        </div>
+    </div>
+    
+    <div id="istek-paneli">
+        <span class="close-btn">&times;</span>
+        <h4>İstek Hattı</h4>
+        <p class="alert alert-danger">Bu radyo istek kabul etmiyor :/</p>
+    </div>
+
+    <div id="gecmis" style="display: none;">
+        <li><i class="fa fa-play-circle"></i> Radyo geçmişi için özel kod gerekir.</li>
+        <li><i class="fa fa-play-circle"></i> Bu özellik şu anda aktif değildir.</li>
+    </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://eu4.fastcast4u.com/system/streaminfo.js"></script>
+
+<script>
+    $(document).ready(function() {
+        var audio = document.getElementById('radio-audio');
+
+        // Oynat/Durdur butonu
+        $("#kontrol").on('click', function(){
+            var icon = $(this).find('i');
+            if(audio.paused) {
+                audio.play();
+                icon.removeClass('fa-play').addClass('glyphicon glyphicon-pause');
+            } else {
+                audio.pause();
+                icon.removeClass('glyphicon-pause').addClass('fa-play');
+            }
+        });
+
+        // Yenile butonu
+        $(".yenile").on('click', function(){
+            audio.load();
+            audio.play();
+            $("#kontrol i").removeClass('fa-play').addClass('glyphicon glyphicon-pause');
+        });
+
+        // Sessiz butonu
+        $(".sessiz").on('click', function(){
+            var icon = $(this).find('i');
+            if(audio.muted) {
+                audio.muted = false;
+                icon.removeClass('fa-volume-off').addClass('fa-volume-up');
+            } else {
+                audio.muted = true;
+                icon.removeClass('fa-volume-up').addClass('fa-volume-off');
+            }
+        });
+
+        // Önceki Şarkılar kutusunu açma/kapama
+        $(".liste").on('click', function() {
+            $("#gecmis").toggle();
+        });
+
+        // Yeni istek paneli için kod
+        $(".istek").on('click', function() {
+            $("#istek-paneli").toggle();
+        });
+
+        $("#istek-paneli .close-btn").on('click', function() {
+            $("#istek-paneli").hide();
+        });
+
+        // Şarkı bilgisi güncellendiğinde hem statik metni hem de kayan yazıyı güncelle
+        $('.cc_streaminfo').on('DOMSubtreeModified', function() {
+            var newTitle = $(this).text();
+            $('#song-title').text(newTitle);
+        });
+        
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+
+</body>
+</html>
