@@ -1,0 +1,160 @@
+<div style="text-align: center; margin: 20px 0;">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /*
+        * FORUM UYUMLU CSS
+        * !important ile forumun genel stil ayarlarını geçersiz kılar.
+        */
+        
+        /* Sayaç Kapsayıcısı ve Ortalaması */
+        .ramazan-counter-wrapper {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364) !important; 
+            color: #fff !important;
+            padding: 30px 20px 10px 20px !important;
+            border-radius: 15px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+            border: 2px solid #ffcc66 !important;
+            margin: 20px auto !important;
+            max-width: 650px !important; 
+            display: block !important;
+            position: relative !important;
+        }
+
+        .ramazan-header {
+            margin-bottom: 25px !important;
+            font-size: 2.2em !important;
+            color: #ffcc66 !important; 
+            text-shadow: 0 0 8px rgba(255, 204, 102, 0.7) !important;
+            font-weight: bold !important;
+            text-align: center !important; 
+        }
+        
+        /* BAŞLIKTAKİ SİMGELERİN RENGİ */
+        .ramazan-header i {
+            color: #1abc9c !important; 
+            margin: 0 10px;
+        }
+
+        .ramazan-countdown-container {
+            display: flex !important;
+            justify-content: center !important; 
+            gap: 15px !important;
+            flex-wrap: wrap !important; 
+        }
+
+        .ramazan-countdown-item {
+            background-color: #34495e !important; 
+            padding: 15px 20px !important;
+            border-radius: 10px !important;
+            min-width: 80px !important;
+            text-align: center !important;
+        }
+
+        .ramazan-value {
+            font-size: 2.8em !important;
+            font-weight: bold !important;
+            color: #1abc9c !important; 
+            line-height: 1 !important;
+            margin-bottom: 5px !important;
+        }
+
+        .ramazan-label {
+            font-size: 0.9em !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            color: #ddd !important;
+        }
+
+        #status-message-ramazan {
+            margin-top: 30px !important;
+            font-size: 1.8em !important;
+            color: #f39c12 !important;
+            text-shadow: 0 0 5px rgba(243, 156, 18, 0.8) !important;
+            display: none;
+            text-align: center !important;
+        }
+        
+        /* ALLATURKA FORUM LİNK STİLİ */
+        .allaturka-link {
+            display: block !important;
+            text-align: right !important;
+            padding-right: 10px !important;
+            padding-top: 10px !important;
+            font-size: 0.9em !important;
+        }
+        .allaturka-link a {
+            color: #ffcc66 !important; 
+            text-decoration: none !important;
+            font-weight: bold !important;
+            transition: color 0.2s !important;
+        }
+        .allaturka-link a:hover {
+            color: #fff !important;
+            text-decoration: underline !important;
+        }
+    </style>
+
+    <div id="countdown-wrapper" class="ramazan-counter-wrapper">
+        
+        <div class="ramazan-header">
+            <i class="fas fa-mosque"></i> Ramazan Ayına Kalan Süre <i class="fas fa-hand-holding-heart"></i>
+        </div>
+
+        <div id="countdown-container-inner" class="ramazan-countdown-container">
+            <div class="ramazan-countdown-item">
+                <div id="days" class="ramazan-value">0</div>
+                <div class="ramazan-label">Gün</div>
+            </div>
+            <div class="ramazan-countdown-item">
+                <div id="hours" class="ramazan-value">0</div>
+                <div class="ramazan-label">Saat</div>
+            </div>
+            <div class="ramazan-countdown-item">
+                <div id="minutes" class="ramazan-value">0</div>
+                <div class="ramazan-label">Dakika</div>
+            </div>
+            <div class="ramazan-countdown-item">
+                <div id="seconds" class="ramazan-value">0</div>
+                <div class="ramazan-label">Saniye</div>
+            </div>
+        </div>
+
+        <div id="status-message-ramazan">
+            Hoş Geldin On Bir Ayın Sultanı Ramazan!
+        </div>
+        
+        <div class="allaturka-link">
+             <a href="https://allaturkaa.de/forum/" target="_blank">Allaturka Forum</a>
+        </div>
+    </div>
+    <script>
+        // Ramazan 2026 Başlangıç Tarihi: 19 Şubat 2026 00:00:00
+        const ramazanDate = new Date("February 19, 2026 00:00:00").getTime();
+
+        const countdownFunction = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = ramazanDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Değerleri güncelle
+            document.getElementById("days").innerHTML = days;
+            document.getElementById("hours").innerHTML = hours;
+            document.getElementById("minutes").innerHTML = minutes;
+            document.getElementById("seconds").innerHTML = seconds;
+
+            // Sayaç bittiğinde
+            if (distance < 0) {
+                clearInterval(countdownFunction);
+                document.getElementById("countdown-container-inner").style.display = "none";
+                document.getElementById("status-message-ramazan").style.display = "block";
+                document.getElementById("days").innerHTML = 0; 
+            }
+        }, 1000);
+    </script>
+</div>

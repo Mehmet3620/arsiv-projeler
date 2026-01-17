@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ramazan Geri Sayım Sayacı</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); /* Koyu Mavi/Gece tonları */
+            color: #fff;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            color: #ffcc66; /* Parlak altın sarısı */
+            text-shadow: 0 0 10px rgba(255, 204, 102, 0.6);
+        }
+
+        .countdown-container {
+            display: flex;
+            gap: 20px;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 2px solid #ffcc66;
+        }
+
+        .countdown-item {
+            background-color: #34495e; /* Koyu gri/mavi */
+            padding: 20px 30px;
+            border-radius: 10px;
+            min-width: 100px;
+            transition: transform 0.3s ease;
+        }
+
+        .countdown-item:hover {
+            transform: translateY(-5px);
+            background-color: #40586e;
+        }
+
+        .value {
+            font-size: 3.5em;
+            font-weight: bold;
+            color: #1abc9c; /* Canlı yeşil */
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .label {
+            font-size: 1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ddd;
+        }
+
+        /* Sayaç bittiğinde mesaj stili */
+        #status-message {
+            margin-top: 40px;
+            font-size: 2em;
+            color: #f39c12;
+            text-shadow: 0 0 5px rgba(243, 156, 18, 0.8);
+            display: none; /* Başlangıçta gizli */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        🕌 Ramazan Ayına Kalan Süre 🌙
+    </div>
+
+    <div id="countdown-wrapper" class="countdown-container">
+        <div class="countdown-item">
+            <div id="days" class="value">0</div>
+            <div class="label">Gün</div>
+        </div>
+        <div class="countdown-item">
+            <div id="hours" class="value">0</div>
+            <div class="label">Saat</div>
+        </div>
+        <div class="countdown-item">
+            <div id="minutes" class="value">0</div>
+            <div class="label">Dakika</div>
+        </div>
+        <div class="countdown-item">
+            <div id="seconds" class="value">0</div>
+            <div class="label">Saniye</div>
+        </div>
+    </div>
+
+    <div id="status-message">
+        Hoş Geldin On Bir Ayın Sultanı Ramazan! 
+    </div>
+
+    <script>
+        // Ramazan 2026 Başlangıç Tarihi: 19 Şubat 2026, Türkiye saatiyle (00:00)
+        // Miladi takvimde aylar 0'dan başlar (Ocak=0, Şubat=1...)
+        const ramazanDate = new Date("February 19, 2026 00:00:00").getTime();
+
+        const countdownFunction = setInterval(function() {
+            // Şu anki tarih ve saat
+            const now = new Date().getTime();
+
+            // Kalan süre milisaniye cinsinden
+            const distance = ramazanDate - now;
+
+            // Hesaplamalar
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // HTML'deki yerlere yazma
+            document.getElementById("days").innerHTML = days;
+            document.getElementById("hours").innerHTML = hours;
+            document.getElementById("minutes").innerHTML = minutes;
+            document.getElementById("seconds").innerHTML = seconds;
+
+            // Eğer geri sayım biterse (Sıfırın altına düşerse)
+            if (distance < 0) {
+                clearInterval(countdownFunction); // Sayacı durdur
+                document.getElementById("countdown-wrapper").style.display = "none"; // Sayacı gizle
+                document.getElementById("status-message").style.display = "block"; // Mesajı göster
+            }
+        }, 1000); // Her 1 saniyede bir güncelle
+    </script>
+
+</body>
+</html>
