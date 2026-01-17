@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osmanlı Padişahları Widgetı - Alaturka Tema (350px)</title>
+    
+    <style>
+        /* Ana Tema Değişkenleri */
+        :root {
+            --bg-color: #1a1a1a;        /* Koyu Siyah */
+            --accent-color: #ff9900;    /* Alaturka Turuncusu */
+            --text-color: #f0f0f0;      /* Açık Gri Metin */
+            --card-bg-color: #2c2c2c;   /* Kart Arka Planı */
+            --border-color: #444;       /* Açık Siyah Sınır */
+            --sub-card-bg: #383838;     /* İç Bölüm Arka Planı */
+        }
+
+        body {
+            /* SAYFA ARKA PLANI ŞEFFAF (Saydam) */
+            background-color: transparent !important; 
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Ana Widget Konteyneri - GENİŞLİK 350PX */
+        .allaturca-widget-container {
+            max-width: 350px; /* ANA WIDGET GENİŞLİĞİ 350PX OLARAK AYARLANDI */
+            width: 95%; 
+            margin: 10px auto;
+            padding: 0; 
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); 
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            box-sizing: border-box; 
+        }
+
+        /* İç Bölüm - İç Padding */
+        .widget-body {
+            padding: 15px;
+        }
+
+        /* Başlık Bölümü */
+        .widget-header {
+            text-align: center;
+            padding: 15px;
+            background-color: var(--sub-card-bg);
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 6px 6px 0 0;
+        }
+        .allaturka-logo {
+            width: 250px; 
+            height: auto;
+            margin-bottom: 5px;
+        }
+        .widget-header h2 {
+            color: var(--accent-color);
+            margin: 5px 0 0;
+            font-size: 1.4em; 
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Resimlerin Sergilendiği Grid */
+        .padisah-grid {
+            display: grid;
+            /* 350px genişliğe uyumlu olacak şekilde 5'li veya 4'lü düzeni koruyacak şekilde ayarlandı */
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); 
+            gap: 10px;
+        }
+
+        .padisah-item {
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            background-color: var(--card-bg-color);
+            padding: 5px; 
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .padisah-item:hover {
+            transform: translateY(-2px); 
+            background-color: var(--sub-card-bg); 
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
+        }
+        
+        .padisah-item p {
+            font-size: 0.75em; 
+            margin: 3px 0 0;
+            color: var(--text-color);
+            font-weight: bold;
+            line-height: 1.1;
+        }
+
+        .padisah-item img {
+            width: 100%;
+            height: auto;
+            max-height: 70px; 
+            object-fit: cover;
+            border-radius: 3px;
+            border: 1px solid var(--accent-color); 
+        }
+
+        /* Bilgi Kartı (Overlay) */
+        .card-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9); 
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; 
+            backdrop-filter: blur(5px);
+        }
+
+        .card-content {
+            background-color: var(--card-bg-color);
+            color: var(--text-color);
+            padding: 20px; /* Padding, 300px genişliğe uyumlu olacak şekilde ayarlandı */
+            border-radius: 8px;
+            /* AÇIKLAMA YAZISI GENİŞLİĞİ 300PX OLARAK AYARLANDI */
+            max-width: 300px; 
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+            border: 2px solid var(--accent-color);
+        }
+        
+        /* Detay Kartı Stili */
+        #card-detail h3 {
+            color: var(--accent-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            margin-top: 0;
+            font-size: 1.5em; /* 300px'e uyumlu font boyutu */
+        }
+        
+        #card-detail p {
+            line-height: 1.5;
+            margin: 8px 0;
+            text-align: justify;
+        }
+        
+        /* İç Bölüm Başlığı (Koyu renkten ayrışma) */
+        #card-detail p strong {
+            color: var(--accent-color);
+            display: block;
+            margin-top: 12px;
+            font-size: 1.05em;
+        }
+        
+        /* Uzun metin bölme kuralı */
+        #card-detail p p { 
+            margin: 5px 0;
+        }
+        
+        #card-detail img {
+            max-width: 90px; /* 300px'e uyumlu resim boyutu */
+            height: auto;
+            float: right;
+            margin: 0 0 10px 15px;
+            border: 2px solid var(--accent-color);
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            font-size: 2.2em;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+        
+        .close-btn:hover {
+            color: #fff;
+        }
+
+        /* Animasyon */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Responsive Ayar */
+        @media (max-width: 400px) {
+            .allaturca-widget-container {
+                max-width: 95%; /* 350px'i küçülterek taşmayı engelle */
+                margin: 10px auto;
+            }
+        }
+        @media (max-width: 350px) {
+             .card-content {
+                max-height: 85vh;
+                overflow-y: auto; 
+                max-width: 90%; /* Küçük ekranda 300px sınırını aşabiliriz */
+            }
+            #card-detail img {
+                float: none;
+                display: block;
+                margin: 0 auto 15px auto;
+            }
+            .padisah-grid {
+                 grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)); 
+                 gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="allaturca-widget-container" id="padisah-widget-container">
+
+        <div class="widget-header">
+            <img src="https://allaturkaa.de/forum/wcf/images/allaturkaa/logo.png" alt="Alaturka Logo" class="allaturka-logo">
+            <h2>OSMANLI PADİŞAHLARI</h2>
+        </div>
+        
+        <div class="widget-body">
+            <div class="padisah-grid" id="padisah-resim-listesi">
+                </div>
+        </div>
+
+        <div class="card-overlay" id="bilgi-karti-overlay">
+            <div class="card-content">
+                <button class="close-btn" id="card-close-btn">&times;</button>
+                <div id="card-detail">
+                    </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ========================================================
+        // PADİŞAH VERİSİ (JSON) - 36 Padişah
+        // ========================================================
+
+        const PADISAH_DATA = [
+            // Resimler Gözükmezse Lütfen Kendi Sunucunuzdaki Yolları Kullanın
+            {
+                id: 1, ad: "I. Osman Gazi", saltanat: "1299 - 1324",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi2AlJrT-1t6EyUTqnf8ICRDIRMvHBYi4IV7WcxoCQicYAQ4uasHjcn25yvjXxspeO7Mm8KmB9DZvJAgiyV02mT0oFxNWUCL473GfQJdlI6xx3HVapTPBm-M1HxA5NH6HjY9AH9Mk5roF2v5h9cC4W7PkGAWyxrXFIJPRpPEwSzipKVmVXIauiCfpaI/s1600/01.jpg", 
+                bilgi: "Osmanlı Beyliği'nin kurucusu ve ilk padişahıdır. Devletin temellerini atmış ve bağımsızlığını ilan etmiştir. Osman Gazi, Söğüt ve çevresindeki küçük bir beylikten, güçlü bir devletin doğumunu simgeleyen büyük adımlar atmıştır. Onun liderliğinde, beylik komşu tekfurlarla mücadele ederek topraklarını genişletmiştir. <p></p><strong>Kuruluşun Mimarı:</strong> Adına para bastıran ilk hükümdar olup, devlet yapısının ilk çekirdeklerini oluşturmuştur. Vizyonu ve adil yönetimi, beyliğin kısa sürede büyümesinin anahtarı olmuştur."
+            },
+            {
+                id: 2, ad: "Orhan Gazi", saltanat: "1324 - 1362",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjY0CNjtryvg45yrPN1QfN0Jk0j2LzFydol-XHyEVcon9gQ_Nahgy2vo01ay64xMy9NwQkTHWiss0VY22LSo6KPvOUT7VWd3hu1YfLRo0J8FsZYTfwH7TErBTcCiPhUbEDAmRaFrdiC_3PpcPQjonzpgtCEVLqLnFE6jwNfSLUqL4WI8TVOm04svYvI/s1600/02.jpg", 
+                bilgi: "Bursa'yı fethederek devletin ilk başkenti yapmıştır. İlk düzenli orduyu (Yaya ve Müsellem) kurmuş ve Rumeli'ye geçişi (Çimpe Kalesi) sağlamıştır. Orhan Gazi, babasından aldığı küçük beyliği, güçlü bir devlete dönüştüren, teşkilatlanmacı bir liderdir. <p></p><strong>Kurumsallaşma Dönemi:</strong> İznik'i (1331) ve İzmit'i (1337) fethederek Anadolu'da egemenliğini sağlamlaştırmış, Osmanlı'yı bir imparatorluk yoluna sokmuştur."
+            },
+            {
+                id: 3, ad: "I. Murad", saltanat: "1362 - 1389",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjWMOcDc6jg2RmUdtVUj4-YyITZbOselSJ022UYGMlD4MYhD0ioWNEgHLqEDDtmFS90QRsv4HqnUesy0lrq3dHQCmAGIijBtPvsxTDcdFx3CiCeGXirMK70SS47Kb_ZXOsab9_BngS-gx_9oZGZLOGj2yObGxzeRN8cqgiSlmnD4AHQ-ShcLL5PXDzl/s1600/03.jpg", 
+                bilgi: "Edirne'yi fethederek (1363) başkent yapmış, Sırpsındığı ve I. Kosova Savaşları ile Balkanlar'da Osmanlı egemenliğini pekiştirmiştir. Savaş alanında şehit düşen ilk ve tek Osmanlı padişahıdır. <p></p><strong>Balkan Fatihi:</strong> Yeniçeri Ocağı'nı kurmuş ve Anadolu ile Rumeli'de büyük topraklar kazanmıştır. Hüdavendigâr (Allah'ın sevgili kulu) lakabıyla anılmıştır."
+            },
+            {
+                id: 4, ad: "I. Bayezid (Yıldırım)", saltanat: "1389 - 1402",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEipgVSh401_Uaol5xy4bG57vIsJij_7iU9QpITd3txZUOThp4BymWQOxY8WMuT29FAKexFt8Iys4ra_VRtXJYecG9TUPA7cipzmhj90CX_IdKeDpcflNuB0zZceR0DWel3v_OEgNQgeWvZj7s7eWbuKfBr30iGwl8TijzdFa_pZ4MU9pQQM0UdklVPs/s1600/04.jpg",
+                bilgi: "Niğbolu Savaşı'nda (1396) büyük bir zafer kazanmıştır. Ancak Timur'a karşı Ankara Savaşı'nda (1402) yenilerek esir düşmüştür, bu da Osmanlı'nın Fetret Devri'ne girmesine neden olmuştur. <p></p><strong>Sürat ve Güç:</strong> Yıldırım lakabını askeri hareketlerindeki süratten almıştır. İstanbul'u kuşatan ilk Osmanlı padişahıdır. Fetret Devri, imparatorluğun parçalanma tehlikesi atlattığı zorlu bir dönemdir."
+            },
+            {
+                id: 5, ad: "I. Mehmed (Çelebi)", saltanat: "1413 - 1421",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiNqC49O1EQba9knnoMMVGp0RiAQv8yN7nEMqO3Cz4n4kpb3zhB1WsXLQJLSkWH0e-LG8v3xtFvyXdKLJQZLKbsaoieRb7belhudc2cqMeHg1SLPBVoDE0z6rG1o7D31zPjg02s9JWQNdYLUucx_mJpbowt35wixu3poRd0yWuho1n2mjFjYSbbAq-e/s1600/05.jpg",
+                bilgi: "Fetret Devri'ne (taht kavgaları) son vererek devleti yeniden toparlamıştır. Bu nedenle 'Osmanlı Devleti'nin ikinci kurucusu' olarak anılır. <p></p><strong>İkinci Kurucu:</strong> Şeyh Bedreddin isyanını bastırmış, Venedik ile ilk deniz savaşını yapmıştır. Barışçıl ve yapılandırıcı politikalarıyla devleti toparlamış ve istikrar sağlamıştır."
+            },
+            {
+                id: 6, ad: "II. Murad", saltanat: "1421 - 1444 / 1446 - 1451",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh0GrUYwU5hopxSmmFvN2OMQ1uWQbVwH-yytYyDvL5JJIaB8yTOrKwU-_3HXcpDPjnr2YIXabsyNAUi2vf5V1NvKaCHBmqoYjG51pm30H1NbbgjqoQtWBH5tjkP8Y3qDSuwavxT64B-AJtMjwxpL9F0hw9BC_X83tq_HjeCgjw37hgpqLwu2iD0Ot1Y/s1600/06.jpg",
+                bilgi: "Varna (1444) ve II. Kosova (1448) savaşlarında zaferler kazanarak Balkanlar'da kesin Osmanlı üstünlüğünü kurmuştur. İki kez tahttan feragat etmesiyle tanınır. <p></p><strong>Savaş ve Barış:</strong> Edirne-Segedin Antlaşması'nı imzalamış, sonra oğlu II. Mehmed'e tahtı bırakmış, ancak tehlike üzerine geri dönmüştür. Sanata ve bilime destek veren bir padişahtır."
+            },
+            {
+                id: 7, ad: "II. Mehmed (Fatih)", saltanat: "1444 - 1446 / 1451 - 1481",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhuhg1VZaWglXZDID8QuOe_d7hTMswROTr8j4o0q8YOxLWavjoEx2rayicmOqp2x0qDWMR9nQMgE4pH_sryClbsbls1SUGjuCbmz_j0UAsezP8l-vpgQyYomC9ocJB9OstRoBiItudHHYSLrixcJiJZvDUpgLHQbC5FlVkNIfULoJc335YRm8wJgOBY/s1600/07.jpg",
+                bilgi: "İstanbul'u fethederek (1453) Orta Çağ'ı kapatıp Yeni Çağ'ı açmıştır. Osmanlı İmparatorluğu'nu imparatorluk seviyesine çıkarmıştır. Fatih (Fetheden) unvanını almıştır. <p></p><strong>Çağ Açan Hükümdar:</strong> Trabzon Rum İmparatorluğu'na son vermiş, Mora'yı fethetmiş, Bosna'yı ele geçirmiştir. Kanunname'yi hazırlatarak devletin yönetimini hukuki temellere oturtmuştur. Yedi dil bilirdi."
+            },
+            {
+                id: 8, ad: "II. Bayezid", saltanat: "1481 - 1512",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj8eLoNhvuXpQYEFFkhiyl36MbQVOXRmuDwXxbEMuVDwJcnFIywhl_MMB1HzP6BI_jthrMGcbJOs53VUos1t3ahVBOgvGGTII08tlbpontho6lVWXgcMNx0e3J6_z-0WDvCEST831sSaR0St1CuyJcHqtdHx5-k593NNECy3go-__TTO_bifU2sKBXO/s1600/08.jpg",
+                bilgi: "Genellikle barışçıl politikalar izlemiş, ancak Cem Sultan Olayı ile uğraşmak zorunda kalmıştır. Bu olay, devleti uzun süre yıpratmıştır. <p></p><strong>Sakin Dönem:</strong> II. Bayezid, Fatih'in agresif politikalarının ardından devleti iç sorunlarla stabilize etmeye çalışmıştır. Ayrıca 1509'daki 'Küçük Kıyamet' olarak bilinen büyük İstanbul depremi döneminde yaşamıştır."
+            },
+            {
+                id: 9, ad: "I. Selim (Yavuz)", saltanat: "1512 - 1520",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEguYek1hCJmYVDYmRhiIDOrFnawfSOef2_F5iFj2szcJmJEazwKKFWwH0f62OnaX22v5F7fToW1qmLKxoJjRWplVueredlDGSu8gfiEKeH6p_8L4_adgKTwuzJIE60Qc-Cp2IZUpV2ps0l0sHOUFj_OhwffXXCkAVzcrVKHHqoOIfPNYia82whnJij3/s1600/09.jpg",
+                bilgi: "Sekiz yıllık saltanatında, Osmanlı topraklarını iki buçuk katına çıkarmıştır. Çaldıran (1514) ile Safevilere, Mercidabık ve Ridaniye (1517) ile Memlüklere son vererek Halifeliği Osmanlı'ya getirmiştir. <p></p><strong>Doğu Fatihi:</strong> Mısır'ı fethetmiş, Kutsal Emanetleri İstanbul'a getirmiştir. Yavuz (Yaman, Cesur) lakabıyla anılır ve sadece 8 yıl gibi kısa bir sürede imparatorluğun kaderini değiştirmiştir."
+            },
+            {
+                id: 10, ad: "I. Süleyman (Kanuni)", saltanat: "1520 - 1566",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjnsG0cx01dOjnfq-mWcRiPZ3MwqbECKltrrUjHXEqAkoLcYaJ-D_xZUV0mFeyYiigblBnbbsfhyGFpXlzfOy3c4mLh8MzoX77NYs_sUxrBvWSTvhpVRH6PC7RDCs1Kx_84RbC2fwsu-7y4rTU_W0SAMAWJGDuRAtKo-ncakW6uVopYBiMhLjQNEbGR/s1600/10.jpg",
+                bilgi: "Osmanlı tarihinin en uzun süre tahtta kalan padişahıdır (46 yıl). Mohaç Meydan Muharebesi (1526) ile Macaristan'ı fethetmiş, Viyana'yı kuşatmış ve Kanunnameleri ile hukuki düzenlemeler yapmıştır. <p></p><strong>En Parlak Dönem:</strong> Batıda Belgrad, Rodos ve Akdeniz'de üstünlük sağlanmıştır. Doğu'da Bağdat ve Kuzey Afrika'nın büyük bir kısmı fethedilmiştir. Muhteşem Süleyman olarak da bilinir."
+            },
+            {
+                id: 11, ad: "II. Selim (Sarı)", saltanat: "1566 - 1574",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhqvTwQRpxtcRif4eFNnOuTKIOi7gLh7bBS8PShJJR44eyKrlXjckcDomvByiBLeEqqwonk25WlX_GYLgwAtcq-9B07N7WCQMZfhHvOYB5ad5yJPH6kDNnBD7yRRKot-fBgc3mshFdt5HiR43j4dM6W0wsxiCTaTD4lqc7SixhTpABVl4RAWw1Zleh5/s1600/11.jpg",
+                bilgi: "Sokollu Mehmed Paşa'nın sadrazamlığı döneminde devlet işleri yürütülmüştür. Kıbrıs fethedilmiş (1571), ancak İnebahtı'da Osmanlı donanması büyük kayıp vermiştir. <p></p><strong>İlk Saraydan Ayrılış:</strong> Sefere çıkma geleneğini bozan ilk padişahtır. Sakin ve sanata düşkün bir kişiliğe sahiptir. Zigetvar Seferi sırasında vefat eden babası Kanuni'den sonra tahta çıkmıştır."
+            },
+            {
+                id: 12, ad: "III. Murad", saltanat: "1574 - 1595",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEirylSm3uGzfdbu637_lsyN3EoMaiFanFhzr60J0daQjeTcNcKZs4TMv0TLtTg9uINqZw6LtH269STZI-siXacW19gFqjtSm7VQoTtZQ2W6midNHYTsxi88mJuTkmINSHY5PJOuagCKXy5TA6mFt5dx2rsK4jU1q7mTHsMQCdNtIgPUFePliiN81snD/s1600/12.jpg",
+                bilgi: "Osmanlı Devleti'nin en geniş sınırlarına ulaştığı dönemdir (Ferhat Paşa Antlaşması). Ancak bu dönem, aynı zamanda saray entrikalarının ve rüşvetin arttığı bir çöküşün başlangıcıdır. <p></p><strong>Genişlemenin Zirvesi:</strong> Sınırlar doğuda Hazar Denizi'ne kadar uzanmıştır. Yönetim zayıflamaya başlamış, saray kadınları ve vezirlerin etkisi artmıştır."
+            },
+            {
+                id: 13, ad: "III. Mehmed", saltanat: "1595 - 1603",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhua70GlPjDMnJC_u2Xe3M70NSayGYMfkCobS-U0dzF_rnIiubwaSGiuE0XsOb0gmYQ7Cm_UHrqVP4clfmuOBCdQVhKjuaG0gsOMZ-blh5lwRub3SaToHfmyd4OCLD1Wfn0__5Q9AxZ5sj-xLLBzHFq8xKd6T2iwVotWGs-coYg7h9vHl0QNrmoRmet/s1600/13.jpg",
+                bilgi: "Sancağa çıkma geleneğini kaldırarak tecrübesiz şehzadelerin tahta geçmesine yol açan kanunu uygulamıştır. Eğri Kalesi'ni fethetmiş ve Haçova Meydan Muharebesi'nde orduya bizzat komuta etmiştir. <p></p><strong>Eğri Fatihi:</strong> Saltanatının ilk günlerinde kardeşlerini öldürtme geleneğini uygulamıştır. Bu dönem, Celâli isyanlarının yoğunlaştığı bir döneme denk gelmiştir."
+            },
+            {
+                id: 14, ad: "I. Ahmed", saltanat: "1603 - 1617",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgNEQLqinyjmAxTd9KpJPboz2DOeZgAr4_GjtLriUGt08augn3RjnWGJX0krH6AR7Cr7lT8qv4UbwOu6C0TJAogUwERSZxICf2TosvKPEU4HJYNBhpfUCXjg81XZe3OFZpsbXbpSP4NcCSjeP9xaL6Ngar_jHr85GKACJdZJA4iZRaUWIBUhGdUVxPq/s1600/14.jpg",
+                bilgi: "Kardeş katli geleneğini kaldıran ve yerine 'Ekber ve Erşed' (en yaşlı ve olgun) sistemini getiren padişahtır. Bu, taht kavgalarını önlemiştir. <p></p><strong>Ekber ve Erşed:</strong> Kuyucu Murad Paşa'nın Celâli isyanlarını bastırdığı dönemdir. Osmanlı'nın Batı'da toprak kaybetmeye başladığı (Zitvatorok Antlaşması) ilk padişahdır. Sultanahmet Camii'ni inşa ettirmiştir."
+            },
+            {
+                id: 15, ad: "I. Mustafa", saltanat: "1617 - 1618 / 1622 - 1623",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhYt92nARyTOHSHlD4rt249xi85R6CICV22OXAaOASVirHWKzRGOOZJnjncZfsYaxga6ShWFE7tby5F4TvEj44bLu1PaOfb1QgulxttZMoVBwx2tp-jRvo0I-X9srn7t143nJqVgEl1d_EgjJ77e8zwKWkr5rC2mfeLJN0TRlm5t0RNTndfNEb7r22x/s1600/15.jpg",
+                bilgi: "Akli dengesi yerinde olmadığı için iki kez tahta çıkıp indirilmiştir. Tahta 'Ekber ve Erşed' sistemiyle çıkan ilk padişahtır. Saltanat süresi kısadır ve yönetim annesi ile sadrazamların elinde kalmıştır. <p></p><strong>Zorlu Yıllar:</strong> Bu dönemde devlet yönetiminde büyük bir istikrarsızlık yaşanmış ve saray içi güç mücadeleleri hız kazanmıştır."
+            },
+            {
+                id: 16, ad: "II. Osman (Genç)", saltanat: "1618 - 1622",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhISNW8WE3lPArwejcrh9G1v9c5lWCupQN043hYX-4-MPAnn0hBmB4J3ZbtnYz20Vz5C7Z08CtYSVEv316Wa7NTuzTqOs5DAXZOJGM4qmamEOnR7SGCAJ1rIM3NxAb7ZD4Dp3tBNrgfTwlx_i4p0H7e7XuD1Q7IdOH6UjAuZMEBkI7AQwEyj6_90i9O/s1600/16.jpg",
+                bilgi: "Yeniçeriler tarafından tahttan indirilip öldürülen ilk padişahtır. Hotin Seferi'nde Yeniçeri Ocağı'nın disiplinsizliğini görmüş ve ocağı kaldırmak istemiştir. <p></p><strong>İlk Darbe:</strong> Reformist ve cesur bir padişahtır. Yeniçeri Ocağı'nı kaldırmak için Anadolu'ya geçmeyi planlamış, ancak isyan sonucu yakalanıp Yedikule Zindanları'nda boğdurulmuştur. Bu olay, Osmanlı tarihinde bir dönüm noktasıdır."
+            },
+            {
+                id: 17, ad: "IV. Murad", saltanat: "1623 - 1640",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhC2njyVfCUa5_XTh8iKIL0LZraJsTV6QzpJtdXE3bpcOXc2DDD6XXosGT1bR4RlD8Xvho6HYtL45yKFjmlbzXyOQyF_CBSaz0TORDdFj3ph-YufKI4IvPQNqOm480afJyKAN5Jw2Io6HNoXgj1NQ6XJvHttDLFtskAr93Zewh5VC_XH77epnjhMtRU/s1600/17.jpg",
+                bilgi: "Devlette otoriteyi yeniden kuran, sert ve disiplinli bir padişahtır. Tütün ve içki yasağı koymuş, devlet otoritesini merkezi bir şekilde güçlendirmiştir. <p></p><strong>Bağdat Fatihi:</strong> Revan (1635) ve Bağdat'ı (1638) fethederek otoritesini pekiştirmiştir. Ölümünden sonra sarayda büyük bir boşluk oluşmuştur. Devletin duraklama dönemindeki son güçlü padişah olarak kabul edilir."
+            },
+            {
+                id: 18, ad: "İbrahim (Deli)", saltanat: "1640 - 1648",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhclVx8n6KNWnrpbahzpaxw1d6JZpVblLlx17X2uNd7NEioNtqb2I5RDtcwdUaeKkG0kQacmP2hbS3Cg1ZGK2-ygf6PTsTzjVhvRRma0eWoj2AjD6s52IQpfBJFBHeCD4WRR_FPAv6xiKauIn4FrCCJLUlBhZBV6Kn4GwUDsSiyvktrdB5dG_XeET1c/s1600/18.jpg",
+                bilgi: "Uzun süre kafeste (şehzade hapishanesi) kaldığı için akıl sağlığı bozulmuştur. Dönemi, saray kadınlarının (özellikle Kösem Sultan) ve Yeniçerilerin etkisinin arttığı bir kargaşa dönemidir. <p></p><strong>Tahttan İndiriliş:</strong> Yeniçeriler tarafından tahttan indirilmiş ve boğdurulmuştur. Malta kuşatması onun döneminde başlamış, Girit'in fethi uzun yıllar sürmüştür."
+            },
+            {
+                id: 19, ad: "IV. Mehmed (Avcı)", saltanat: "1648 - 1687",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjJvB9opUUr8xVqGcj0PrSccskDQQq_E07dpOdqpyKLD31l6WMZoKyoJE5vRtUn9Antf9cCXPlXXDqBL2RYXXQTgg3na8BkxN32UZF1n7ygiXRtONf9TVsyYFY104eHc58CPlB9Gmax482pYJCXTPjgNN4NgbJmMz-Bb55dGxoNnglbW1GrSptQG7Nt/s1600/19.jpg",
+                bilgi: "En uzun süre tahtta kalan ikinci padişahtır (39 yıl). Bu dönem, Köprülü ailesi vezirlerinin otoriteyi yeniden sağladığı ve Viyana'nın ikinci kez kuşatıldığı (1683) dönemdir. <p></p><strong>Büyük Kayıplar:</strong> II. Viyana Kuşatması başarısız olmuş ve Kutsal İttifak'a karşı 16 yıl süren savaşlar sonunda büyük toprak kayıpları yaşanmıştır (Karlofça Antlaşması). Av merakından dolayı 'Avcı' lakabını almıştır."
+            },
+            {
+                id: 20, ad: "II. Süleyman", saltanat: "1687 - 1691",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhVkE4Im3ifAd-Q5dbPv_Nj_HP-6xOzOZTvzVUxLEpvkIy0ytsqHI2t-xMauvAUB_dk1TAFAGzzgS91qqEs1jskErOWo95aQWHpHDewAt0dZFXu_x0NeWj45MflSov0wt0tjtLfmNR-koFfIhAeDZO6Ck1T0HeM4RZ_IC2mRUbepMr1hpa17zSxJhfD/s1600/20.jpg",
+                bilgi: "Uzun yıllar kafeste kalmıştır. Saltanatı, Kutsal İttifak'a karşı devam eden savaşlar ve ağır toprak kayıpları ile geçmiştir. Köprülü Fazıl Mustafa Paşa'yı sadrazamlığa getirerek durumu düzeltmeye çalışmıştır. <p></p><strong>Savaş ve Yenilgiler:</strong> Bu dönemde yaşanan savaşlar, Osmanlı'nın Batı'da savunmaya çekilme döneminin başlangıcı olmuştur. Sağlık sorunları nedeniyle kısa süre tahtta kalmıştır."
+            },
+            {
+                id: 21, ad: "II. Ahmed", saltanat: "1691 - 1695",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgv-47s7s0VQVXSaQcOfkT9WYb-vsQHPjlG9xtazEUcYhT2jwBxQSjWOiZIfE2EjeuppMqOeDkGbW9nPrrxiIsU4fwsRJKdbLsNlYc53aXBuPtNMq7Qt5naXh57XaPDRB-Nl8r-_tRT5Wyoy6MNIYFMpg6rGD1m6tkm8zqLNrzqj8jSa6AIaXt2U-6v/s1600/21.jpg",
+                bilgi: "Saltanatı boyunca Kutsal İttifak Savaşları devam etmiştir. Salankamen Savaşı'nda Köprülü Fazıl Mustafa Paşa'nın şehit olması, imparatorluk için büyük bir kayıp olmuştur. <p></p><strong>İstikrarsızlık:</strong> Tahtta kaldığı kısa süre içinde sürekli olarak devam eden savaşlar nedeniyle devlet ekonomisi ve otoritesi zayıflamıştır."
+            },
+            {
+                id: 22, ad: "II. Mustafa", saltanat: "1695 - 1703",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjb4E9UoWRLCUr_C39fFds0bURqzDOq6ZLZot_odxMu4ohtKmkXmWFElevpJX0vBoB5upeqRBqxQBCq-aPnF4A3GXSQ1T9oayYFugQE6JjFKoYNUmIBxWvgRbl2opIyFZGbltiuriyVuR3hnIPdVBZN_Ztcx5SA_ka_pR_P5zmmegm45TEUNT9J3wln/s1600/22.jpg",
+                bilgi: "Ordunun başında sefere çıkan son padişahtır. Edirne Vakası (1703) sonucu tahttan indirilmiştir. Bu olay, merkezî otoritenin tamamen sarsıldığını gösterir. <p></p><strong>Karlofça Antlaşması:</strong> 1699'da imzalanan Karlofça Antlaşması ile Osmanlı, Batı'da ilk kez büyük toprak kayıpları yaşamış (Macaristan, Erdel vb.). Bu antlaşma, gerileme döneminin başlangıcı kabul edilir."
+            },
+            {
+                id: 23, ad: "III. Ahmed", saltanat: "1703 - 1730",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjlLIpdGuTjVshs7SYMG9BLelVBF8GV00v_XzSh0yT8_mehI4ZZ_vlpCMJh8fKpiXM9OoWGJ6Mhorsub9TDpPN_osCJ_xQVZ0KsbyxREnpZdUTyWD0EG00u30WfXcfO6ARCNOka57EJZ5FES3am9dyZ1mZldZI4ioVxMAr7Trd7pJQj1aGdlLygnkk5/s1600/23.jpg",
+                bilgi: "Lale Devri (1718-1730) olarak bilinen, Batı'ya açılma ve kültürel yeniliklerin yaşandığı dönemin padişahıdır. İlk Türk matbaası İbrahim Müteferrika tarafından kurulmuştur. <p></p><strong>Lale Devri:</strong> Pasarofça Antlaşması'ndan (1718) sonra başlayan bu dönem, Patrona Halil İsyanı ile son bulmuş ve III. Ahmed tahttan indirilmiştir. Sanat, edebiyat ve mimariye büyük önem verilmiştir."
+            },
+            {
+                id: 24, ad: "I. Mahmud", saltanat: "1730 - 1754",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjTDXnT3cN4hhcUNfIOSEtGMaoUKNRSiAM9qiAYT1m-3qW3YgZ_H9LKin4gJYWiKR9VOBrciQ4MF29PgUf2LtkmheUpGasTchOe9zuZY8BzSd6tMetXZ1q9A_fQihjvOc_Yhc3ap7HgiTbSs5DuxQ7nznMJl06g8plItiFmBOnvjUdGzQhYMxBf9JLd/s1600/24.jpg",
+                bilgi: "Patrona Halil İsyanı ile tahta çıkmıştır. Fransa'dan getirilen Kont Bonneval (Humbaracı Ahmed Paşa) ile orduda ıslahatlar yapmıştır. <p></p><strong>Askeri Islahatlar:</strong> Rusya ve Avusturya'ya karşı başarılı savaşlar yapmış ve Belgrad Antlaşması (1739) ile Pasarofça'da kaybedilen toprakları geri almıştır. Eğitime ve kitaplara düşkün bir padişahtır."
+            },
+            {
+                id: 25, ad: "III. Osman", saltanat: "1754 - 1757",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhu-2AH4QLxSjlN6drUdw-KWX1Jk0J9wpwDuRfE-qBOrDyIWlw80XdpoYCUr9GIqBrVj2WyslPNcuTk6INqUxm5Ei27MTYbF9GrfJiYIL3NxAE_1ctpFFZeVdmqYX4RY363Pwbcg1DHJlA_sIvm6nlv-KKTFTSzPlrUpTAQwkkxAW-4CIRjRDn3kPTL/s1600/25.jpg",
+                bilgi: "Kısa bir saltanat süresi olmuştur. Uzun yıllar kafeste yaşadığı için dış dünyaya alışmakta zorlanmıştır. <p></p><strong>İsraf Karşıtı:</strong> Saray harcamalarını kısmaya çalışmış, kadınların sarayda etkisini azaltmak için önlemler almıştır. Saltanatı boyunca önemli bir savaş veya büyük bir olay yaşanmamıştır."
+            },
+            {
+                id: 26, ad: "III. Mustafa", saltanat: "1757 - 1774",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgF-SUkbx-I6GYUV4e1-QyzJXHLmT8pVKT_1fHmhQKRczOBAWQ94dp7gzdk48wJ62AElH1t80FhnRiCLxSwmJR37Aut3lDwPed3eFo4MomyEZehc1rOmvckAqT_aUf0fEgf4PAvkEAdijgmRQrptc_Jpl3HHzDeE9wndkVExASyQkxk8gwE1m4d2VKn/s1600/26.jpg",
+                bilgi: "Askeri ve idari alanda reformlar yapmak istemiş, ancak 1768-1774 Osmanlı-Rus Savaşı'nın başlaması reformları engellemiştir. Mühendishane-i Bahr-i Hümayun'u (Deniz Mühendis Okulu) kurmuştur. <p></p><strong>Islahatçı Girişim:</strong> Mali ve askeri durumun kötüleştiğini görmüş ve ıslahat yapmak için çabalamıştır. En önemli özelliği reformcu kişiliğidir."
+            },
+            {
+                id: 27, ad: "I. Abdülhamid", saltanat: "1774 - 1789",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjLug1ztn6yeLwrrMUWDlrvn8Z5GNTQez4TJNYNZ3-zeMEXEbB9g4iyqA-qUviwU0MvfnCTWkEgdx2CKIcC5yUXOfJjBOwhOmAfPT-Uvmu99PZhNtPf0h3gfOEiJkvv-7eG2czFVQqaakw5TLFBzXmNF6tEWEojWmv7zhB-5uSo2L4Aat0wQs9a7Kzu/s1600/27.jpg",
+                bilgi: "Saltanatının başlangıcı, ağır şartlar içeren Küçük Kaynarca Antlaşması'nın (1774) imzalanmasıyla olmuştur. Bu antlaşma ile Kırım bağımsız olmuştur. <p></p><strong>Kayıplar ve Reform:</strong> Askeri ve mali alanda reformlar yapmaya çalışmış, ancak Rusya ve Avusturya ile yapılan savaşlar reformları engellemiştir. Özellikle donanmaya önem vermiştir."
+            },
+            {
+                id: 28, ad: "III. Selim", saltanat: "1789 - 1807",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgPYMjATq8hspv3RV1w1BkYzyGO3jJI8hm1eHO5REwIzGXrk59vOZ8ka7I_sq5VJ6gizDZeYENzcs_CExauqKWE3QYrQ44oyLqDPciOLIKSBbTNT4GZADLT4MauEjIfXIxqlUtoIy2M0Qx67dVPFRc_R7i_RDuig_4UBNkYe4IKq8snv-EzEZ5eAOW3/s1600/28.jpg",
+                bilgi: "Radikal reformlar yapmak isteyen, yenilikçi bir padişahtır. Nizam-ı Cedid (Yeni Düzen) ordusunu kurmuş ve Batı tarzı ıslahatlar yapmıştır. <p></p><strong>Nizam-ı Cedid:</strong> Kabakçı Mustafa İsyanı sonucu tahttan indirilmiş ve öldürülmüştür. Bu olay, reform karşıtlarının ne kadar güçlü olduğunu göstermiştir. Diplomatik ilişkilere ve Batı'ya gönderilen elçiliklere önem vermiştir."
+            },
+            {
+                id: 29, ad: "IV. Mustafa", saltanat: "1807 - 1808",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhOv74UeFVle8KaJ2yQWZVoaLQKygrS2t9ki-QbXaTc30H6LybXRND2JldfUEgm_GTHcu1_k4ej_4Sz52InxxdzCIhFV1H9I6yohhIx1kQq3L_uOC5BwPcecb9CMHZXpISuyBQA6JWr6m_MFDhZ-q82s_Qh7f2NPZPgdQ4Ji3ADr1_bg5_9kfIYfR6L/s1600/29.jpg",
+                bilgi: "Kısa ve kaotik bir saltanat süresi olmuştur. Kabakçı Mustafa İsyanı ile tahta çıkmış, Alemdar Mustafa Paşa'nın isyanı sonucu tahttan indirilmiştir. <p></p><strong>İktidar Mücadelesi:</strong> Nizam-ı Cedid reformlarına karşı olanların desteğiyle tahta çıkmış, bu da istikrarsızlığı artırmıştır. Tahttan indirilmesinden kısa süre sonra boğdurulmuştur."
+            },
+            {
+                id: 30, ad: "II. Mahmud", saltanat: "1808 - 1839",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiWVpiaErHbCqSoj9qktZi2d9TOLtazrpIwIrFt2Moj3lDJRVE0jpW11U-E7gieFMAFIYOEotLPRXocBVQZMP2G5JTzbPtjYL8tZi4ysjkZorpFoFdI2hCjrDBGSAzF8SW9Uc5SqGt8_ZqhwTttQYh6YDp-GOEh6kRowTvqrLY9kvRRy8Zj1hAKWX7v/s1600/30.jpg",
+                bilgi: "'Yeniliklerin Babası' olarak bilinir. Yeniçeri Ocağı'nı ortadan kaldırmış (Vaka-i Hayriye), Avrupa tarzı kıyafet ve kurumlar getirmiş, Tanzimat Fermanı'nın temellerini atmıştır. <p></p><strong>Modernleşmenin Başlangıcı:</strong> Askeri, idari ve mali alanda köklü reformlar yapmıştır. Merkezî otoriteyi güçlendirmiş ve devleti modern bir yapıya kavuşturmaya çalışmıştır."
+            },
+            {
+                id: 31, ad: "Abdülmecid", saltanat: "1839 - 1861",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiqot3rIGy3Gy4vwycu_dnKqp49pJVA0eritAkMUsLxK0AnaY4ZaQGG6EZ-2uNuOR3Of9CqAVMgZ3TQleoyVdIZdtvCBVY73LQLWocErrtsm7UlM77Ajfo8OdfylR0i6oEJQ6QcCcI7mymkMGXuCHmFjw6flnPLAmLYsBSqxmq0BO_WKHCAC0ODBS_c/s1600/31.jpg",
+                bilgi: "Tanzimat Fermanı'nı (1839) ve Islahat Fermanı'nı (1856) ilan etmiştir. Osmanlı'da anayasal düzene geçişin ilk adımları onun döneminde atılmıştır. <p></p><strong>Fermanlar Dönemi:</strong> Kırım Savaşı (1853-1856) onun döneminde yaşanmıştır. Batılılaşma hareketleri hız kazanmış, ancak dış borçlanma da bu dönemde başlamıştır."
+            },
+            {
+                id: 32, ad: "Abdülaziz", saltanat: "1861 - 1876",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhKLGfHuw10QLJWp2yyQ6su23kOCtvuk7515b7ATrHBiCp_ZXxYPtC2MXkCpyOeSBhXECPMJl_r3wapRnXj_b641bZdjSOWa3qX_aR-BCYFQ6t5N8cypN0-lrr9TCv99qES3JwPs2xZ9rvP3xfNPRgctEHA3KvRkxVpnLJgmGJw-NzcDw2heVn35m1U/s1600/32.jpg",
+                bilgi: "Batı'ya seyahat eden ilk ve tek Osmanlı padişahıdır (1867). Sanata, özellikle resim ve mimariye büyük önem vermiştir. Donanmayı dünyanın en büyük üçüncü donanması yapmıştır. <p></p><strong>Ekonomik Zorluk:</strong> Hükümdarlığı dış borçlar ve isyanlarla gölgelenmiştir. Bir darbeyle tahttan indirilmiş, kısa süre sonra intihar ettiği iddia edilmiştir."
+            },
+            {
+                id: 33, ad: "V. Murad", saltanat: "1876 (3 Ay)",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgLVw0mRGVxVayE6p1NG3mTzFR_k9pxbrso7KLPFutHLAM0chtvN4PPMwCvJ4iygprSKjcTYyItt8kDo3doPiMnlhbuI4TMn6ISoeQcVsjBITPBIItunre51D9lN4ItGyqXnRxmV_ksi7HWOT60edLz1UkMSKf-MNlbgHVQsZDprRmb4MEVlQewWWoL/s1600/33.jpg",
+                bilgi: "Sadece 93 gün tahtta kalmıştır. Tahta çıktığında akıl sağlığı yerinde olmadığı iddia edilmiştir. Jön Türkler tarafından tahta çıkarılmıştır. <p></p><strong>En Kısa Saltanat:</strong> Mithat Paşa'nın öncülüğündeki darbe ile Abdülaziz'in yerine geçmiş, ancak ruh sağlığı nedeniyle tahttan indirilmiştir. Tahttan indirildikten sonra uzun yıllar hapis hayatı yaşamıştır."
+            },
+            {
+                id: 34, ad: "II. Abdülhamid", saltanat: "1876 - 1909",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEglmdm500F1F8qjpey7asTzEGBHfD07pm9n__MMdDZ8VcY3TMJzy_041Rf2oe4JPNwuEAmO5DneZBUnBV-j_7hn2ztK2ZVxXgXpFfiqQO0HcyOjdAz1tAyJBcGiKhNoc8jwhoHSBv8YNGroCJJJm-gR0zR3-KAZKVZGqm3JI657y_YUi65yU6Ii8mRn/s1600/34.jpg",
+                bilgi: "Meşrutiyeti ilan eden (I. Meşrutiyet), ancak 1 yıl sonra parlamentoyu kapatarak ülkeyi mutlakiyetle yöneten padişahtır. Ülkenin altyapısına (demiryolları, okullar) büyük önem vermiştir. <p></p><strong>Ulu Hakan / Kızıl Sultan:</strong> 33 yıl tahtta kalmıştır. 31 Mart Vakası'ndan sonra İttihat ve Terakki Cemiyeti tarafından tahttan indirilmiştir. Kurduğu istihbarat ağı ile tanınır."
+            },
+            {
+                id: 35, ad: "V. Mehmed (Reşad)", saltanat: "1909 - 1918",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjAem05jCfsL5zZpVBxnnPKPSfRqKrIiLDfs6GnFH5YaateBIEQIrIyzm4EQdYEgXR2SfVqP-5MoE6h6YPO9uESTXclSy5SWc-svN5HC2EVzZAbqDjuITrL6dp_WSkhawuS1PYB88JvAnJhAkrGRRZIrefFOaicgrTvaAlq36pdz64uB6MLJLYmox8Y/s1600/35.jpg",
+                bilgi: "II. Meşrutiyet döneminde, yetkileri kısıtlanmış bir padişahtır. Trablusgarp ve Balkan Savaşları, I. Dünya Savaşı gibi imparatorluğun en kritik savaşları onun döneminde yaşanmıştır. <p></p><strong>Sembolik Yönetim:</strong> Yönetim tamamen İttihat ve Terakki'nin elinde kalmıştır. Uzun süre kafeste kaldığı için pasif bir padişahtı. Savaşlar sonucu imparatorluk büyük toprak kaybetmiştir."
+            },
+            {
+                id: 36, ad: "VI. Mehmed (Vahdeddin)", saltanat: "1918 - 1922",
+                resim: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgtVR9kEjbdG63wc5lu-KCWJiI7UrQlvXhqqlj9fEalPfMjsY747mkuKYyWyLw2g0A1-oMAWXrTTlxTteBkshpf9QluVDiRmO0d31ajOQZwnAGfiET3nSLjiJdWqYUSa0JLjmq-EwZtqAEXluwrF3kpqIlte5crtd7Cgw6S2e4e0Yj48TCbnvCnBbiD/s1600/36.jpg",
+                bilgi: "Osmanlı İmparatorluğu'nun son padişahıdır. Türkiye Büyük Millet Meclisi'nin (TBMM) saltanatı kaldırmasıyla tahttan indirilmiş ve ülkeyi terk etmiştir. <p></p><strong>Son Padişah:</strong> Milli Mücadele döneminde tahtta kalmıştır. İstanbul'un işgalini görmüş, 1 Kasım 1922'de TBMM'nin kararıyla Osmanlı İmparatorluğu resmen sona ermiştir. Sonrasında Malta'ya sığınmıştır."
+            }
+        ];
+
+        const padisahGrid = document.getElementById('padisah-resim-listesi');
+        const kartOverlay = document.getElementById('bilgi-karti-overlay');
+        const kartDetay = document.getElementById('card-detail');
+        const kartKapatBtn = document.getElementById('card-close-btn');
+
+        /**
+         * Padişah resimlerini ve adlarını grid'e yükler.
+         */
+        function renderPadisahList() {
+            padisahGrid.innerHTML = '';
+            
+            PADISAH_DATA.forEach(padisah => {
+                const item = document.createElement('div');
+                item.className = 'padisah-item';
+                item.setAttribute('data-id', padisah.id);
+                
+                const img = document.createElement('img');
+                img.src = padisah.resim;
+                img.alt = padisah.ad;
+                
+                // Resim yüklenemezse yedek resim kullanma denemesi (Hotlink engeline karşı)
+                img.onerror = function() {
+                    this.style.filter = 'grayscale(100%)'; 
+                    this.alt = "Resim yüklenemedi: " + padisah.ad;
+                };
+
+                const name = document.createElement('p');
+                name.textContent = `${padisah.id}. ${padisah.ad}`; 
+                
+                item.appendChild(img);
+                item.appendChild(name);
+                
+                // Tıklama olayını tanımla
+                item.addEventListener('click', () => openPadisahCard(padisah.id));
+                
+                padisahGrid.appendChild(item);
+            });
+        }
+
+        /**
+         * Padişah bilgi kartını açar ve içeriği yükler.
+         * @param {number} id - Tıklanan padişahın ID'si
+         */
+        function openPadisahCard(id) {
+            const padisah = PADISAH_DATA.find(p => p.id === id);
+            if (!padisah) return;
+
+            // Kullanıcı kuralı: uzun yazıları ikiye bölmek ve bölüm aralarına fazladan paragraf etiketi koymak
+            let formattedBilgi = padisah.bilgi.replace(/<p><\/p>/g, '<br><p></p>');
+
+            kartDetay.innerHTML = `
+                <img src="${padisah.resim}" alt="${padisah.ad}">
+                <h3>${padisah.id}. ${padisah.ad}</h3>
+                <p><strong>Saltanat Süresi:</strong> ${padisah.saltanat}</p>
+                <p>${formattedBilgi}</p>
+            `;
+            
+            // Kart açıldığında resim yine yüklenemezse alternatif metni göster
+            kartDetay.querySelector('img').onerror = function() {
+                 this.src = 'Hata: Resim Yüklenemedi';
+                 this.style.filter = 'grayscale(100%)'; 
+            };
+
+
+            kartOverlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Sayfanın kaymasını engelle
+        }
+
+        /**
+         * Padişah bilgi kartını kapatır.
+         */
+        function closePadisahCard() {
+            kartOverlay.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Olay dinleyicileri
+        kartKapatBtn.addEventListener('click', closePadisahCard);
+        kartOverlay.addEventListener('click', (e) => {
+            // Kartın içeriğine değil, overlay'a tıklanırsa kapat
+            if (e.target === kartOverlay) {
+                closePadisahCard();
+            }
+        });
+
+        // Sayfa yüklendiğinde listeyi render et
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPadisahList();
+        });
+    </script>
+</body>
+</html>
