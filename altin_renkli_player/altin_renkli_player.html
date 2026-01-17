@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOST YURDU RADYO - Mehmet3620</title>
+    <style>
+        body { margin: 0; padding: 0; background: #1a1a1a; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        
+        /* Altın sarısı range input tasarımı */
+        input[type=range] { -webkit-appearance: none; background: transparent; outline: none; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: rgba(255, 215, 0, 0.2); border-radius: 2px; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #FFD700; cursor: pointer; margin-top: -6px; box-shadow: 0 0 5px #000; }
+        
+        /* Buton Alanı: Tam Yuvarlak ve Taşmasız */
+        #btn-wrapper {
+            position: absolute; 
+            left: 194px; 
+            top: 183px; 
+            width: 95px; 
+            height: 95px; 
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            overflow: hidden; /* Dışarı hiçbir şey sızamaz */
+        }
+
+        /* CSS ile Çizilen Duraklatma Çubukları (Çıkıntı yapmaz) */
+        .pause-bars {
+            display: none; /* Başlangıçta gizli */
+            gap: 8px;
+            pointer-events: none;
+        }
+        .bar-css {
+            width: 10px;
+            height: 35px;
+            background-color: #FFD700;
+            border-radius: 2px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+
+        /* Play Üçgeni */
+        #play-shape {
+            color: #FFD700;
+            font-size: 45px;
+            filter: drop-shadow(0 0 5px #000);
+            pointer-events: none;
+            user-select: none;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div id="mehmet-player-v4" style="position: relative; width: 624px; height: 351px; background: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi8X0BAT2tM30lzDESmb10DHlM1KKcrpfpPbLFo0NDK_PXJC3mA_1Og24t3J448k4gMq8AUOuS22MkrxrntG1OGjrqD4xGhO-NX3wu6SumC3-rCK5RXWP3JZ3d3kkY-axYCPQpgMAtibHFWmAUy2ohyphenhyphenxlm10qvyDtdTt9HBIziAdVVsGctyJ9Hg8kYv7Nk/s16000/erx4dprk.png') no-repeat; overflow: hidden; font-family: 'Arial', sans-serif;">
+
+    <div style="position: absolute; left: 16px; top: 16px; width: 200px; height: 200px;">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgB5RYrH41pCOwxFtIpCBtOtJaVAy3YUm0yFX9mLnDXfYqWqmLpAz_fMOS88Ww_eEgrad9dL90hLNXI6El2X8Mn-gq3RiVJGEl_Wq1h5oTF7SDWIQ1dfZ_t5ni4BSWVmfmWhk5JjYsNq-ficxG5KLZ7j3Cnvq7QfVZYMaIANVK1Xjy9HcYvowoitjuf1aw/s320/dlo7cyhq.gif" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+    </div>
+
+    <div style="position: absolute; left: 243px; top: 63px; width: 260px; height: 40px; display: flex; align-items: center; justify-content: center;">
+        <span style="color: #FFD700; font-size: 22px; font-weight: bold; text-shadow: 1px 1px 3px #000;">DOST YURDU RADYO</span>
+    </div>
+
+    <div style="position: absolute; left: 233px; top: 120px; width: 245px; height: 35px; display: flex; align-items: center; overflow: hidden;">
+        <marquee behavior="scroll" direction="left" scrollamount="3" style="color: #FFD700; font-size: 14px; font-weight: bold; width: 100%;">
+            <a href="https://eu1.fastcast4u.com/tunein/qpnslltp.pls" class="cc_streaminfo" data-type="song" data-username="qpnslltp" style="text-decoration: none; color: inherit;">Yükleniyor...</a>
+        </marquee>
+    </div>
+
+    <div style="position: absolute; left: 260px; top: 170px; width: 230px; height: 35px; display: flex; align-items: center; justify-content: center;">
+        <input type="range" min="0" max="1" step="0.01" value="0.5" id="volRange" style="width: 170px; cursor: pointer;">
+    </div>
+
+    <div style="position: absolute; left: 304px; top: 225px; width: 117px; height: 22px; display: flex; align-items: flex-end; justify-content: center;">
+        <canvas id="visualizer" width="117" height="22"></canvas>
+    </div>
+
+    <div id="btn-wrapper">
+        <div id="play-shape">▶</div>
+        <div id="pause-shape" class="pause-bars">
+            <div class="bar-css"></div>
+            <div class="bar-css"></div>
+        </div>
+    </div>
+
+    <audio id="mainAudio" crossorigin="anonymous">
+        <source src="https://eu1.fastcast4u.com/proxy/qpnslltp?mp=/1" type="audio/mpeg">
+    </audio>
+</div>
+
+<script src="https://eu1.fastcast4u.com/system/streaminfo.js"></script>
+
+<script>
+    const audio = document.getElementById('mainAudio');
+    const btn = document.getElementById('btn-wrapper');
+    const playShape = document.getElementById('play-shape');
+    const pauseShape = document.getElementById('pause-shape');
+    const vol = document.getElementById('volRange');
+    const canvas = document.getElementById('visualizer');
+    const ctx = canvas.getContext('2d');
+
+    let audioCtx, analyser, source, dataArray;
+
+    function setupVisualizer() {
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            source = audioCtx.createMediaElementSource(audio);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            analyser.fftSize = 64; 
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+            draw();
+        } catch(e) { console.error(e); }
+    }
+
+    function draw() {
+        requestAnimationFrame(draw);
+        if(!analyser) return;
+        analyser.getByteFrequencyData(dataArray);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const barWidth = 3; 
+        let x = 0;
+        for (let i = 0; i < dataArray.length; i++) {
+            let barHeight = (dataArray[i] / 255) * canvas.height;
+            ctx.fillStyle = '#FFD700';
+            ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+            x += barWidth + 4; 
+        }
+    }
+
+    btn.onclick = () => {
+        if (!audioCtx) setupVisualizer();
+        if (audio.paused) {
+            audio.play().then(() => {
+                playShape.style.display = 'none';
+                pauseShape.style.display = 'flex';
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+            });
+        } else {
+            audio.pause();
+            playShape.style.display = 'block';
+            pauseShape.style.display = 'none';
+        }
+    };
+
+    vol.oninput = (e) => { audio.volume = e.target.value; };
+</script>
+
+</body>
+</html>
