@@ -5,82 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mehmet3620 Proje Arşivi</title>
     <style>
+        /* Arka Plan Tam Siyah */
         body { 
-            background: radial-gradient(circle at top, #2c2c2c 0%, #121212 100%); 
-            color: #e0e0e0; 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #000000; 
+            color: #ffffff; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
             margin: 0; 
-            padding: 40px 20px;
-            min-height: 100vh;
+            padding: 30px 10px;
             text-align: center;
         }
 
         h1 { 
             color: #d4af37; 
-            font-weight: 300; 
-            letter-spacing: 2px; 
-            text-transform: uppercase;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-            padding-bottom: 15px;
-            margin-bottom: 40px;
-            display: inline-block;
+            font-size: 1.4rem; 
+            font-weight: 400;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
         }
 
         .section-title { 
             color: #d4af37;
-            font-size: 0.85rem;
-            letter-spacing: 3px;
-            margin-top: 50px;
-            margin-bottom: 20px;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            margin: 30px 0 15px 0;
             text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0.8;
-        }
-
-        .section-title::before, .section-title::after {
-            content: "";
-            height: 1px;
-            width: 40px;
-            background: rgba(212, 175, 55, 0.3);
-            margin: 0 15px;
+            font-weight: bold;
         }
 
         .container { 
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
             max-width: 900px;
             margin: 0 auto;
         }
 
+        /* Küçük ve Belirgin Butonlar */
         .box { 
-            background: rgba(255, 255, 255, 0.03); 
-            border: 1px solid rgba(212, 175, 55, 0.15); 
-            padding: 18px; 
-            border-radius: 10px; 
+            background: #1a1a1a; /* Buton rengi koyu gri */
+            border: 1px solid #333; /* Kenarlar daha ince */
+            padding: 10px 15px; 
+            border-radius: 6px; 
             text-decoration: none; 
-            color: #ccc; 
-            transition: all 0.3s ease; 
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 45px;
-            backdrop-filter: blur(5px);
+            color: #d1d1d1; 
+            transition: 0.2s; 
+            font-size: 0.85rem; /* Yazılar küçültüldü */
+            min-width: 140px;
         }
 
+        /* Üstüne gelince altın rengi parlama */
         .box:hover { 
-            background: rgba(212, 175, 55, 0.08); 
             border-color: #d4af37; 
-            color: #fff; 
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.4);
+            color: #ffffff; 
+            background: #252525;
+            transform: scale(1.03);
         }
 
         @media (max-width: 600px) {
-            .container { grid-template-columns: 1fr 1fr; }
+            .box { width: 40%; min-width: auto; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -90,7 +73,7 @@
 
     <div class="section-title">İslami Uygulamalar</div>
     <div class="container">
-        <a href="https://mehmet3620.github.io/mushaf-resimleri/" class="box" style="border-color: rgba(255, 204, 0, 0.4);">Kuran-ı Kerim (Mushaf)</a>
+        <a href="https://mehmet3620.github.io/mushaf-resimleri/" class="box" style="border-color: #d4af37;">Kuran-ı Kerim (Mushaf)</a>
         <a href="kurani_kerim/" class="box">Sesli Kur'an Dinle</a>
         <a href="zikirmatik/" class="box">Zikirmatik</a>
         <a href="esmaul_husna/" class="box">Esmaül Hüsna</a>
