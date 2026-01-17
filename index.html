@@ -5,65 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mehmet3620 Proje Arşivi</title>
     <style>
-        /* Arka Plan Tam Siyah */
         body { 
             background-color: #000000; 
             color: #ffffff; 
             font-family: 'Segoe UI', Tahoma, sans-serif; 
             margin: 0; 
-            padding: 30px 10px;
+            padding: 20px 10px;
             text-align: center;
         }
 
         h1 { 
             color: #d4af37; 
-            font-size: 1.4rem; 
+            font-size: 1.2rem; 
             font-weight: 400;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             letter-spacing: 1px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            padding-bottom: 10px;
+            display: inline-block;
         }
 
         .section-title { 
             color: #d4af37;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             letter-spacing: 2px;
-            margin: 30px 0 15px 0;
+            margin: 25px 0 10px 0;
             text-transform: uppercase;
             font-weight: bold;
+            opacity: 0.8;
         }
 
         .container { 
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 10px;
-            max-width: 900px;
+            gap: 8px; /* Boşluklar azaltıldı */
+            max-width: 1000px;
             margin: 0 auto;
         }
 
-        /* Küçük ve Belirgin Butonlar */
+        /* Daha küçük ve zarif butonlar */
         .box { 
-            background: #1a1a1a; /* Buton rengi koyu gri */
-            border: 1px solid #333; /* Kenarlar daha ince */
-            padding: 10px 15px; 
-            border-radius: 6px; 
+            background: #111111; 
+            border: 1px solid #333; 
+            padding: 8px 12px; 
+            border-radius: 4px; 
             text-decoration: none; 
-            color: #d1d1d1; 
+            color: #bbb; 
             transition: 0.2s; 
-            font-size: 0.85rem; /* Yazılar küçültüldü */
-            min-width: 140px;
+            font-size: 0.8rem; /* Yazı boyutu küçültüldü */
+            min-width: 120px;
+            display: inline-block;
         }
 
-        /* Üstüne gelince altın rengi parlama */
         .box:hover { 
             border-color: #d4af37; 
             color: #ffffff; 
-            background: #252525;
-            transform: scale(1.03);
+            background: #1a1a1a;
+            transform: translateY(-2px);
         }
 
         @media (max-width: 600px) {
-            .box { width: 40%; min-width: auto; font-size: 0.8rem; }
+            .box { width: 45%; min-width: auto; padding: 6px; }
         }
     </style>
 </head>
@@ -73,38 +76,38 @@
 
     <div class="section-title">İslami Uygulamalar</div>
     <div class="container">
-        <a href="https://mehmet3620.github.io/mushaf-resimleri/" class="box" style="border-color: #d4af37;">Kuran-ı Kerim (Mushaf)</a>
-        <a href="kurani_kerim/" class="box">Sesli Kur'an Dinle</a>
-        <a href="zikirmatik/" class="box">Zikirmatik</a>
-        <a href="esmaul_husna/" class="box">Esmaül Hüsna</a>
-        <a href="otuziki_ellidort_farz/" class="box">Otuz İki ve Elli Dört Farz</a>
-        <a href="dini_milli_gunler/" class="box">Dini ve Milli Günler</a>
-        <a href="yuz_ondort_sure/" class="box">Yüz On Dört Sure</a>
-        <a href="ramazana_kac_gun_kaldi/" class="box">Ramazana Kaç Gün Kaldı</a>
-        <a href="namaz_vakitleri/" class="box">Namaz Vakitleri</a>
-        <a href="yuz_suru_yuz_cevap/" class="box">Yüz Soru Yüz Cevap</a>
+        <a href="https://mehmet3620.github.io/mushaf-resimleri/" target="_blank" class="box" style="border-color: #d4af37;">Kuran-ı Kerim (Mushaf)</a>
+        <a href="kurani_kerim/" target="_blank" class="box">Sesli Kur'an Dinle</a>
+        <a href="zikirmatik/" target="_blank" class="box">Zikirmatik</a>
+        <a href="esmaul_husna/" target="_blank" class="box">Esmaül Hüsna</a>
+        <a href="otuziki_ellidort_farz/" target="_blank" class="box">32 ve 54 Farz</a>
+        <a href="dini_milli_gunler/" target="_blank" class="box">Dini ve Milli Günler</a>
+        <a href="yuz_ondort_sure/" target="_blank" class="box">114 Sure</a>
+        <a href="ramazana_kac_gun_kaldi/" target="_blank" class="box">Ramazan Sayacı</a>
+        <a href="namaz_vakitleri/" target="_blank" class="box">Namaz Vakitleri</a>
+        <a href="yuz_suru_yuz_cevap/" target="_blank" class="box">100 Soru 100 Cevap</a>
     </div>
 
     <div class="section-title">Radyo Uygulamaları</div>
     <div class="container">
-        <a href="istek_matik/" class="box">İstek Matikli Player</a>
-        <a href="altin_renkli_player/" class="box">Altın Renkli Player</a>
-        <a href="jv_player/" class="box">Jv Player Reklamsız</a>
-        <a href="sanal_radyo/" class="box">Sanal Radyo</a>
-        <a href="telefon_player/" class="box">Telefon Player</a>
-        <a href="uclu_radyo/" class="box">Üçlü Radyo</a>
-        <a href="yirmi_sarkilik_player/" class="box">Yirmi Şarkılık Player</a>
-        <a href="yirmi_renkli_player/" class="box">Yirmi Renkli Player</a>
-        <a href="yirmi_adet_player/" class="box">Yirmi Adet Player</a>
-        <a href="uc_renk_player/" class="box">Üç Renk Üç Adet Player</a>
+        <a href="istek_matik/" target="_blank" class="box">İstek Matikli Player</a>
+        <a href="altin_renkli_player/" target="_blank" class="box">Altın Renkli Player</a>
+        <a href="jv_player/" target="_blank" class="box">Jv Player</a>
+        <a href="sanal_radyo/" target="_blank" class="box">Sanal Radyo</a>
+        <a href="telefon_player/" target="_blank" class="box">Telefon Player</a>
+        <a href="uclu_radyo/" target="_blank" class="box">Üçlü Radyo</a>
+        <a href="yirmi_sarkilik_player/" target="_blank" class="box">20 Şarkılık Player</a>
+        <a href="yirmi_renkli_player/" target="_blank" class="box">20 Renkli Player</a>
+        <a href="yirmi_adet_player/" target="_blank" class="box">20 Adet Player</a>
+        <a href="uc_renk_player/" target="_blank" class="box">3 Renk 3 Player</a>
     </div>
 
     <div class="section-title">Karışık Uygulamalar</div>
     <div class="container">
-        <a href="sibel/" class="box">Sibel Uygulaması</a>
-        <a href="dj_tanitim_kartlari/" class="box">Dj Tanıtım Kartları</a>
-        <a href="geri_sayim_gri/" class="box">Geri Sayım Uygulaması</a>
-        <a href="film_arama_robotu/" class="box">Film Arama ve Sosyal Butonlar</a>
+        <a href="sibel/" target="_blank" class="box">Sibel Uygulaması</a>
+        <a href="dj_tanitim_kartlari/" target="_blank" class="box">Dj Tanıtım Kartları</a>
+        <a href="geri_sayim_gri/" target="_blank" class="box">Geri Sayım</a>
+        <a href="film_arama_robotu/" target="_blank" class="box">Film Arama</a>
     </div>
 
 </body>
