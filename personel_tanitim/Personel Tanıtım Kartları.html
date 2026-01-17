@@ -1,0 +1,229 @@
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Luxurious+Script&display=swap" rel="stylesheet">
+<style>
+/* ================== EFEKTLİ VE KOMPAKT SEYYAH20 KARTI ================== */
+.seyyah-art-canvas {
+  padding: 15px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.seyyah-main-card {
+  position: relative;
+  width: 620px;
+  min-height: 280px;
+  background: #fdfdfd linear-gradient(to bottom, #f7f7f7 0%, #ffffff 100%);
+  border: 1px solid #d1d1d1;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  padding: 20px 30px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+}
+
+.seyyah-header-name {
+  font-family: 'Luxurious Script', cursive;
+  font-size: 45px;
+  color: #777;
+  margin-bottom: 5px;
+}
+
+.seyyah-body-layout {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+.seyyah-photo-frame {
+  position: relative;
+  background: #fff;
+  padding: 8px 8px 30px 8px;
+  border: 1px solid #ddd;
+  box-shadow: 3px 6px 15px rgba(0,0,0,0.1);
+  transform: rotate(-1.5deg);
+  overflow: hidden; /* Parlama efekti için gerekli */
+}
+
+/* --- RESİM ÜZERİNDE PARLAMA (SHINE) EFEKTİ --- */
+.seyyah-photo-frame::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -150%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+  transform: rotate(45deg);
+  transition: all 0.8s;
+}
+
+.seyyah-photo-frame:hover::after {
+  left: 150%;
+}
+
+.seyyah-avatar {
+  width: 150px;
+  height: 190px;
+  object-fit: cover;
+  display: block;
+  filter: contrast(1.1) brightness(1.05);
+  transition: transform 0.4s;
+}
+
+/* --- YATAY ÇİZGİ (AYIRICI) GERİ GELDİ --- */
+.seyyah-divider-icon {
+  margin: 12px 0;
+  text-align: center;
+  position: relative;
+}
+
+.seyyah-divider-icon::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #ccc, transparent);
+}
+
+.seyyah-divider-icon span {
+  position: relative;
+  background: #fdfdfd;
+  padding: 0 10px;
+  color: #aaa;
+  font-size: 14px;
+}
+
+/* --- PARLAK GÜMÜŞ SİMGELER --- */
+.seyyah-social-bar {
+  position: absolute;
+  bottom: 15px;
+  right: 25px;
+  display: flex;
+  gap: 8px;
+}
+
+.seyyah-icon {
+  width: 20px;
+  height: 18px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Daha parlak gümüş gradyanı */
+  background: linear-gradient(145deg, #ffffff, #dcdcdc);
+  color: #666;
+  border: 1px solid #bbb;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 1px 2px 4px rgba(0,0,0,0.15);
+  transition: all 0.3s;
+}
+
+.seyyah-icon:hover {
+  background: #777;
+  color: #fff;
+  transform: translateY(-3px);
+}
+
+.seyyah-description {
+  color: #888;
+  font-size: 14px;
+  line-height: 1.4;
+  font-style: italic;
+}
+</style>
+<div class="seyyah-art-canvas">
+  <div class="seyyah-main-card">
+    <div class="seyyah-header-name">Seyyah20</div>
+    <div class="seyyah-body-layout">
+      <div class="seyyah-photo-frame">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj_dLvXqddm_BjoQTWZEGL4YZpmpNjgzrzrIcqqOQToatiMMYxal4gS-dhNmaKvlLmNw2VAXF8Hv6fL1_jT60W_BfI70SvB6cpHuzymBEWh3SPFojMQuT4ITtHNqhmIWzyNUtq77d6DHEpiQ3rGnJHUFjJSlVh4i0hiYtg5yKSvc-p4qp6L4Fptr622TjQ/s1600/Kalbim.png" class="seyyah-avatar">
+      </div>
+      <div class="seyyah-text-area">
+        <div class="seyyah-info-title">Seyyah Kimdir?</div>
+        <div class="seyyah-description">
+          Aslen Forumun Gezgini ve Bilgi Avcısı<br>
+          Gönül Köprüleri Kuran Bir Seyyah<br>
+          Paylaşmanın Erdemine İnanan Bir Dost
+        </div>
+        <div class="seyyah-divider-icon"><span>● Ⓢ ●</span></div>
+        <div class="seyyah-description">
+          Allaturkaa Forum'un Acemi Üyesi<br>
+          Her Mesajda Bir Hikaye, Her Konuda Bir İz<br>
+          Sizlerle Olmaktan Mutluluk Duyan Biri...
+        </div>
+      </div>
+    </div>
+    <div class="seyyah-social-bar">
+      <a href="#" class="seyyah-icon" style="background:#888">f</a>
+      <a href="#" class="seyyah-icon" style="background:#888">t</a>
+      <a href="#" class="seyyah-icon" style="background:#888">►</a>
+      <a href="#" class="seyyah-icon" style="background:#888">✉</a>
+    </div>
+  </div>
+</div>
+
+<div class="seyyah-art-canvas">
+  <div class="seyyah-main-card">
+    <div class="seyyah-header-name">Mehmet3620</div>
+    <div class="seyyah-body-layout">
+      <div class="seyyah-photo-frame" style="transform: rotate(2deg);"> <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEja-0RBfzjqRzOVXYK-zB38lO62iVRoAyPYlxFCskKoav-2TXrP9ntwgOmBMOmnBvkAGfHI0svfzT9HZFHIIvkh58HCC8YS5NhbRfDy6dMyH4kRpeBh5NwjFk3ZEEVmSanpKERCaflzQ3CzE8RyFdQVEDl4QtEPIEUQe2WJ5E7kKSIptaz2EGhw-yKIBKU/s1600/0XunbhFKWwd.webp" class="seyyah-avatar">
+      </div>
+      <div class="seyyah-text-area">
+        <div class="seyyah-info-title">Mehmet Kimdir?</div>
+        <div class="seyyah-description">
+          Sistemin Mimarı ve Tasarım Dostu<br>
+          Kodların Arasında Yolunu Bulan Bir Rehber<br>
+          Yeniliklerin İzinde Koşan Bir Forumdaş
+        </div>
+        <div class="seyyah-divider-icon"><span>● Ⓜ ●</span></div>
+        <div class="seyyah-description">
+          User ID: Mehmet3620<br>
+          Tasarım ve Düzen Meraklısı<br>
+          Her Zaman Yardıma Hazır...
+        </div>
+      </div>
+    </div>
+    <div class="seyyah-social-bar">
+      <a href="#" class="seyyah-icon" style="background:#888">f</a>
+      <a href="#" class="seyyah-icon" style="background:#888">t</a>
+      <a href="#" class="seyyah-icon" style="background:#888">►</a>
+      <a href="#" class="seyyah-icon" style="background:#888">✉</a>
+    </div>
+  </div>
+</div>
+
+<div class="seyyah-art-canvas">
+  <div class="seyyah-main-card">
+    <div class="seyyah-header-name">Mehmet Can</div>
+    <div class="seyyah-body-layout">
+      <div class="seyyah-photo-frame" style="transform: rotate(2deg);"> <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh1Z3yq1JYYgv3QFJPLkQI6d9leZwxlQrx_EVDJXIyLdZD8WAT_MNUXPb_JyF-2VEEAjoQZhmiQ-FgioX1v6nUZgK6CHomkHeHyogcInRMkVNcRudKaQxrkeiFvG4M33wB7e2-oLi8nYh6GMqt30AU8CYD4jqmrLEfY4yIkUtMqiBCcVVsS1EyugELFkCk/s320/E794B7E5A5B3.jpg" class="seyyah-avatar">
+      </div>
+      <div class="seyyah-text-area">
+      <div class="seyyah-info-title">Mehmet Can Kimdir?</div>
+      <div class="seyyah-description">
+      Görsel Estetiğin ve Tasarımın İzinde,<br>
+      Yenilikleri Keşfetme Tutkusuyla Dolu Bir Ruh...<br>
+      Her Detayda Bir Hikaye Arayan Bir Tasarım Meraklısı.
+</div>
+<div class="seyyah-divider-icon"><span>● Ⓜ ●</span></div>
+<div class="seyyah-description">
+  User ID: Mehmet Can<br>
+  Kodların Arasında Sanatı, Paylaşımın İçinde Dostluğu Bulur.<br>
+  Öğrenmeye Heyecanlı, Paylaşmaya Her Zaman Hazır...
+</div>
+      </div>
+    </div>
+    <div class="seyyah-social-bar">
+      <a href="#" class="seyyah-icon" style="background:#888">f</a>
+      <a href="#" class="seyyah-icon" style="background:#888">t</a>
+      <a href="#" class="seyyah-icon" style="background:#888">►</a>
+      <a href="#" class="seyyah-icon" style="background:#888">✉</a>
+    </div>
+  </div>
+</div>
