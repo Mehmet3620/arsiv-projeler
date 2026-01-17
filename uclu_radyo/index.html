@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çoklu Yayın Kartları</title>
+    <style>
+        /* CSS Başlangıcı */
+        body {
+            background-color: transparent;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .multi-player-container {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            min-width: 300px;
+            margin: 0;
+            background-color: #2c3e50; /* Koyu Mavi Arka Plan */
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            color: #ecf0f1;
+        }
+        /* Logo ve Başlık Stilleri */
+        .logo-container {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #34495e;
+        }
+        .logo-container img {
+            height: 40px;
+            max-width: 90%;
+        }
+        .widget-header {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #34495e;
+            color: #FF8C00;
+            font-size: 1.1em;
+            margin: 0;
+            border-bottom: 2px solid #FF8C00;
+            font-weight: bold;
+        }
+        
+        /* Kart Listesi Alanı */
+        .stream-list {
+            padding: 10px 5px; /* İç boşlukları azalt */
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Kartlar arası boşluk */
+        }
+        
+        /* Tek bir yayın kartı */
+        .stream-card {
+            background-color: #34495e; /* Kart arka planı */
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            border-top: 4px solid var(--stream-color, #FF8C00); /* Dinamik renkli kenarlık */
+            transition: box-shadow 0.2s;
+        }
+        .stream-card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-content {
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stream-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--stream-color, #FF8C00);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            margin-right: 10px;
+            color: #2c3e50;
+        }
+
+        .stream-info {
+            flex-grow: 1;
+            text-align: left;
+        }
+        .stream-name {
+            font-size: 1em;
+            font-weight: bold;
+            color: #ecf0f1;
+            margin-bottom: 3px;
+        }
+        .stream-tag {
+            font-size: 0.7em;
+            color: #aaa;
+        }
+
+        /* Buton Stili */
+        .card-button-area {
+            padding: 0 10px 10px 10px;
+        }
+        .stream-button {
+            width: 100%;
+            background-color: #FF8C00;
+            color: #2c3e50;
+            border: none;
+            padding: 10px 15px;
+            font-size: 0.9em;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        .stream-button.playing {
+            background-color: #2ecc71; /* Yeşil - Çalıyor */
+            color: white;
+        }
+        .stream-button:hover {
+            background-color: #e67e22;
+        }
+        .stream-button.playing:hover {
+            background-color: #27ae60;
+        }
+        /* CSS Sonu */
+    </style>
+</head>
+<body>
+
+<div class="multi-player-container">
+    
+    <div class="logo-container">
+        <img src="https://allaturkaa.de/forum/wcf/images/allaturkaa/logo.png" alt="Allaturka Logo">
+    </div>
+    
+    <div class="widget-header">ÇOKLU YAYIN KANALLARI</div>
+
+    <div class="stream-list" id="streamList">
+        </div>
+    
+    <audio id="globalAudio" crossorigin="anonymous"></audio>
+</div>
+
+<script>
+    // JavaScript Başlangıcı
+    const globalAudio = document.getElementById('globalAudio');
+    const streamList = document.getElementById('streamList');
+
+    // Yayın Akışları Listesi (BURAYI KENDİ BİLGİLERİNİZLE DOLDURUN)
+    const streams = [
+        {
+            id: 'okyanus35',
+            name: "RADYO ALLATURKA",
+            url: "https://eu4.fastcast4u.com/proxy/okyanus35?mp=/1",
+            tag: "Aşk ve Hüzün",
+            icon: "🎧",
+            color: "#FF8C00" // Turuncu
+        },
+        {
+            id: 'slowfm',
+            name: "GURBETTEYİM FM",
+            url: "https://eu8.fastcast4u.com/proxy/dilber?mp=/1",
+            tag: "Gurbet ve Türkü",
+            icon: "🎶",
+            color: "#3498db" // Mavi
+        },
+        {
+            id: 'djmix',
+            name: "DOST YURDU RADYO",
+            url: "https://eu1.fastcast4u.com/proxy/qpnslltp?mp=/1",
+            tag: "Gönülden Ezgiler",
+            icon: "🔊",
+            color: "#e74c3c" // Kırmızı
+        }
+    ];
+
+    let currentPlayingId = null;
+
+    // Arayüzü oluştur
+    function renderStreams() {
+        streamList.innerHTML = '';
+        streams.forEach(stream => {
+            const item = document.createElement('div');
+            item.className = 'stream-card';
+            item.style.setProperty('--stream-color', stream.color); // CSS değişkenini ayarla
+
+            item.innerHTML = `
+                <div class="card-content">
+                    <div class="stream-icon">${stream.icon}</div>
+                    <div class="stream-info">
+                        <span class="stream-name">${stream.name}</span>
+                        <span class="stream-tag">${stream.tag}</span>
+                    </div>
+                </div>
+                <div class="card-button-area">
+                    <button class="stream-button" data-id="${stream.id}" data-url="${stream.url}">
+                        RADYOYU BAŞLAT
+                    </button>
+                </div>
+            `;
+            streamList.appendChild(item);
+        });
+    }
+
+    // Oynatma/Durdurma İşlevi
+    function togglePlay(button, streamId, streamUrl) {
+        if (streamId === currentPlayingId) {
+            // Durdur
+            globalAudio.pause();
+        } else {
+            // Yeni yayını başlat
+            stopAllStreams(); // Önce diğerlerini durdur
+
+            globalAudio.src = streamUrl;
+            globalAudio.load();
+            
+            globalAudio.play().then(() => {
+                // Başarılı
+                currentPlayingId = streamId;
+                button.textContent = 'ŞU AN ÇALIYOR';
+                button.classList.add('playing');
+            }).catch(error => {
+                alert(`"${streamId}" yayını başlatılamadı. Lütfen mobil cihazlarda sesin kısıtlanmadığından emin olun.`);
+                console.error("Play error:", error);
+                // Başarısız olursa durumu sıfırla
+                stopAllStreams();
+            });
+        }
+    }
+
+    // Tüm Yayınları Durdur
+    function stopAllStreams() {
+        globalAudio.pause();
+        currentPlayingId = null;
+        // Tüm butonları sıfırla
+        document.querySelectorAll('.stream-button').forEach(btn => {
+            btn.textContent = 'RADYOYU BAŞLAT';
+            btn.classList.remove('playing');
+        });
+    }
+
+    // Tıklama Dinleyicisi
+    streamList.addEventListener('click', (e) => {
+        const button = e.target.closest('.stream-button');
+        if (button) {
+            const id = button.getAttribute('data-id');
+            const url = button.getAttribute('data-url');
+            togglePlay(button, id, url);
+        }
+    });
+
+    // Audio elementinin pause eventi ile buton durumunu senkronize et
+    globalAudio.addEventListener('pause', () => {
+        if (currentPlayingId) {
+            // Sadece bizim manuel pause durumumuzda durdur
+            document.querySelectorAll('.stream-button').forEach(btn => {
+                if (btn.getAttribute('data-id') === currentPlayingId) {
+                    btn.textContent = 'RADYOYU BAŞLAT';
+                    btn.classList.remove('playing');
+                }
+            });
+            currentPlayingId = null;
+        }
+    });
+
+    // İlk yüklemede arayüzü çiz
+    document.addEventListener('DOMContentLoaded', renderStreams);
+    // JavaScript Sonu
+</script>
+
+</body>
+</html>
