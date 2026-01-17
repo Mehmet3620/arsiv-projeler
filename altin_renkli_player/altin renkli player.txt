@@ -1,0 +1,25 @@
+Premium Keyif & Kesintisiz Dostluk, Sese Duyarlı Ekolayzer ve Altın Seri Player
+Değerli Allaturka Üyeleri, Merhabalar! Kahveniz Hazırsa hem yudumlayın hem de bu paylaşımı inceleyin.
+
+
+Sizlere tüm radyo sayfalarında, özel scriptlerde ve index tasarımlarında sorunsuz çalışacak, görsel şölen tadında yeni sıfır tasarım radyo player çalışmamızı sunuyorum.
+Bu player, modern web teknolojileriyle görsel estetiği birleştiren tam donanımlı bir oynatıcıdır.
+Player’ın Öne Çıkan Teknik Özellikleri:
+Evrensel Script Uyumu: Saf HTML, CSS ve JavaScript kullanılarak yazılmıştır; tüm PHP, ASP, WordPress veya statik HTML sayfalarına saniyeler içinde entegre edilebilir.
+Sese Duyarlı (Visualizer) Ekolayzer: Müzik frekanslarını anlık analiz ederek altın sarısı çubuklarla görselleştirir.
+Dinamik Şarkı Bilgisi Takibi: Kayan yazı efektiyle o an çalan sanatçı ve parça ismini kullanıcıya sunar.
+Gelişmiş CSS Buton Tasarımı: Font hatalarını önlemek adına saf CSS ile çizilen duraklatma butonları, her tarayıcıda pürüzsüz görünür.
+Hassas Ses Denetimi: Özel tasarlanmış ses sürgüsü sayesinde kullanıcı dostu bir kontrol imkanı sağlar.
+Kendi Sayfanıza Nasıl Kurarsınız?
+Player'ı kendi radyonuz ve sayfanız için özelleştirmek oldukça kolaydır:
+Yayın Linki: Kodun içindeki <source src="..." kısmına kendi radyo yayınınızın IP ve Port adresini (Örn: https://yayin.radyonuz.com:8000/stream) yazın.
+Şarkı Bilgileri: cc_streaminfo sınıfını kullanan bölümdeki data-username kısmına kendi radyo panel kullanıcı adınızı ekleyin (Fastcast4u vb. sistemler için).
+Yerleşim: Player 624x351px boyutlarındadır. Sayfanızda nereye görünmesini istiyorsanız, o bölüme kodu yapıştırmanız yeterlidir. position: relative yapısı sayesinde mevcut tasarımınızın düzenini bozmaz.
+
+Resim Güvenliği: Paylaştığım iki adet resmi lütfen kendi sunucunuza veya silinmeyecek bir servis (Blogspot vb.) üzerine yükleyerek kullanın.
+Neden Bu Player?
+Geleneksel player'ların aksine, bu çalışma hem mobil uyumlu altyapıya yakındır hem de sese duyarlı ekolayzer özelliğiyle sayfanıza canlılık katar. Altın sarısı ve siyahın asaletiyle radyo sitenize değer katar.
+
+Gönülden gönüle giden yolun sesi radyo, o sesin en şık hali ise bu player'dır.
+
+Keyifli dinlemeler ve bol hitli yayınlar dilerim!
