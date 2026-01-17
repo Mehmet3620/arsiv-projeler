@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { background: transparent; display: flex; flex-direction: column; align-items: flex-start; padding: 20px; gap: 20px; user-select: none; margin: 0; }
+        .radio-player-row { width: 700px; height: 80px; display: flex; align-items: center; color: #fff; font-family: 'Segoe UI', sans-serif; border-radius: 6px; overflow: hidden; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .side-box { width: 85px; height: 100%; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; }
+        .vol-text { width: 95px; height: 100%; background: rgba(0,0,0,0.45); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; gap: 4px; }
+        .v-num { font-size: 16px; font-weight: bold; }
+        .volume-master-area { flex: 1; height: 100%; position: relative; background: rgba(0,0,0,0.85); cursor: pointer; overflow: hidden; }
+        .volume-fill-layer { height: 100%; width: 50%; background: rgba(255,255,255,0.2); pointer-events: none; }
+        .visualizer-canvas { position: absolute; bottom: 0; left: 0; width: 100%; height: 55px; opacity: 0.5; pointer-events: none; }
+        .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; padding-left: 20px; pointer-events: none; z-index: 5; }
+        .cc_streaminfo { color: #fff; text-decoration: none; font-size: 13px; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+<script>
+    const colors = [
+        {name: "Mat Mor", hex: "#4a148c"}, {name: "Gece Mavisi", hex: "#2c3e50"},
+        {name: "Orman Yeşili", hex: "#1b5e20"}, {name: "Koyu Kırmızı", hex: "#b71c1c"},
+        {name: "Koyu Füme", hex: "#455a64"}, {name: "Yanık Turuncu", hex: "#e65100"},
+        {name: "Okyanus", hex: "#0d47a1"}, {name: "Siyah Mat", hex: "#212121"},
+        {name: "Koyu Turkuaz", hex: "#006064"}, {name: "Kahve", hex: "#3e2723"},
+        {name: "Vişne Çürüğü", hex: "#880e4f"}, {name: "İndigo", hex: "#283593"},
+        {name: "Toprak", hex: "#5d4037"}, {name: "Petrol", hex: "#004d40"},
+        {name: "Eflatun", hex: "#6a1b9a"}, {name: "Çimen", hex: "#2e7d32"},
+        {name: "Nar Çiçeği", hex: "#c62828"}, {name: "Mavi Gri", hex: "#37474f"},
+        {name: "Zeytin", hex: "#558b2f"}, {name: "Kiremit", hex: "#bf360c"}
+    ];
+
+    // Simgeler (Play/Pause) Boyutları Büyütüldü
+    const pIcon = '<path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>';
+    const sIcon = '<path d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5zm5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5z"/>';
+    
+    // Hoparlör Simgesi Boyutu Büyütüldü (Width/Height 28 yapıldı)
+    const vIcon = '<svg width="28" height="28" fill="white" viewBox="0 0 16 16"><path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-.708.707A7.476 7.476 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303l.708.707z"/><path d="M10.121 12.596A6.48 6.48 0 0 0 12.025 8a6.48 6.48 0 0 0-1.904-4.596l-.707.707A5.483 5.483 0 0 1 11.025 8a5.483 5.483 0 0 1-1.61 3.89l.706.706z"/><path d="M8.707 11.182A4.486 4.486 0 0 0 10.025 8a4.486 4.486 0 0 0-1.318-3.182L8 5.525A3.489 3.489 0 0 1 9.025 8 3.49 3.49 0 0 1 8 10.475l.707.707zM6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06z"/></svg>';
+
+    let audioCtx, analyser, dataArray;
+    let sources = new Map();
+
+    colors.forEach((c, i) => {
+        document.write(`
+            <div class="radio-player-row" id="player-${i}" style="background: ${c.hex};">
+                <div class="side-box" onclick="togglePlay(this, ${i})">
+                    <svg class="p-icon" width="40" height="40" fill="white" viewBox="0 0 16 16">${pIcon}</svg>
+                </div>
+                <div class="volume-master-area" onmousedown="startDrag(event, this)">
+                    <canvas class="visualizer-canvas" id="canvas-${i}"></canvas>
+                    <div class="volume-fill-layer"></div>
+                    <div class="info-layer">
+                        <div style="font-size: 18px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">Radyo Allaturkaa - ${c.name}</div>
+                        <div style="width:350px; overflow:hidden;"><marquee scrollamount="3"><a class="cc_streaminfo" data-type="song" data-username="allaturka">Yükleniyor...</a></marquee></div>
+                    </div>
+                </div>
+                <div class="vol-text">${vIcon} <span class="v-num">50%</span></div>
+                <audio id="audio-${i}" src="https://eu4.fastcast4u.com/proxy/allaturka?mp=/1" crossorigin="anonymous" preload="none"></audio>
+            </div>
+        `);
+    });
+
+    function togglePlay(btn, idx) {
+        const audio = document.getElementById(`audio-${idx}`);
+        const canvas = document.getElementById(`canvas-${idx}`);
+        if (audio.paused) {
+            document.querySelectorAll('audio').forEach((a) => { 
+                a.pause(); a.closest('.radio-player-row').querySelector('.p-icon').innerHTML = pIcon;
+                const oc = a.closest('.radio-player-row').querySelector('.visualizer-canvas');
+                oc.getContext("2d").clearRect(0, 0, oc.width, oc.height);
+            });
+            audio.play();
+            btn.querySelector('.p-icon').innerHTML = sIcon;
+            initVisualizer(audio, canvas, idx);
+        } else {
+            audio.pause();
+            btn.querySelector('.p-icon').innerHTML = pIcon;
+            canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+        }
+    }
+
+    function initVisualizer(audio, canvas, idx) {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 256; 
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+        }
+        if (!sources.has(idx)) {
+            const s = audioCtx.createMediaElementSource(audio);
+            s.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            sources.set(idx, s);
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const ctx = canvas.getContext("2d");
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
+
+        function draw() {
+            if (audio.paused) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
+            requestAnimationFrame(draw);
+            analyser.getByteFrequencyData(dataArray);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const barWidth = 2; 
+            const usableDataLength = dataArray.length * 0.8;
+            const spacing = (canvas.width - (usableDataLength * barWidth)) / (usableDataLength - 1);
+            let x = 0;
+            
+            for (let i = 0; i < usableDataLength; i++) {
+                const boost = 1 + (i / usableDataLength) * 1.5; 
+                const barHeight = (dataArray[i] / 255) * canvas.height * 0.7 * boost; 
+                const finalHeight = Math.min(barHeight, canvas.height * 0.85);
+
+                ctx.fillStyle = `rgba(255, 255, 255, 0.4)`;
+                ctx.fillRect(x, canvas.height - finalHeight, barWidth, finalHeight);
+                x += barWidth + spacing; 
+            }
+        }
+        draw();
+    }
+
+    let dragging = false, curArea = null;
+    function startDrag(e, el) { dragging = true; curArea = el; update(e); }
+    window.addEventListener('mousemove', (e) => { if(dragging) update(e); });
+    window.addEventListener('mouseup', () => { dragging = false; curArea = null; });
+    function update(e) {
+        if(!curArea) return;
+        const r = curArea.getBoundingClientRect();
+        let p = Math.round(((e.clientX - r.left) / r.width) * 100);
+        p = Math.max(0, Math.min(100, p));
+        const row = curArea.closest('.radio-player-row');
+        row.querySelector('audio').volume = p/100;
+        row.querySelector('.volume-fill-layer').style.width = p + '%';
+        row.querySelector('.v-num').innerText = p + '%';
+    }
+</script>
+<script src="https://eu4.fastcast4u.com/system/streaminfo.js"></script>
+</body>
+</html>
