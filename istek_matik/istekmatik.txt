@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOST YURDU RADYO Player</title>
+    
+    <style>
+        /* --- Tema Değişkenleri (Turuncu & Koyu) --- */
+        :root {
+            --bg-main: #3a3a3a;      
+            --bg-panel: #4a4a4a;     
+            --text-light: #f4f4f4;    
+            --accent-color: #ff9800; /* Turuncu */
+            --secondary-accent: #00bcd4; 
+            --shadow: 0 6px 6px rgba(0, 0, 0, 0.5); 
+            --button-bg: #4caf50;    
+        }
+        
+        body {
+            background-color: transparent; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* --- Genel Konteyner --- */
+        #container-wrapper {
+            width: 550px; 
+            margin: 0 auto;
+            background: var(--bg-main);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        /* --- Başlık ve Logo Alanı --- */
+        #header {
+            display: flex;
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 10px;
+            border-bottom: 2px solid var(--bg-panel);
+            padding-bottom: 10px;
+        }
+        #header h1 {
+            color: var(--accent-color);
+            margin: 0 0 5px 0;
+            font-size: 1.8em;
+            padding-bottom: 0;
+        }
+        #header h2 {
+            color: #ccc;
+            margin: 0;
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+        #header-logo {
+            max-width: 80px; 
+            height: auto;
+            border-radius: 5px;
+        }
+
+        /* --- ŞİMDİ ÇALINAN (TOPBAR - TEK SATIR) --- */
+        #topbar {
+            background-color: var(--bg-panel);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            
+            display: flex;
+            align-items: center; 
+            white-space: nowrap; 
+            overflow: hidden; 
+        }
+        
+        #nowplaying {
+            flex-grow: 1; 
+            margin-right: 10px; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+        }
+
+        #topbar a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        #cc_tunein {
+            flex-shrink: 0; 
+            background-color: var(--bg-panel); 
+        }
+        #cc_tunein img {
+            height: 16px; 
+            width: auto;
+            margin-left: 5px; 
+            vertical-align: middle;
+        }
+
+        /* --- İKİ SÜTUNLU ANA İÇERİK YAPISI --- */
+        #main-content-area {
+            display: flex;
+            gap: 15px; 
+        }
+
+        /* SOL SÜTUN (Son Çalınanlar) */
+        #leftnav {
+            flex: 0 0 40%; 
+            padding-right: 15px;
+            border-right: 1px dashed var(--bg-panel);
+        }
+        
+        #leftnav h3, #content h3 {
+            color: var(--secondary-accent);
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            text-align: left;
+        }
+        
+        /* Son Çalınanlar listesi */
+        #cc_recenttracks_qpnslltp {
+            font-size: 0.9em; 
+            line-height: 1.8; 
+            color: var(--text-light); 
+        }
+        .cc_recenttracks_list a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: normal; 
+        }
+        .cc_recenttracks_list ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        .cc_recenttracks_list img {
+            float: left;
+            margin-right: 8px;
+            opacity: 0.6; 
+        }
+
+        /* SAĞ SÜTUN (Player, İstek, On-demand) */
+        #content {
+            flex-grow: 1; 
+        }
+        
+        /* İstek Formu Stilleri */
+        #request-form-content input[type="text"] {
+            width: calc(100% - 16px);
+            padding: 8px;
+            margin-bottom: 8px;
+            background-color: var(--bg-panel);
+            border: 1px solid #5a5a5a;
+            color: var(--text-light);
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        #cc_req_button_qpnslltp {
+            background-color: var(--button-bg);
+            color: var(--text-light);
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        /* --- İsteğe Bağlı İçerik GİZLEME KURALLARI --- */
+        
+        /* Link Stili */
+        #cc_ondemand_qpnslltp a {
+            color: var(--accent-color) !important; 
+            text-decoration: none !important;      
+        }
+
+        /* Listeyi sıkıştırıyoruz */
+        #cc_ondemand_qpnslltp .cc_ondemand_row {
+            padding: 3px 0; /* Satır dikey boşluğunu azalttık */
+            line-height: 1.2; /* Satır yüksekliğini azalttık */
+        }
+        
+        /* 1. Tüm Kontrol Çubuklarını (Play selected files yazısı ve Buton) GİZLE */
+        #cc_ondemand_qpnslltp .cc_ondemand_toolbar {
+            display: none !important;
+        }
+        /* 2. Kare İşaretlerinin Olduğu Sütunu GİZLE */
+        #cc_ondemand_qpnslltp .cc_ondemand_row .cc_ondemand_column_0 { 
+            display: none !important;
+        }
+        /* 3. Türkçe butonu da tamamen kaldırıyoruz */
+        #turkish-ondemand-button {
+            display: none !important;
+        }
+        
+        /* --- Footer --- */
+        #footer {
+            margin-top: 20px;
+            padding-top: 10px;
+            font-size: 0.7em; 
+            color: #9e9e9e; 
+            opacity: 0.7; 
+            border-top: 1px solid var(--bg-panel);
+            display: flex;
+            justify-content: space-between; 
+        }
+        #footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+    </style>
+    
+    <script language="javascript" type="text/javascript" src="https://eu1.fastcast4u.com/system/jquery.min.js"></script>
+    <script language="javascript" type="text/javascript" src="https://eu1.fastcast4u.com/system/player.js"></script>
+    <script language="javascript" type="text/javascript" src="https://eu1.fastcast4u.com/system/streaminfo.js"></script>
+    <script language="javascript" type="text/javascript" src="https://eu1.fastcast4u.com/system/recenttracks.js"></script>
+    <script language="javascript" type="text/javascript" src="https://eu1.fastcast4u.com/system/request.js"></script>
+    <script language="javascript" type="text/javascript" src="https://eu1.fastcast4u.com/system/ondemand.js"></script>
+    
+</head>
+<body>
+
+<div id="container-wrapper">
+    
+    <div id="header">
+        <div id="logo-text">
+            <h1>DOST YURDU RADYO</h1>
+            <h2>96 Kbps yayın</h2>
+        </div>
+        <img id="header-logo" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkBDcIG3pyJc-Yo0kI9v0lCbXb5uyex0b2iFQQdArtT1saumKn3Ue4LEHZ0u8yMq5Y3rrzjRNogVRIltep-n7ZKwbMTG4VHPCsL1YNKw2Qx4fpNaDhmIV0MBYlstjuy39_BYAbyDnwDCeZuknXuP6mk1apN881Mcaxj4tg_BOjj_XllnuO63JMPEi2hd4/s248/dostyurdu.png" alt="Dost Yurdu Radyo Logo">
+    </div>
+
+    <div id="topbar">	
+        <div id="nowplaying">			
+            **Şu An Çalınan:** <a href="https://eu1.fastcast4u.com/tunein/qpnslltp-stream.pls" id="cc_strinfo_summary_qpnslltp" class="cc_streaminfo">Yükleniyor...</a> (<span id="cc_strinfo_server_qpnslltp" class="cc_streaminfo"></span>)
+        </div>
+        <div id="cc_tunein">	
+            <a href="https://eu1.fastcast4u.com/tunein/qpnslltp-stream.pls"><img align="absmiddle" src="https://eu1.fastcast4u.com/system/images/tunein-pls.png" border="0" alt="Winamp, iTunes" title="Winamp, iTunes" /></a>	
+            <a href="https://eu1.fastcast4u.com/tunein/qpnslltp-stream.asx"><img align="absmiddle" src="https://eu1.fastcast4u.com/system/images/tunein-asx.png" border="0" alt="Windows Media Player" title="Windows Media Player" /></a>	
+            <a href="https://eu1.fastcast4u.com/tunein/qpnslltp-stream.ram"><img align="absmiddle" src="https://eu1.fastcast4u.com/system/images/tunein-ram.png" border="0" alt="Real Player" title="Real Player" /></a>	
+            <a href="https://eu1.fastcast4u.com/tunein/qpnslltp-stream.qtl"><img align="absmiddle" src="https://eu1.fastcast4u.com/system/images/tunein-qtl.png" border="0" alt="QuickTime" title="QuickTime" /></a>	
+            <a href="https://eu1.fastcast4u.com/stream/qpnslltp/stream.pls"><img align="absmiddle" src="https://eu1.fastcast4u.com/system/images/tunein-web.png" border="0" alt="Stream Proxy" title="Stream Proxy" /></a>
+        </div>
+    </div>
+    
+    <div id="main-content-area">
+        
+        <div id="leftnav">						
+            <h3>Son Çalınan Şarkılar</h3>
+            <div id="cc_recenttracks_qpnslltp" class="cc_recenttracks_list">Yükleniyor...</div>
+        </div>
+        
+        <div id="content">				
+            
+            <h3>Web Ses Oynatıcısı</h3>
+            <div style="text-align: center; margin-bottom: 15px;">
+                <div class="cc_player" data-username="qpnslltp" data-charset="" data-size="sm" data-style="light">Yükleniyor...</div>
+            </div>		
+
+            <h3>Şarkı İstek Formu</h3>			
+            <div style="margin-bottom: 15px;">
+                <div id="cc_req_result_qpnslltp"></div>
+                <div id="request-form-content">
+                    <form>
+                        Şarkıcı/Sanatçı: <input type="text" id="cc_req_artist_qpnslltp" name="request[artist]" size="40" maxlength="127" /><br />
+                        Şarkı Adı/Başlığı: <input type="text" id="cc_req_title_qpnslltp" name="request[title]" size="40" maxlength="127" /><br />
+                        Kime İthaf Edildi: <input type="text" id="cc_req_dedi_qpnslltp" name="request[dedication]" size="40" maxlength="127" /><br />
+                        Adınız/İsminiz: <input type="text" id="cc_req_sender_qpnslltp" name="request[sender]" size="40" maxlength="127" /><br />
+                        E-posta Adresiniz: <input type="text" id="cc_req_email_qpnslltp" name="request[email]" size="40" maxlength="127" /><br />
+                        <input type="button" id="cc_req_button_qpnslltp" class="cc_request_form" value="Şarkı İsteğini Gönder" /><br />
+                    </form>						
+                </div>
+            </div>		
+            
+            <h3>İndirilebilir İçerik Listesi</h3>			
+            <div>
+                <div id="cc_ondemand_qpnslltp" class="cc_ondemand_content"></div>
+                
+                <div id="turkish-ondemand-button" style="display:none;"></div>
+            </div>	
+        </div>	
+    </div>
+    
+    <div id="footer">	
+        <div>Powered by Dost Yurdu Radyo</div>		
+        <div style="text-align: right;">Centova Cast Tarafından Sağlanmıştır (<a target="_blank" href="http://www.centova.com">Centova Cast</a>)</div>
+    </div>
+</div>
+
+<script>
+    // Boş script etiketi Centova JS yüklemesi için bırakıldı.
+</script>
+
+</body>
+</html>
