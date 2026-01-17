@@ -1,0 +1,63 @@
+<h1><b>100 Kısa İslami Soru-Cevap Widget'ı (S&C)</b></h1>
+<p><b><br></b></p>
+
+<h2><b>Amaç ve Kapsam</b></h2>
+
+<p>
+    Ziyaretçilerinize temel dini bilgileri kolay ve pratik bir formatta sunmak için hazırladığımız **"100 Kısa İslami Soru-Cevap Widget'ı"** kullanıma hazırdır. Bu widget, 10 farklı sekmeye bölünmüş toplam 100 soru ve cevaptan oluşmaktadır.
+</p>
+
+<p>
+    Widget'ın içeriği; İman esasları, İbadetler, Ahlak, Peygamberler ve Güncel Fıkıh konularını kapsayan temel düzeyde bilgiler içermektedir. Sekmeli yapısı sayesinde, kullanıcılar istedikleri soru grubuna hızla ulaşabilmektedir.
+</p>
+
+<p>
+    Koyu teması ve mobil uyumlu tasarımı ile sitenizin genel görünümünü bozmayacak şekilde entegrasyona uygundur.
+</p>
+
+<p><br></p>
+
+<h2><b>Tasarım ve Sekme Düzeni</b></h2>
+
+<p>
+    Toplam 100 adet Soru-Cevap çifti, 10'arlı gruplar halinde 10 ayrı sekmeye ayrılmıştır.
+    <ul>
+        <li>**Sekme Sayısı:** Toplam 10 sekme (1-10, 11-20, ... 91-100).</li>
+        <li>**Soru Formatı:** Her başlık bir soruyu, altındaki koyu metin ise kısa ve öz cevabı temsil eder.</li>
+        <li>**Tasarım Uyumu:** Önceki Hadis widget'ı ile aynı renk paleti (koyu/turuncu) kullanılarak sitenizdeki tasarım bütünlüğü korunmuştur.</li>
+    </ul>
+</p>
+
+<p><br></p>
+
+<h2><b>Kurulum Talimatları</b></h2>
+
+<p>
+    Bu widget'ı sitenize eklemek için aşağıdaki adımları izleyebilirsiniz.
+</p>
+
+<p>
+    **Aşama 1: HTML Dosyasını Kaydedin**
+    <br>
+    Aşağıda yer alan **TAM HTML KODU** bloğunu kopyalayın ve sunucunuzda bir HTML dosyası olarak kaydedin. Örnek dosya adı: <code>islami-soru-cevap-widget.html</code>
+</p>
+
+<p><br></p>
+
+<p>
+    **Aşama 2: Sayfanıza Yerleştirin (Iframe Kodu)**
+    <br>
+    Kaydettiğiniz bu dosyayı, sitenizin ana sayfa, sidebar veya makale alanına aşağıdaki iframe kodu ile yerleştirin.
+</p>
+
+<p style="margin-top: 15px;">
+    <code>
+        &lt;iframe src="<b>/sunucunuzdaki/dosya/yolu/islami-soru-cevap-widget.html</b>" width="350" height="550" frameborder="0" scrolling="no"&gt;&lt;/iframe&gt;
+    </code>
+</p>
+
+<p>
+    **Önemli:** Önerilen minimum yükseklik <code>height="550"</code> olarak ayarlanmıştır. Gerekirse bu değeri değiştirebilirsiniz.
+</p>
+
+<p><br></p>

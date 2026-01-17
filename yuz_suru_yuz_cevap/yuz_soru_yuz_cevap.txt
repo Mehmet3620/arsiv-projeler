@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100 İslami Soru-Cevap Widgetı</title>
+    
+    <style>
+        /* ------------------------------------------- */
+        /* 1. Tema Değişkenleri ve Temel Stil */
+        /* ------------------------------------------- */
+        :root {
+            --bg-color: #1a1a1a;        
+            --accent-color: #ff9900;    /* Turuncu */
+            --text-color: #f0f0f0;      
+            --header-bg: #2c2c2c;       
+            --border-color: #444;       
+            --sub-header-color: #ccc;
+        }
+
+        body {
+            background-color: transparent !important;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: var(--text-color);
+        }
+
+        .sc-widget-container {
+            max-width: 350px; 
+            width: 100%;
+            margin: 0 auto;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            min-height: 550px; 
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ------------------------------------------- */
+        /* 2. Başlık ve Sekmeler Stilleri */
+        /* ------------------------------------------- */
+        .widget-header {
+            padding: 10px; 
+            background-color: var(--header-bg);
+            border-bottom: 2px solid var(--accent-color);
+            border-radius: 6px 6px 0 0;
+            text-align: center;
+        }
+        .widget-title {
+            color: var(--accent-color);
+            font-size: 1.05em; 
+            font-weight: bold;
+            margin: 0;
+            line-height: 1.3; 
+            display: block;
+        }
+        .widget-subtitle {
+            color: var(--sub-header-color);
+            font-size: 0.8em;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* Sekme (Tab) Menüsü - 10 SÜTUNLU GRID YAPISI */
+        .tabs {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* İki satırda 10 sekme sığdırmak için 5 sütun */
+            background-color: #222;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0; 
+        }
+        .tab-button {
+            padding: 8px 3px; 
+            text-align: center;
+            cursor: pointer;
+            color: #ccc;
+            font-weight: normal;
+            transition: background-color 0.3s;
+            font-size: 0.7em; 
+            line-height: 1.1;
+            border-bottom: 1px solid #333; /* 2. satır için ayırıcı */
+        }
+        /* 1. satırın altındaki çizgiyi kaldır */
+        .tabs > div:nth-child(-n+5) {
+            border-bottom: none;
+        }
+        .tab-button.active {
+            color: var(--accent-color);
+            background-color: #333;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        /* Sekme İçerikleri */
+        .tab-content-wrapper {
+            flex-grow: 1; 
+            overflow-y: auto; 
+            padding: 15px;
+            -ms-overflow-style: none;  
+            scrollbar-width: none;  
+        }
+        .tab-content-wrapper::-webkit-scrollbar {
+            width: 0 !important;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* Soru-Cevap Stilleri */
+        .sc-section {
+            margin-bottom: 18px;
+            padding-bottom: 5px;
+            border-bottom: 1px dotted #333;
+        }
+        .sc-section:last-child {
+            border-bottom: none;
+        }
+        .sc-section h3 {
+            color: var(--accent-color);
+            font-size: 0.9em;
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+        .sc-cevap {
+            margin: 0;
+            line-height: 1.4;
+            font-size: 0.85em;
+            font-weight: normal;
+        }
+        .sc-cevap strong {
+            font-weight: bold; 
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sc-widget-container">
+
+        <div class="widget-header">
+             <span class="widget-title">100 TEMEL İSLAMİ BİLGİ</span> 
+             <span class="widget-subtitle">Kısa ve pratik Soru-Cevap formatı (10'arlı 10 grup).</span>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab-button active" data-tab="grup1">1-10</div>
+            <div class="tab-button" data-tab="grup2">11-20</div>
+            <div class="tab-button" data-tab="grup3">21-30</div>
+            <div class="tab-button" data-tab="grup4">31-40</div>
+            <div class="tab-button" data-tab="grup5">41-50</div>
+            <div class="tab-button" data-tab="grup6">51-60</div>
+            <div class="tab-button" data-tab="grup7">61-70</div>
+            <div class="tab-button" data-tab="grup8">71-80</div>
+            <div class="tab-button" data-tab="grup9">81-90</div>
+            <div class="tab-button" data-tab="grup10">91-100</div>
+        </div>
+        
+        <div class="tab-content-wrapper">
+        
+            <div id="grup1" class="tab-pane active">
+                <div class="sc-section">
+                    <h3>1. İman kelimesi ne demektir?</h3>
+                    <p class="sc-cevap"><strong>Tasdik etmek, güvenmek, şüphe etmeden inanmak demektir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>2. İmanın şartları kaç tanedir?</h3>
+                    <p class="sc-cevap"><strong>Toplam 6 tanedir. (Amentü)</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>3. Allah'ın varlığına inanmanın zıttı nedir?</h3>
+                    <p class="sc-cevap"><strong>İnkâr (küfür) veya şirktir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>4. Meleklere imanın faydası nedir?</h3>
+                    <p class="sc-cevap"><strong>İnsanın yalnız olmadığını anlaması ve sürekli denetlendiği bilinciyle iyi davranmasıdır.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>5. Dört büyük melek kimlerdir?</h3>
+                    <p class="sc-cevap"><strong>Cebrail (vahiy), Mikail (tabiat), İsrafil (sûr), Azrail (can alma).</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>6. İndirilen kutsal kitaplar kaç tanedir?</h3>
+                    <p class="sc-cevap"><strong>Dört tanedir: Tevrat, Zebur, İncil ve Kur'an-ı Kerim.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>7. Kur'an-ı Kerim hangi peygambere indirilmiştir?</h3>
+                    <p class="sc-cevap"><strong>Hz. Muhammed (s.a.v.)'e indirilmiştir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>8. Ahiret hayatının başlangıcı nedir?</h3>
+                    <p class="sc-cevap"><strong>Ölüm (kabir hayatı) ve Kıyâmetin kopmasıdır.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>9. Kader kelimesinin anlamı nedir?</h3>
+                    <p class="sc-cevap"><strong>Allah'ın, olacak her şeyi önceden bilmesi, takdir etmesi ve programlamasıdır.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>10. Kaza nedir?</h3>
+                    <p class="sc-cevap"><strong>Kaderde belirlenen şeylerin zamanı gelince gerçekleşmesidir.</strong></p>
+                </div>
+            </div>
+
+            <div id="grup2" class="tab-pane">
+                <div class="sc-section">
+                    <h3>11. İslam'ın şartları kaç tanedir?</h3>
+                    <p class="sc-cevap"><strong>Toplam 5 tanedir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>12. Kelime-i Şehadet ne demektir?</h3>
+                    <p class="sc-cevap"><strong>Allah'tan başka ilah olmadığına ve Hz. Muhammed'in O'nun kulu ve elçisi olduğuna şahitlik etmektir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>13. Namaz (Salât) nedir?</h3>
+                    <p class="sc-cevap"><strong>Belirli vakitlerde, rükün ve şartlarına uygun olarak yapılan özel bir ibadettir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>14. Bir günde kaç vakit farz namaz vardır?</h3>
+                    <p class="sc-cevap"><strong>Beş vakit (Sabah, Öğle, İkindi, Akşam, Yatsı).</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>15. Zekât nedir?</h3>
+                    <p class="sc-cevap"><strong>Zengin Müslümanların, malının belli bir miktarını yılda bir kez fakirlere vermesidir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>16. Kimler zekât vermekle yükümlüdür?</h3>
+                    <p class="sc-cevap"><strong>Nisap miktarı (belirli miktar) mala sahip olan her ergen ve akıllı Müslüman.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>17. Oruç (Savm) ne zaman tutulur?</h3>
+                    <p class="sc-cevap"><strong>Hicri takvime göre Ramazan ayı boyunca tutulur.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>18. Orucun temel amacı nedir?</h3>
+                    <p class="sc-cevap"><strong>Allah'ın rızasını kazanmak ve takva (bilinçli olma) bilincini geliştirmektir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>19. Hac nedir?</h3>
+                    <p class="sc-cevap"><strong>Belirli zamanda ve şartlarda, Kâbe ve çevresindeki kutsal yerleri ziyaret etmektir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>20. Haccın farz olması için gereken şart nedir?</h3>
+                    <p class="sc-cevap"><strong>Yol emniyeti dahil, sağlık ve maddi güce (imkana) sahip olmaktır.</strong></p>
+                </div>
+            </div>
+            
+            <div id="grup3" class="tab-pane">
+                 <div class="sc-section">
+                    <h3>21. İlk insan ve ilk peygamber kimdir?</h3>
+                    <p class="sc-cevap"><strong>Hz. Âdem (a.s.).</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>22. Son peygamber kimdir?</h3>
+                    <p class="sc-cevap"><strong>Hz. Muhammed Mustafa (s.a.v.).</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>23. Hz. İbrahim'in (a.s.) temel mücadelesi neydi?</h3>
+                    <p class="sc-cevap"><strong>Putperestliğe karşı tevhit inancını savunmak.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>24. Hz. Musa'ya (a.s.) indirilen kitap hangisidir?</h3>
+                    <p class="sc-cevap"><strong>Tevrat.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>25. Hz. İsa'ya (a.s.) indirilen kitap hangisidir?</h3>
+                    <p class="sc-cevap"><strong>İncil.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>26. Hz. Davud'a (a.s.) indirilen kitap hangisidir?</h3>
+                    <p class="sc-cevap"><strong>Zebur.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>27. Peygamberimizin doğduğu şehir neresidir?</h3>
+                    <p class="sc-cevap"><strong>Mekke.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>28. Peygamberimizin Medine'ye hicret ettiği yıl hangisidir?</h3>
+                    <p class="sc-cevap"><strong>Miladi 622.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>29. Kur'an-ı Kerim kaç sure ve kaç ayetten oluşur?</h3>
+                    <p class="sc-cevap"><strong>114 sure ve yaklaşık 6236 ayetten oluşur.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>30. Kur'an'ın ilk suresi nedir?</h3>
+                    <p class="sc-cevap"><strong>Fatiha Sûresi.</strong></p>
+                </div>
+            </div>
+
+            <div id="grup4" class="tab-pane">
+                 <div class="sc-section">
+                    <h3>31. Sıdk (doğruluk) ne demektir?</h3>
+                    <p class="sc-cevap"><strong>Sözde ve davranışta dürüst ve gerçekçi olmaktır.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>32. Emanet nedir?</h3>
+                    <p class="sc-cevap"><strong>Korunması için bırakılan veya görev olarak verilen şeye sahip çıkmaktır.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>33. Müslüman bir kişinin komşusuna karşı görevi nedir?</h3>
+                    <p class="sc-cevap"><strong>İyilik etmek, zarar vermemek ve hakkını gözetmektir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>34. Kibir (büyüklük taslama) neden kötü bir ahlaktır?</h3>
+                    <p class="sc-cevap"><strong>İnsanı gerçeklerden uzaklaştırır ve diğer insanlara karşı haksızlığa sürükler.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>35. İslâm'da en büyük günahlardan biri nedir?</h3>
+                    <p class="sc-cevap"><strong>Allah'a ortak koşmak (şirk) ve haksız yere cana kıymaktır.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>36. Tövbe ne demektir?</h3>
+                    <p class="sc-cevap"><strong>İşlenen günah ve hatadan pişmanlık duyup Allah'tan af dilemektir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>37. Gıybet (dedikodu) nedir?</h3>
+                    <p class="sc-cevap"><strong>Bir kişinin arkasından hoşlanmayacağı şekilde konuşmaktır.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>38. İhsan kavramı neyi ifade eder?</h3>
+                    <p class="sc-cevap"><strong>Allah'ı görüyormuş gibi ibadet etmek, her şeyi en iyi şekilde yapma çabasıdır.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>39. Tevazu (alçakgönüllülük) ne demektir?</h3>
+                    <p class="sc-cevap"><strong>Kendi değerini bilmekle birlikte başkalarından üstün görmemektir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>40. Sıla-i rahim ne anlama gelir?</h3>
+                    <p class="sc-cevap"><strong>Akrabalık bağlarını korumak, akrabayı ziyaret edip gözetmektir.</strong></p>
+                </div>
+            </div>
+
+            <div id="grup5" class="tab-pane">
+                 <div class="sc-section">
+                    <h3>41. Namazın dışındaki farzlara ne denir?</h3>
+                    <p class="sc-cevap"><strong>Şartları (abdest, niyet, kıble vb.).</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>42. Gusül (boy abdesti) gerektiren durumlar nelerdir?</h3>
+                    <p class="sc-cevap"><strong>Cünüplük, hayız (adet) ve nifas (lohusalık) halleri.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>43. Teyemmüm nedir, ne zaman yapılır?</h3>
+                    <p class="sc-cevap"><strong>Su bulunmadığında veya kullanılamadığında toprakla yapılan abdeste denir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>44. Vitir namazı hükmü nedir?</h3>
+                    <p class="sc-cevap"><strong>Hanefi mezhebine göre vacip, diğerlerine göre sünnettir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>45. Cuma namazı kimlere farzdır?</h3>
+                    <p class="sc-cevap"><strong>Ergen, akıllı, sağlıklı ve mukim (yolcu olmayan) erkeklere farzdır.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>46. Fidye ne demektir?</h3>
+                    <p class="sc-cevap"><strong>Oruç tutmaya gücü yetmeyenlerin, tutamadıkları gün sayısı kadar fakir doyurmasıdır.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>47. Zekât oranı nedir? (Para ve ticari mal için)</h3>
+                    <p class="sc-cevap"><strong>%2.5 (Kırkta bir).</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>48. Kurban ne zaman kesilir?</h3>
+                    <p class="sc-cevap"><strong>Kurban Bayramı'nın ilk üç gününde (Hanefilere göre 4 gün).</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>49. Hac ibadetinin rükünleri nelerdir?</h3>
+                    <p class="sc-cevap"><strong>İhrama girmek, Arafat'ta vakfe yapmak ve Kâbe'yi tavaf etmektir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>50. İtikâf nedir?</h3>
+                    <p class="sc-cevap"><strong>Bir mescitte belirli bir süre ibadet niyetiyle kalmaktır (genellikle Ramazan'ın son 10 günü).</strong></p>
+                </div>
+            </div>
+
+            <div id="grup6" class="tab-pane">
+                 <div class="sc-section">
+                    <h3>51. Helal nedir?</h3>
+                    <p class="sc-cevap"><strong>Dinen izin verilmiş, yapılması serbest olan şeylerdir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>52. Haram nedir?</h3>
+                    <p class="sc-cevap"><strong>Dinen kesin olarak yasaklanmış olan şeylerdir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>53. Mekruh ne demektir?</h3>
+                    <p class="sc-cevap"><strong>Haram kadar kesin olmamakla birlikte dinen hoş karşılanmayan, terk edilmesi istenen şeylerdir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>54. Faiz (Riba) nedir?</h3>
+                    <p class="sc-cevap"><strong>Borç verilen paranın veya malın, anlaşmada belirlenen fazlasını almaktır. Kesinlikle haramdır.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>55. İçki ve uyuşturucu neden haramdır?</h3>
+                    <p class="sc-cevap"><strong>Akla, sağlığa zarar verdiği ve toplumu bozduğu için.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>56. Müsriflik (israf) nedir?</h3>
+                    <p class="sc-cevap"><strong>Malı, zamanı veya enerjiyi gereksiz yere ve aşırı harcamaktır.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>57. Ticarette dürüstlüğün önemi nedir?</h3>
+                    <p class="sc-cevap"><strong>İslâm'da aldatma (hile) haramdır; dürüst tüccar kıyamet günü peygamberlerle beraberdir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>58. Rüşvet almak ve vermek caiz midir?</h3>
+                    <p class="sc-cevap"><strong>Hayır, rüşvet hem alan hem verene lanet edilen büyük bir haramdır.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>59. Kul hakkı nedir?</h3>
+                    <p class="sc-cevap"><strong>Bir kişinin canına, malına veya onuruna yapılan haksızlıktan doğan sorumluluktur.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>60. İslâm'da kadının örtünme (tesettür) emri neyi kapsar?</h3>
+                    <p class="sc-cevap"><strong>Yüz ve eller hariç, vücudun tamamını yabancı erkeklere karşı örtmektir.</strong></p>
+                </div>
+            </div>
+
+            <div id="grup7" class="tab-pane">
+                 <div class="sc-section">
+                    <h3>61. Duanın faydası nedir?</h3>
+                    <p class="sc-cevap"><strong>Allah ile iletişim kurmak, O'na sığınmak, acziyetimizi itiraf etmektir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>62. Zikir nedir?</h3>
+                    <p class="sc-cevap"><strong>Allah'ı anmak, hatırlamak ve O'nun isimlerini (Esmâü'l Hüsnâ) tekrar etmektir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>63. En faziletli zikir nedir?</h3>
+                    <p class="sc-cevap"><strong>Lâ ilâhe illallah (Allah'tan başka ilah yoktur).</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>64. Salavat nedir?</h3>
+                    <p class="sc-cevap"><strong>Peygamberimiz Hz. Muhammed'e (s.a.v.) dua ve selam göndermektir (Allâhümme salli alâ...).</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>65. İstiğfar nedir?</h3>
+                    <p class="sc-cevap"><strong>Günahlardan dolayı Allah'tan af dilemektir (Estağfirullah).</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>66. "Esmâü'l Hüsnâ" ne demektir?</h3>
+                    <p class="sc-cevap"><strong>Allah'ın en güzel isimleri (99 tanedir).</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>67. Besmele ne demektir?</h3>
+                    <p class="sc-cevap"><strong>"Bismillâhirrahmânirrahîm" (Rahmân ve Rahîm olan Allah'ın adıyla) demektir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>68. Hamdele nedir?</h3>
+                    <p class="sc-cevap"><strong>Allah'a hamd ve şükür etmek (Elhamdülillah).</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>69. Tekbir nedir?</h3>
+                    <p class="sc-cevap"><strong>"Allahu Ekber" (Allah en büyüktür) demektir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>70. Kısa bir dua örneği nedir?</h3>
+                    <p class="sc-cevap"><strong>"Rabbenâ âtinâ fi'd-dünyâ haseneten ve fi'l-âhirati haseneten ve kınâ azâbe'n-nâr." (Ey Rabbimiz, bize dünyada da iyilik ver, ahirette de iyilik ver ve bizi cehennem azabından koru).</strong></p>
+                </div>
+            </div>
+
+            <div id="grup8" class="tab-pane">
+                 <div class="sc-section">
+                    <h3>71. Peygamberimizin babasının adı nedir?</h3>
+                    <p class="sc-cevap"><strong>Abdullah.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>72. Peygamberimizin annesinin adı nedir?</h3>
+                    <p class="sc-cevap"><strong>Âmine.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>73. Peygamberimizin süt annesinin adı nedir?</h3>
+                    <p class="sc-cevap"><strong>Halime.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>74. Peygamberimizin dedesinin adı nedir?</h3>
+                    <p class="sc-cevap"><strong>Abdülmuttalib.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>75. Peygamberimizin ilk eşi kimdir?</h3>
+                    <p class="sc-cevap"><strong>Hz. Hatice (r.a.).</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>76. Peygamberimize ilk vahiy nerede geldi?</h3>
+                    <p class="sc-cevap"><strong>Mekke'deki Hira mağarasında.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>77. İlk Müslüman erkek kimdir?</h3>
+                    <p class="sc-cevap"><strong>Hz. Ebû Bekir (r.a.).</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>78. Dört Halife dönemi sırasıyla kimlerdir?</h3>
+                    <p class="sc-cevap"><strong>Hz. Ebû Bekir, Hz. Ömer, Hz. Osman, Hz. Ali.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>79. Hicretin ana sebebi nedir?</h3>
+                    <p class="sc-cevap"><strong>Mekke'de artan baskı ve işkencelerden sonra dinlerini özgürce yaşama arayışı.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>80. Peygamberimizin vefat ettiği şehir neresidir?</h3>
+                    <p class="sc-cevap"><strong>Medine.</strong></p>
+                </div>
+            </div>
+
+            <div id="grup9" class="tab-pane">
+                 <div class="sc-section">
+                    <h3>81. Nafile ibadet nedir?</h3>
+                    <p class="sc-cevap"><strong>Farz veya vacip olmayan, kişinin isteğiyle yaptığı ibadetlerdir (Sünnetler, vs.).</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>82. Sadaka-i Cariye ne demektir?</h3>
+                    <p class="sc-cevap"><strong>Ölümden sonra da sevabı devam eden hayırlardır (Cami, okul, çeşme yaptırmak gibi).</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>83. Şehit kime denir?</h3>
+                    <p class="sc-cevap"><strong>Allah yolunda canını feda eden Müslümandır.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>84. Münafık kime denir?</h3>
+                    <p class="sc-cevap"><strong>Diliyle inandığını söylediği halde, kalbiyle inanmayan kişiye.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>85. İcma nedir?</h3>
+                    <p class="sc-cevap"><strong>İslâm bilginlerinin bir konuda fikir birliğine varmalarıdır.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>86. Kıble neresidir?</h3>
+                    <p class="sc-cevap"><strong>Mekke'de bulunan Kâbe'dir. Namazda yönelinen yöndür.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>87. Mushaf ne demektir?</h3>
+                    <p class="sc-cevap"><strong>İki kapak arasında toplanmış Kur'an-ı Kerim metnine denir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>88. Sünnet nedir?</h3>
+                    <p class="sc-cevap"><strong>Peygamberimizin söz, fiil ve onaylarıdır.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>89. Bid'at nedir?</h3>
+                    <p class="sc-cevap"><strong>Dinde olmadığı halde sonradan ortaya çıkarılan ve dinden sayılan yanlış uygulamalardır.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>90. Fıkıh ilmi ne ile ilgilenir?</h3>
+                    <p class="sc-cevap"><strong>İslâm hukukunun temelini oluşturur; ibadet ve muamelat (günlük işler) kurallarını inceler.</strong></p>
+                </div>
+            </div>
+
+            <div id="grup10" class="tab-pane">
+                 <div class="sc-section">
+                    <h3>91. İman ve amel arasındaki ilişki nedir?</h3>
+                    <p class="sc-cevap"><strong>İman kalpteki tasdik; amel ise imanın dışa yansıması, meyvesidir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>92. İlim öğrenmenin önemi nedir?</h3>
+                    <p class="sc-cevap"><strong>İslâm'da ilk emir "Oku"dur; ilim öğrenmek kadın ve erkeğe farzdır.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>93. Şefaat ne demektir?</h3>
+                    <p class="sc-cevap"><strong>Ahrette, bir başkası adına Allah'tan af ve iyilik dilemektir (Peygamber şefaati gibi).</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>94. Kıyamet günü hesaba çekilme yerine ne denir?</h3>
+                    <p class="sc-cevap"><strong>Mahşer.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>95. Cennetin kelime anlamı nedir?</h3>
+                    <p class="sc-cevap"><strong>Bâğ, bahçe (Mü'minlerin ebedi kalacakları ödül yurdu).</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>96. Cehennem nedir?</h3>
+                    <p class="sc-cevap"><strong>Kâfirlerin ve günahkâr mü'minlerin cezalandırılacağı yerdir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>97. Kulun kulluk borcu nedir?</h3>
+                    <p class="sc-cevap"><strong>Allah'a hiçbir şeyi ortak koşmamak ve yalnızca O'na ibadet etmektir.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>98. Mübarek üç aylar hangileridir?</h3>
+                    <p class="sc-cevap"><strong>Recep, Şaban ve Ramazan ayları.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>99. İstiğfar için söylenecek en kısa söz nedir?</h3>
+                    <p class="sc-cevap"><strong>Estağfirullah.</strong></p>
+                </div>
+                <div class="sc-section">
+                    <h3>100. İslâm'da adalet kavramının önemi nedir?</h3>
+                    <p class="sc-cevap"><strong>İslâm'ın temelidir; her hak sahibine hakkını vermektir (Müslüman-gayrimüslim ayrımı yapmadan).</strong></p>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+
+        function handleTabClick(event) {
+            const targetTab = event.target.dataset.tab;
+
+            // Tüm butonlardaki 'active' sınıfını kaldır
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Tıklanan butona 'active' sınıfını ekle
+            event.target.classList.add('active');
+
+            // Tüm içerik panellerindeki 'active' sınıfını kaldır
+            tabPanes.forEach(pane => {
+                pane.classList.remove('active');
+            });
+
+            // Hedeflenen içeriğe 'active' sınıfını ekle
+            document.getElementById(targetTab).classList.add('active');
+        }
+
+        // Tüm butonlara click event listener ekle
+        tabButtons.forEach(button => {
+            button.addEventListener('click', handleTabClick);
+        });
+        
+        // İlk butonu varsayılan olarak aktif yap (grup1)
+        if (tabButtons.length > 0) {
+            tabButtons[0].click();
+        }
+    });
+</script>
+</body>
+</html>
