@@ -1,0 +1,155 @@
+<div style="text-align: center; margin: 20px 0;">
+    <style>
+        /* GENEL VE KUTU STİLLERİ */
+        .clock-wrapper-final-safe {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            background: linear-gradient(145deg, #222222, #000000) !important;
+            color: #ffffff !important;
+            padding: 25px 20px 0px 20px !important; 
+            border-radius: 15px !important;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.9) !important;
+            border: 1px solid #6c757d !important;
+            margin: 20px auto !important;
+            max-width: 300px !important;
+            position: relative !important;
+        }
+
+        /* ANALOG SAAT YÜZÜ */
+        .analog-clock-final-safe {
+            width: 200px !important;
+            height: 200px !important;
+            border: 5px solid #6c757d !important;
+            border-radius: 50% !important;
+            margin: 0px auto 15px auto !important; 
+            position: relative !important;
+            background: #ffffff !important; 
+        }
+
+        /* RAKAMLAR VE POZİSYONLARI */
+        .clock-mark-final-safe {
+            position: absolute !important; font-size: 1.1em !important; color: #212529 !important; font-weight: bold !important;
+            width: 35px !important; height: 35px !important; line-height: 35px !important; text-align: center !important;
+            transform: translate(-50%, -50%) !important;
+        }
+        .mark-12 { top: 10% !important; left: 50% !important; } .mark-1 { top: 14% !important; left: 74% !important; } .mark-2 { top: 30% !important; left: 88% !important; } .mark-3 { top: 50% !important; left: 95% !important; } .mark-4 { top: 70% !important; left: 88% !important; } .mark-5 { top: 86% !important; left: 74% !important; } .mark-6 { top: 90% !important; left: 50% !important; } .mark-7 { top: 86% !important; left: 26% !important; } .mark-8 { top: 70% !important; left: 12% !important; } .mark-9 { top: 50% !important; left: 5% !important; } .mark-10 { top: 30% !important; left: 12% !important; } .mark-11 { top: 14% !important; left: 26% !important; }
+
+        /* MERKEZ METNİ VE LOGO */
+        .clock-logo-final-safe {
+            position: absolute !important; 
+            top: 70% !important; 
+            left: 50% !important; 
+            transform: translate(-50%, -50%) !important; 
+            font-size: 0.7em !important; /* KÜÇÜLTÜLDÜ */
+            font-weight: bold !important; 
+            color: #adb5bd !important; /* SİLİK GRİ YAPILDI */
+            letter-spacing: 1px !important; 
+            z-index: 5 !important; 
+            white-space: nowrap !important;
+            opacity: 0.7; /* SİLİKLEŞTİRİLDİ */
+        }
+        .allaturka-logo-img {
+            position: absolute !important;
+            top: 40% !important; left: 50% !important; 
+            transform: translate(-50%, -50%) !important; 
+            width: 100px !important; 
+            height: auto !important; 
+            z-index: 6 !important; 
+            opacity: 0.9; 
+        }
+
+        /* ORTA NOKTA VE İBRELER */
+        .center-dot-final-safe {
+            width: 12px !important; height: 12px !important; background: #ff4500 !important; border-radius: 50% !important; position: absolute !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; z-index: 12 !important;
+        }
+        .hand-final-safe {
+            position: absolute !important; top: 50% !important; left: 50% !important; transform-origin: 50% 100% !important; transition: none !important;
+        }
+        .hour-hand-final-safe { width: 5px !important; height: 35px !important; background: #212529 !important; border-radius: 3px !important; margin-left: -2.5px !important; margin-top: -35px !important; z-index: 8 !important; }
+        .minute-hand-final-safe { width: 3px !important; height: 70px !important; background: #212529 !important; border-radius: 2px !important; margin-left: -1.5px !important; margin-top: -70px !important; z-index: 7 !important; }
+        .second-hand-final-safe { width: 1px !important; height: 90px !important; background: #ff4500 !important; z-index: 9 !important; margin-left: -0.5px !important; margin-top: -90px !important; }
+        
+        /* DİJİTAL PANEL VE METİNLER */
+        .digital-panel {
+            background: #181818 !important; 
+            border-radius: 0 0 15px 15px !important; 
+            padding: 10px 20px !important; 
+            margin: 0 -20px !important; 
+            border-top: 1px solid #000000 !important; 
+            box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.5), inset 0 -1px 0px rgba(73, 80, 87, 0.5) !important;
+        }
+        #digital-clock-final-safe { 
+            font-size: 2em !important; font-weight: bold !important; color: #ff4500 !important; margin-top: 0px !important; text-shadow: 0 0 5px rgba(255, 69, 0, 0.5) !important; 
+        }
+        .allaturka-text-bottom-final-safe { 
+            display: block !important; text-align: right !important; padding-right: 5px !important; padding-top: 5px !important; font-size: 0.9em !important; color: #adb5bd !important; font-weight: bold !important; 
+        }
+    </style>
+
+    <div class="clock-wrapper-final-safe">
+        
+        <div class="analog-clock-final-safe">
+            <div class="clock-mark-final-safe mark-12">12</div>
+            <div class="clock-mark-final-safe mark-1">1</div>
+            <div class="clock-mark-final-safe mark-2">2</div>
+            <div class="clock-mark-final-safe mark-3">3</div>
+            <div class="clock-mark-final-safe mark-4">4</div>
+            <div class="clock-mark-final-safe mark-5">5</div>
+            <div class="clock-mark-final-safe mark-6">6</div>
+            <div class="clock-mark-final-safe mark-7">7</div>
+            <div class="clock-mark-final-safe mark-8">8</div>
+            <div class="clock-mark-final-safe mark-9">9</div>
+            <div class="clock-mark-final-safe mark-10">10</div>
+            <div class="clock-mark-final-safe mark-11">11</div>
+            
+            
+            <img src="https://allaturkaa.de/forum/wcf/images/allaturkaa/logo.png" class="allaturka-logo-img" alt="Allaturka Logo" />
+
+            <div class="clock-logo-final-safe">ALLATURKA FORUM</div>
+            <div id="hour-final-safe" class="hand-final-safe hour-hand-final-safe"></div>
+            <div id="minute-final-safe" class="hand-final-safe minute-hand-final-safe"></div>
+            <div id="second-final-safe" class="hand-final-safe second-hand-final-safe"></div>
+            <div class="center-dot-final-safe"></div>
+        </div>
+        
+        <div class="digital-panel">
+            <div id="digital-clock-final-safe">00:00:00</div>
+            
+            <div class="allaturka-text-bottom-final-safe">
+                 ALLATURKA FORUM
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateFinalSafeClock() {
+                const now = new Date();
+                const hours = now.getHours();
+                const minutes = now.getMinutes();
+                const seconds = now.getSeconds();
+                const milliseconds = now.getMilliseconds();
+
+                const twelveHour = hours % 12;
+
+                // Analog Saat Hesaplamaları (Hassas dönüş)
+                const hourDeg = twelveHour * 30 + minutes * 0.5 + seconds * 0.00833;
+                const minuteDeg = minutes * 6 + seconds * 0.1;
+                const secondDeg = seconds * 6 + milliseconds * 0.006; 
+
+                // İbreleri Döndürme
+                document.getElementById('hour-final-safe').style.transform = `rotate(${hourDeg}deg)`;
+                document.getElementById('minute-final-safe').style.transform = `rotate(${minuteDeg}deg)`;
+                document.getElementById('second-final-safe').style.transform = `rotate(${secondDeg}deg)`;
+
+
+                // Dijital Saat
+                const digitalTime = [hours, minutes, seconds].map(num => String(num).padStart(2, '0')).join(':');
+                document.getElementById('digital-clock-final-safe').textContent = digitalTime;
+            }
+
+            // İlk çalıştırma ve akıcı saniye için güncelleme
+            updateFinalSafeClock();
+            setInterval(updateFinalSafeClock, 10); 
+        });
+    </script>
+</div>
