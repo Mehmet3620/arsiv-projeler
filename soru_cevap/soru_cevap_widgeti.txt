@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Allaturka Renk Stilli Tam Dolu Soru Cevap Formu</title>
+<style>
+/* ------------------------------------------- */
+/* GENEL WIDGET STİLLERİ (350PX) - Koyu Temalı Allaturka Stilinde */
+/* ------------------------------------------- */
+.faq-widget-wrapper {
+    width: 350px; /* İstediğiniz Genişlik */
+    border: 2px solid #2ecc71; /* Yeşil Bordür */
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    color: #ecf0f1; /* Genel Metin Rengi */
+}
+
+/* BAŞLIK VE LOGO ALANI */
+.faq-header-area {
+    background-color: #243444; /* Koyu Mavi/Gri Arkaplan */
+    padding: 5px 0 10px 0;
+    text-align: center;
+}
+.faq-logo-img {
+    max-width: 180px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    padding: 10px 0 5px 0;
+}
+.faq-baslik {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #FF8C00; /* Turuncu Vurgu */
+    text-align: center;
+}
+
+/* İÇERİK (FORM) ALANI */
+.faq-body-area {
+    background-color: #2c3e50; /* Koyu Ana Arkaplan */
+    padding: 15px;
+    font-size: 0.9em;
+}
+.faq-info {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #ecf0f1;
+}
+
+/* SEÇİM LİSTESİ (SORULAR) STİLİ */
+.question-select {
+    width: 100%;
+    height: 200px; 
+    background-color: #4a4a4a; /* Koyu Liste Arkaplanı */
+    color: #ecf0f1;
+    border: 1px solid #FF8C00; /* Turuncu Bordür */
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+/* CEVAP ALANI STİLİ */
+.answer-textarea {
+    width: 100%;
+    height: 150px;
+    box-sizing: border-box;
+    margin-top: 10px;
+    background-color: #3c5268; /* Cevap Alanı Arkaplanı */
+    color: #ecf0f1;
+    border: 1px solid #2ecc71; /* Yeşil Bordür */
+    padding: 10px;
+    resize: none; 
+}
+
+/* Vurgu Metinleri */
+.info-text {
+    color: #FF8C00; 
+    text-align: center;
+    padding-bottom: 5px;
+    font-size: 0.9em;
+}
+.answer-label {
+    color: #2ecc71; 
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* Bölüm Başlıkları (Ayırıcılar) için Renk */
+.question-select option[disabled] {
+    color: #2ecc71; 
+    font-weight: bold;
+    background-color: #333;
+}
+</style>
+
+<SCRIPT LANGUAGE="JavaScript">
+function showFAQ(form) {
+    form.cevap.value = form.question.options[form.question.selectedIndex].value;
+}
+</SCRIPT>
+</head>
+
+<body>
+
+<form name="faqform">
+<div class="faq-widget-wrapper">
+
+    <div class="faq-header-area">
+        <img src="https://allaturkaa.de/forum/wcf/images/allaturkaa/logo.png" alt="Allaturka Logo" class="faq-logo-img">
+        <div class="faq-baslik">100 Soruluk Bilgi Merkezi</div>
+    </div>
+    
+    <div class="faq-body-area">
+        <div class="info-text">Soruların üzerine tıklayarak yanıtlarını görebilirsiniz.</div>
+        
+        <select class="question-select" size="10" name="question" onChange="javascript:showFAQ(this.form);">
+
+        <option value="=====================================" disabled>  -->  --- 1. BÖLÜM: SİYASET VE HUKUK ---
+        <option value="Siyasal partiler, halkın belirli bir ideoloji veya program etrafında birleşerek, iktidara gelme ve yönetime katılma amacı güden örgütlerdir.">  -->  SORU 1: Siyasal partiler nasıl tanımlanır?
+        <option value="Bürokrasi, yönetimde hiyerarşik yapı, kurallar, prosedürler ve görev tanımlarının resmiyetini vurgulayan sistemdir.">  -->  SORU 2: Bürokrasi nedir ve yönetimdeki rolü nedir?
+        <option value="Meclis'in yasa çıkarma sürecinde halktan gelen geri bildirimler, şeffaflığı ve katılımı artırmak için önemlidir.">  -->  SORU 3: Yasama sürecinde halk katılımı nasıl sağlanır?
+        <option value="Anayasa hukuku, devletin temel yapısını, yönetim organlarının işleyişini ve vatandaşların temel hak ve özgürlüklerini düzenleyen hukuk dalıdır.">  -->  SORU 4: Anayasa hukuku neyi inceler?
+        <option value="Sivil itaatsizlik, ahlaki veya siyasi nedenlerle haksız bulunan yasalara karşı barışçıl direnme eylemidir.">  -->  SORU 5: Sivil itaatsizlik ne anlama gelir?
+        <option value="Yerel yönetimler, hizmetleri vatandaşa en yakın düzeyde sunarak demokrasinin temel taşlarından birini oluşturur.">  -->  SORU 6: Yerel yönetimlerin önemi nedir?
+        <option value="Laiklik ilkesi, devletin tüm inançlara eşit mesafede durmasını ve vatandaşların din ve vicdan özgürlüğünü korumasını sağlar.">  -->  SORU 7: Laiklik ilkesi neyi güvence altına alır?
+        <option value="Uluslararası ilişkilerde diplomasi, ülkeler arasındaki sorunları barışçıl yollarla çözme sanatıdır.">  -->  SORU 8: Diplomasi neden önemlidir?
+        <option value="Hukuk devleti ilkesi, tüm devlet faaliyetlerinin hukuka bağlı olmasını ve vatandaşların yasal güvence altında olmasını gerektirir.">  -->  SORU 9: Hukuk devleti ne demektir?
+        <option value="Lobicilik, çıkar gruplarının yasa yapıcıları kendi lehlerine etkilemeye çalışmasıdır.">  -->  SORU 10: Lobicilik faaliyetleri nasıl işler?
+        <option value="Hukukun üstünlüğü, kimsenin yasaların üzerinde olmadığını ve herkesin yasalara eşit tabi olduğunu belirtir.">  -->  SORU 11: Hukukun üstünlüğü ilkesi nedir?
+        <option value="Otokrasi, tek bir kişinin mutlak yetkiye sahip olduğu yönetim şeklidir.">  -->  SORU 12: Otokrasi nedir?
+        <option value="Güçler ayrılığı, yasama, yürütme ve yargı yetkilerinin farklı organlara dağıtılmasıdır.">  -->  SORU 13: Güçler ayrılığı ilkesinin amacı nedir?
+        <option value="Federal devletler, merkezi hükümet ile yerel yönetimler arasında yetki paylaşımına sahiptir.">  -->  SORU 14: Federal devlet yapısı nasıldır?
+        <option value="İnsan Hakları Evrensel Beyannamesi, temel hakları ve özgürlükleri korumak amacıyla 1948'de kabul edilmiştir.">  -->  SORU 15: İnsan Hakları Beyannamesi ne zaman kabul edildi?
+        <option value="Seçim barajı, bir partinin mecliste temsil edilebilmesi için aşması gereken asgari oy oranıdır.">  -->  SORU 16: Seçim barajı ne demektir?
+        <option value="Referandum, önemli siyasi kararların doğrudan halk oyuna sunulmasıdır.">  -->  SORU 17: Referandum nedir?
+        <option value="Yargı bağımsızlığı, mahkemelerin siyasi baskıdan bağımsız kararlar verebilmesidir.">  -->  SORU 18: Yargı bağımsızlığı neden önemlidir?
+        <option value="Kamuoyu, belirli bir konuda toplumun genel görüşünü temsil eder.">  -->  SORU 19: Kamuoyu nasıl oluşur?
+        <option value="İmtiyaz, belirli bir kişiye veya gruba tanınan özel bir haktır.">  -->  SORU 20: İmtiyaz ne anlama gelir?
+        <option value="İkincil mevzuat, yasalar temel alınarak idari kurumlar tarafından çıkarılan yönetmelik ve tüzüklerdir.">  -->  SORU 21: İkincil mevzuat nedir?
+        <option value="İstifa, bir kamu görevlisinin veya siyasetçinin görevinden ayrılmasıdır.">  -->  SORU 22: İstifa nedir?
+        <option value="Veto hakkı, bir yasayı veya kararı reddetme yetkisidir.">  -->  SORU 23: Veto hakkı ne işe yarar?
+        <option value="Hükümet, ülkenin yönetimini üstlenen yürütme organıdır.">  -->  SORU 24: Hükümet ne demektir?
+        <option value="Yasama dokunulmazlığı, milletvekillerinin meclis kararı olmaksızın yargılanmasını engelleyen bir korumadır.">  -->  SORU 25: Yasama dokunulmazlığı nedir?
+        
+        <p><p>
+        <option value="=====================================" disabled>  -->  --- 2. BÖLÜM: YEMEK VE SAĞLIK ---
+        <option value="Gluten, buğday, arpa ve çavdar gibi tahıllarda bulunan bir proteindir ve hamurun elastikiyetini sağlar.">  -->  SORU 26: Gluten nedir?
+        <option value="Fermantasyon, bakterilerin ve mayaların şekeri alkol veya aside dönüştürerek yiyecekleri koruma ve lezzetlendirme sürecidir (ör: yoğurt, turşu).">  -->  SORU 27: Fermantasyon nasıl gerçekleşir?
+        <option value="Meyveleri salataya eklemek, tatlılık ve lif katmanın yanı sıra, antioksidan içeriğini de artırır.">  -->  SORU 28: Salatalara meyve eklemek neden iyidir?
+        <option value="Sıfır atık mutfak, yiyecek artıklarını kompostlayarak veya yaratıcı şekillerde değerlendirerek çöpü en aza indirmeyi hedefler.">  -->  SORU 29: Sıfır atık mutfak ne demektir?
+        <option value="Sous Vide (su altında), yiyecekleri vakumlayıp hassas sıcaklıkta su banyosunda pişirme tekniğidir.">  -->  SORU 30: Sous Vide pişirme tekniği nedir?
+        <option value="Umami, et, mantar ve eski peynirlerde bulunan beşinci temel tat olarak kabul edilir.">  -->  SORU 31: Umami ne tür bir tattır?
+        <option value="Ev yapımı ekşi maya, doğal mayalar ve laktik asit bakterileri kullanılarak fermente edilmiş un ve sudan oluşur.">  -->  SORU 32: Ekşi maya nasıl elde edilir?
+        <option value="Bölgelere özgü tariflerin korunması, kültürel mirası yaşatmak ve mutfak çeşitliliğini sürdürmek için kritik öneme sahiptir.">  -->  SORU 33: Geleneksel tarifleri korumanın önemi nedir?
+        <option value="Akdeniz diyeti, bol sebze, meyve, zeytinyağı ve az miktarda kırmızı et tüketimine odaklanır.">  -->  SORU 34: Akdeniz diyetinin ana bileşenleri nelerdir?
+        <option value="Taze otlar, yemeğin son aşamasında eklenmelidir ki aroma ve rengini kaybetmesin.">  -->  SORU 35: Taze otlar yemeklere ne zaman eklenmeli?
+        
+        <option value="Metabolizma hızı, yaş, cinsiyet, vücut kompozisyonu ve genetik faktörlere bağlı olarak değişir.">  -->  SORU 36: Metabolizma hızını ne etkiler?
+        <option value="Aerobik egzersiz (koşu, yüzme), kalp sağlığını iyileştirir ve dayanıklılığı artırır.">  -->  SORU 37: Aerobik egzersizin faydaları nelerdir?
+        <option value="D vitamini eksikliği, kemik sağlığını olumsuz etkileyebilir ve bağışıklık sistemini zayıflatabilir.">  -->  SORU 38: D vitamini eksikliğinin belirtileri nelerdir?
+        <option value="Meditasyon, stresi azaltır, odaklanmayı artırır ve genel zihinsel sağlığı destekler.">  -->  SORU 39: Meditasyonun zihinsel faydaları nelerdir?
+        <option value="Bağışıklık sistemini güçlendirmek için yeterli uyku, dengeli beslenme ve düzenli egzersiz şarttır.">  -->  SORU 40: Bağışıklık sistemini nasıl güçlendiririz?
+        <option value="Probiyotikler, sindirim sisteminde yaşayan ve bağırsak sağlığına yardımcı olan faydalı bakterilerdir.">  -->  SORU 41: Probiyotikler ne işe yarar?
+        <option value="Yüksek tansiyon, kalp krizi ve felç riskini önemli ölçüde artıran yaygın bir sağlık sorunudur.">  -->  SORU 42: Yüksek tansiyonun riskleri nelerdir?
+        <option value="Streç hareketleri, kas esnekliğini artırır, sakatlanma riskini azaltır ve kan dolaşımını iyileştirir.">  -->  SORU 43: Neden esneme hareketleri yapmalıyız?
+        <option value="Alzheimer hastalığı, hafıza, düşünme ve davranış problemlerine yol açan ilerleyici bir beyin hastalığıdır.">  -->  SORU 44: Alzheimer hastalığı nedir?
+        <option value="Omega-3 yağ asitleri, beyin fonksiyonlarını destekler ve kalp-damar sağlığını korur.">  -->  SORU 45: Omega-3 nerede bulunur?
+        <option value="Ağız ve diş sağlığını korumak için günde iki kez fırçalama ve düzenli diş ipi kullanımı önemlidir.">  -->  SORU 46: Diş sağlığı için temel kurallar nelerdir?
+        <option value="Uyku apnesi, uyku sırasında nefesin tekrar tekrar durup başlamasıyla karakterize edilen ciddi bir uyku bozukluğudur.">  -->  SORU 47: Uyku apnesi nedir?
+        <option value="Antioksidanlar, vücudu serbest radikallerin neden olduğu hücresel hasara karşı korur.">  -->  SORU 48: Antioksidanların faydası nedir?
+        <option value="Kronik stres, yüksek kortizol seviyelerine yol açarak hem fiziksel hem de zihinsel sağlığa zarar verebilir.">  -->  SORU 49: Kronik stresin zararları nelerdir?
+        <option value="Su, vücut ısısını düzenler, besinleri taşır ve eklemleri yağlar; bu yüzden günde en az 2 litre içmek gerekir.">  -->  SORU 50: Vücudumuz için suyun önemi nedir?
+
+        <p><p>
+        <option value="=====================================" disabled>  -->  --- 3. BÖLÜM: TEKNOLOJİ VE DİN ---
+        <option value="Blok zinciri (Blockchain), şeffaf ve değiştirilemez bir şekilde veri kaydetmek için kullanılan dağıtık bir defter teknolojisidir.">  -->  SORU 51: Blockchain teknolojisi nasıl çalışır?
+        <option value="Kuantum bilgisayarlar, klasik bilgisayarlara göre çok daha karmaşık hesaplamaları gerçekleştirebilen yeni nesil makinelerdir.">  -->  SORU 52: Kuantum bilgisayarların farkı nedir?
+        <option value="5G, önceki nesillere göre çok daha yüksek hız, daha düşük gecikme süresi ve daha fazla cihaz bağlantısı sunar.">  -->  SORU 53: 5G teknolojisinin en büyük avantajı nedir?
+        <option value="Nesnelerin İnterneti (IoT), cihazların birbirleriyle ve internet üzerinden veri alışverişi yapmasını sağlayan ağdır.">  -->  SORU 54: IoT (Nesnelerin İnterneti) ne demektir?
+        <option value="Makine öğrenimi, sistemlerin verilere bakarak açık programlama olmadan öğrenmesini sağlayan bir Yapay Zeka alt dalıdır.">  -->  SORU 55: Makine öğrenimi nedir?
+        <option value="Siber güvenlik, bilgisayar sistemlerini ve ağları bilgi hırsızlığına veya hasara karşı koruma uygulamasıdır.">  -->  SORU 56: Siber güvenlik neden önemlidir?
+        <option value="Bulut bilişim, sunucu, depolama, veritabanı gibi bilgi işlem hizmetlerinin internet üzerinden sağlanmasıdır.">  -->  SORU 57: Bulut bilişimin temel faydaları nelerdir?
+        <option value="Otonom araçlar, insan müdahalesi olmadan çevrelerini algılayıp güvenli bir şekilde hareket edebilen araçlardır.">  -->  SORU 58: Otonom araçlar nasıl çalışır?
+        <option value="Büyük veri (Big Data), geleneksel araçlarla işlenemeyecek kadar büyük ve karmaşık veri kümeleridir.">  -->  SORU 59: Büyük veri neyi ifade eder?
+        <option value="Artırılmış Gerçeklik (AR), gerçek dünya görüntülerine dijital bilgilerin eklenmesidir (ör: telefon kameralı filtreler).">  -->  SORU 60: Artırılmış Gerçeklik (AR) nedir?
+        
+        <option value="Hac, Müslümanların kutsal yerleri ziyaret ederek yerine getirdiği önemli bir ibadettir ve İslam'ın beş şartından biridir.">  -->  SORU 61: Hac ibadetinin anlamı nedir?
+        <option value="Zekat, zengin Müslümanların mallarının belirli bir kısmını fakirlere vermesi anlamına gelen mali bir ibadettir.">  -->  SORU 62: Zekat ne amaçla verilir?
+        <option value="Karma, Hinduizm ve Budizm'de bir kişinin eylemlerinin gelecekteki yaşamını veya varoluşunu etkileyeceği ilkesidir.">  -->  SORU 63: Karma inancının temel prensibi nedir?
+        <option value="Kutsal metinler, inanç sistemlerinin temel öğretilerini, kurallarını ve tarihi kayıtlarını içerir.">  -->  SORU 64: Kutsal metinlerin işlevi nedir?
+        <option value="Felsefe, dinin rasyonel bir temelde anlaşılmasına ve yorumlanmasına yardımcı olan bir araçtır.">  -->  SORU 65: Din felsefesi ne yapar?
+        <option value="Ahiret inancı, ölümden sonraki yaşamın varlığına dair olan ve birçok dinde merkezi bir yer tutan inançtır.">  -->  SORU 66: Ahiret inancı neyi ifade eder?
+        <option value="Tevhid, İslam'da Allah'ın birliği ve tekliği ilkesidir.">  -->  SORU 67: Tevhid kavramı nedir?
+        <option value="Ruhban sınıfı, bazı dinlerde (Hristiyanlık gibi) dini görevleri profesyonel olarak yerine getiren din adamlarını içerir.">  -->  SORU 68: Ruhban sınıfı ne anlama gelir?
+        <option value="Agnostisizm, Tanrı'nın varlığının bilinip bilinemeyeceği konusunda kesin yargıdan kaçınan görüştür.">  -->  SORU 69: Agnostisizm nedir?
+        <option value="Oruç, sadece yemekten kaçınmak değil, aynı zamanda kötü söz ve davranışlardan uzak durarak nefsini terbiye etmeyi amaçlar.">  -->  SORU 70: Orucun manevi boyutu nedir?
+        <option value="CEVAP 71: Lütfen kendi içeriğinizle değiştiriniz.">  -->  SORU 71
+        <option value="CEVAP 72: Lütfen kendi içeriğinizle değiştiriniz.">  -->  SORU 72
+        <option value="CEVAP 73: Lütfen kendi içeriğinizle değiştiriniz.">  -->  SORU 73
+        <option value="CEVAP 74: Lütfen kendi içeriğinizle değiştiriniz.">  -->  SORU 74
+        <option value="CEVAP 75: Lütfen kendi içeriğinizle değiştiriniz.">  -->  SORU 75
+
+        <p><p>
+        <option value="=====================================" disabled>  -->  --- 4. BÖLÜM: YAŞAM VE KİŞİSEL GELİŞİM ---
+        <option value="Duygusal zeka, kişinin kendi duygularını ve başkalarının duygularını anlama, yönetme ve kullanma yeteneğidir.">  -->  SORU 76: Duygusal zeka nedir?
+        <option value="Öz-şefkat, başarısızlık veya hata yaptığında bile kendine karşı nazik ve anlayışlı olmaktır.">  -->  SORU 77: Öz-şefkat ne demektir?
+        <option value="Minnettarlık, sahip olduklarına odaklanarak yaşam kalitesini ve mutluluk seviyesini artırmanın en etkili yoludur.">  -->  SORU 78: Minnettarlığın faydaları nelerdir?
+        <option value="Sınır koyma, başkalarına 'hayır' demeyi öğrenmek ve kişisel alanınızı korumak için kritik bir beceridir.">  -->  SORU 79: Sağlıklı sınırlar nasıl konulur?
+        <option value="Prokrastinasyon (ertelemek), önemli bir işi, daha az önemli veya daha keyifli bir iş uğruna sürekli geciktirme eylemidir.">  -->  SORU 80: Erteleme (Prokrastinasyon) neden olur?
+        <option value="İletişimde etkin dinleme, sadece söylenen sözleri duymak değil, aynı zamanda karşıdaki kişinin duygularını ve niyetini anlamaya çalışmaktır.">  -->  SORU 81: Etkili dinleme nedir?
+        <option value="Kötü alışkanlıkları bırakmak için, tetikleyicileri belirlemek ve eski davranışın yerine yeni, olumlu bir rutin koymak gerekir.">  -->  SORU 82: Kötü alışkanlıklar nasıl bırakılır?
+        <option value="Yaratıcılığı artırmak için rutinleri kırmak, farklı alanlarda yeni şeyler denemek ve beyin fırtınası yapmak faydalıdır.">  -->  SORU 83: Yaratıcılık nasıl geliştirilir?
+        <option value="Finansal okuryazarlık, bütçeleme, tasarruf, borç yönetimi ve yatırım kararları konusunda bilgi sahibi olmaktır.">  -->  SORU 84: Finansal okuryazarlık neyi kapsar?
+        <option value="Dijital detoks, zihinsel sağlığı iyileştirmek ve odaklanmayı artırmak amacıyla belirli bir süre teknolojik cihazlardan uzak durmaktır.">  -->  SORU 85: Dijital detoks ne işe yarar?
+        <option value="Kendini gerçekleştiren kehanet, bir şeye inanmanın, o inancın gerçekleşme olasılığını artırmasıdır.">  -->  SORU 86: Kendini gerçekleştiren kehanet nedir?
+        <option value="Kişisel gelişim, kişinin potansiyelini maksimize etmek için beceri, bilgi ve farkındalığını sürekli artırma sürecidir.">  -->  SORU 87: Kişisel gelişim ne anlama gelir?
+        <option value="Geri bildirim, kişinin performansını iyileştirmesine yardımcı olan yapıcı ve spesifik bilgiler olmalıdır.">  -->  SORU 88: Etkili geri bildirim nasıl verilir?
+        <option value="Hedef belirlemede SMART yöntemi (Özgül, Ölçülebilir, Ulaşılabilir, İlgili, Zamana bağlı) başarı şansını artırır.">  -->  SORU 89: SMART hedefler nelerdir?
+        <option value="Mentorluk, deneyimli bir kişinin daha az deneyimli birine rehberlik etmesi ve bilgi aktarmasıdır.">  -->  SORU 90: Mentorluğun amacı nedir?
+        <option value="Pasif agresif davranış, kişinin öfke veya düşmanlığını dolaylı yollarla ifade etmesidir.">  -->  SORU 91: Pasif agresif davranış nedir?
+        <option value="Eleştirel düşünme, bilgiyi objektif bir şekilde analiz etme ve mantıklı kararlar verme yeteneğidir.">  -->  SORU 92: Eleştirel düşünme neden önemlidir?
+        <option value="Empati, bir başkasının duygularını ve bakış açısını anlama yeteneğidir.">  -->  SORU 93: Empati ne demektir?
+        <option value="Topluluk önünde konuşma korkusunu yenmek için pratik yapmak, konuya hakim olmak ve derin nefes alma teknikleri kullanmak faydalıdır.">  -->  SORU 94: Topluluk önünde konuşma korkusu nasıl yenilir?
+        <option value="Work-Life Balance (İş-Yaşam Dengesi), iş ve kişisel yaşam arasındaki zaman ve enerjiyi sağlıklı bir şekilde bölüştürmektir.">  -->  SORU 95: İş-Yaşam Dengesi nasıl sağlanır?
+        <option value="CEVAP 96: Lütfen kendi içeriğinizle değiştiriniz.">  -->  SORU 96
+        <option value="CEVAP 97: Lütfen kendi içeriğinizle değiştiriniz.">  -->  SORU 97
+        <option value="CEVAP 98: Lütfen kendi içeriğinizle değiştiriniz.">  -->  SORU 98
+        <option value="CEVAP 99: Lütfen kendi içeriğinizle değiştiriniz.">  -->  SORU 99
+        <option value="CEVAP 100: Lütfen kendi içeriğinizle değiştiriniz.">  -->  SORU 100
+
+        </select>
+        
+        <p><p>
+        
+        <div class="answer-label">Yanıtlar:</div>
+        
+        <textarea name="cevap" class="answer-textarea" wrap="virtual">Lütfen yukarıdaki listeden bir soru seçin. Cevabı burada görünecektir.</textarea>
+        
+        <p><p>
+    </div>
+</div>
+</form>
+
+</body>
+</html>
