@@ -1,0 +1,32 @@
+Dijital Tesbihatınız: Modern Zikirmatik Widget'ı (Kayıt Özellikli, Çoklu Hedef ve Zikir!)
+Merhaba Allaturka Forum Üyeleri Ve Ziyaretciler,
+
+[YENİ: Kaydetme Özelliği ile Büyük Hedefler Artık Kolay]
+
+Sitemizde kullanmak üzere geliştirdiğimiz, masaüstü ve mobil uyumlu, sade tasarımlı yeni Zikirmatik widget'ımızı sizlerle paylaşmak istedik. Özellikle binlik veya daha uzun zikirler çekenler için eşsiz bir kolaylık ekledik: Kaldığınız yerden devam etme özelliği.
+
+Bu araç sayesinde tesbihatınızı böldüğünüzde, o anki sayıyı "Kaydet" butonu ile kolayca hafızaya alabilirsiniz. Sayfayı kapatsanız bile geri geldiğinizde, seçtiğiniz zikir için kaydedilen sayı otomatik olarak yüklenir ve kaldığınız yerden devam edersiniz. Klasik zikirmatik deneyimini modern web ortamına taşıyan bu araç, manevi odaklanmayı artırmak için tasarlandı.
+
+[Widget'ın Öne Çıkan Güncellemeleri]
+
+Widget, kullanıcı deneyimini en üst seviyeye çıkarmak için geliştirildi:
+
+Hafıza/Kayıt Özelliği: Her zikir çeşidi için ayrı ayrı kaydetme imkanı sunar, böylece sayfanızı kapatsanız bile veriniz kaybolmaz.
+Geniş Zikir Seçeneği: Sübhanallah, Elhamdülillah, Allahu Ekber, Lâ İlahe İllallah, Estağfirullah, Salavat ve Lâ Havle gibi popüler zikirleri ekledik.
+Üç Hedef Ayarı: Hedefi 33 (Tesbihat), 99 (Tam Tesbih) ve 1000 (Uzun Vird) arasında kolayca değiştirebilirsiniz.
+Kesintisiz Deneyim: Tarayıcı pop-up'ları (alert/onay kutuları) kullanılmaz. Tüm etkileşimler widget içinde gerçekleşir.
+[Geliştirici Notları ve Nasıl Özelleştirilir?]
+
+1. Renk Şeması Değişimi: Kodun başındaki :root bölümündeki CSS değişkenlerini değiştirerek widget'ın tüm renklerini tek elden kontrol edebilirsiniz:
+
+--bg-main: #3a3a3a; (Widget Ana Arka Planı) --accent-color: #00bcd4; (Sayaç ve Ana Buton Rengi) --panel-bg: #4a4a4a; (Gösterge Paneli Arka Planı) Not: Sayfanızın arka planını saydam yapmak için, kodun başındaki <style> bölümünde bulunan body { background-color: #222; } satırını body { background-color: transparent; } olarak değiştiriniz.
+
+2. Yeni Zikir Ekleme: İstediğiniz zikri listeye eklemek çok basittir. <select id="zikir-listesi"> etiketleri arasına aşağıdaki kalıpta yeni bir <option> satırı ekleyebilirsiniz:
+
+&lt;option value="Eklemek İstediğiniz Zikirin Kısa Adı"&gt;Zikirin Arapça/Türkçe Tam Metni&lt;/option&gt; Örnek: &lt;option value="Ya Allah"&gt;Ya Allahu Ya Mennan&lt;/option&gt;
+
+3. Iframe Boyut Önerileri: Widget'ın sabit genişliği 350px'dir. Foruma veya web sitenize eklerken iframe boyutlarını şu şekilde ayarlamanız önerilir:
+
+Genişlik (Width): En az 370px (350px widget + 20px boşluk) Yükseklik (Height): Yaklaşık 680px - 700px.
+
+Umarız bu güncellemeler ve teknik notlar, günlük tesbihatınızı daha verimli ve kolay hale getirir. Geri bildirimleriniz her zaman değerlidir. Hayırlı günler dileriz.
