@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İslami Bilgiler Sekmeli Widget</title> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ======================================= */
+        /* GÜNCELLENMİŞ KOYU YEŞİL & KOYU HAKİ TEMA */
+        /* ======================================= */
+
+        :root {
+            --widget-bg-outer: transparent; 
+            --widget-bg-inner: #1A4032; /* Koyu Yeşil */
+            --panel-bg: var(--widget-bg-inner); 
+            
+            --border-gold: #907F5A; /* Koyu Haki/Altın Vurgu Rengi */
+            --header-bordo: var(--border-gold); 
+            
+            --text-dark: #FFFFFF; /* Beyaz */
+            --text-muted: #CCCCCC; 
+            --list-marker-green: #B2D8C7; 
+            --shadow-subtle: 0 4px 10px rgba(0, 0, 0, 0.4);
+            --shadow-deep: 0 8px 20px rgba(0, 0, 0, 0.8);
+            --subtle-active-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); 
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: transparent; 
+            color: var(--text-dark); 
+            margin: 0;
+            padding: 0; 
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+        }
+
+        #info-widget {
+            width: 375px; 
+            max-width: 100%;
+            background-color: var(--widget-bg-inner); 
+            border-radius: 20px; 
+            padding: 25px;
+            box-sizing: border-box;
+            box-shadow: var(--shadow-deep); 
+            border: 2px solid var(--border-gold); 
+            position: relative;
+        }
+        
+        /* Besmele Stili */
+        .besmele {
+            font-family: 'Amiri Quran', serif; 
+            font-size: 2.0em; 
+            color: var(--header-bordo); 
+            text-align: center;
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            position: relative;
+            top: -10px; 
+        }
+        .besmele::before, .besmele::after {
+            content: "";
+            display: inline-block;
+            width: 25px; 
+            height: 1px;
+            background-color: var(--border-gold); 
+            vertical-align: middle;
+            margin: 0 5px;
+        }
+        
+        /* Farz Tanımı Stili */
+        .farz-definition {
+            text-align: center;
+            font-size: 0.75em; 
+            color: var(--text-muted); 
+            margin-top: -15px; 
+            margin-bottom: 25px;
+            padding: 15px 10px 0 10px;
+            font-style: italic;
+            line-height: 1.4;
+            border-top: 1px dashed rgba(144, 127, 90, 0.5); 
+        }
+
+        /* 32 Farz Özet Listesi Stili */
+        .farz-summary {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 8px; 
+            background-color: rgba(144, 127, 90, 0.1); 
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px dashed var(--header-bordo);
+        }
+
+        .farz-summary li {
+            color: var(--text-dark); 
+            font-size: 0.85em; 
+            font-weight: 500;
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Sekme Navigasyonu Stilleri */
+        .tab-nav {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 25px;
+            padding: 6px; 
+            background-color: var(--widget-bg-inner); 
+            border-radius: 15px;
+            border: 1px solid var(--border-gold); 
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .tab-button {
+            flex-grow: 1;
+            padding: 10px 5px; 
+            border: none;
+            background-color: transparent;
+            color: var(--text-muted); 
+            font-size: 0.8em; 
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            text-align: center;
+            outline: none;
+            opacity: 0.85;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-button:hover:not(.active) {
+            opacity: 1;
+            color: var(--header-bordo); 
+            background-color: rgba(144, 127, 90, 0.1); 
+        }
+
+        .tab-button.active {
+            background-color: var(--border-gold); 
+            color: var(--text-dark); 
+            box-shadow: var(--subtle-active-shadow); 
+            opacity: 1;
+        }
+        
+        .tab-button i {
+            margin-right: 5px; 
+            color: var(--list-marker-green); 
+            transition: color 0.3s ease;
+        }
+
+        .tab-button.active i {
+            color: var(--text-dark); 
+        }
+
+        /* İçerik Alanı Stilleri */
+        .tab-content {
+            display: none; 
+            background-color: var(--widget-bg-inner); 
+            padding: 20px;
+            border-radius: 15px;
+            min-height: 380px;
+            max-height: 650px;
+            overflow-y: auto; 
+            border: 1px solid var(--border-gold); 
+            box-shadow: var(--shadow-subtle);
+        }
+        
+        .tab-content h3 {
+            color: var(--header-bordo); 
+            margin-top: 15px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--border-gold); 
+            padding-bottom: 8px;
+            font-size: 1.4em;
+            font-weight: 700;
+            text-align: center;
+            text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* İmanın Şartları Başlığı Stili */
+        .tab-content h4 {
+            color: var(--text-dark); 
+            margin-top: 20px;
+            margin-bottom: 8px;
+            font-size: 1.15em;
+            font-weight: 600;
+            text-decoration: underline;
+            text-decoration-color: var(--border-gold); 
+        }
+
+        /* ======================================= */
+        /* YENİ ACCORDION (AÇILIR KAPANIR) STİLLERİ */
+        /* ======================================= */
+        
+        .collapsible-item {
+            margin-bottom: 5px;
+            border-bottom: 1px solid rgba(144, 127, 90, 0.4); 
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .collapsible-header {
+            color: var(--text-dark); 
+            margin: 0;
+            padding: 10px 10px;
+            font-size: 1.0em; 
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            user-select: none; 
+            display: flex;
+            align-items: center;
+            border-radius: 5px;
+        }
+
+        .collapsible-header:hover {
+            background-color: rgba(144, 127, 90, 0.1); 
+        }
+
+        /* Başlık yanındaki ok ikonu */
+        .collapsible-header::after {
+            content: '\f0da'; /* Sağ ok */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            margin-left: auto;
+            color: var(--list-marker-green); 
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible-header.active {
+            background-color: rgba(144, 127, 90, 0.3);
+        }
+
+        .collapsible-header.active::after {
+            content: '\f0d7'; /* Aşağı ok */
+            color: var(--border-gold);
+        }
+
+        .collapsible-content {
+            display: none; /* Varsayılan olarak kapalı */
+            padding: 5px 15px 15px 15px;
+            background-color: rgba(0, 0, 0, 0.2); 
+            border-top: 1px solid var(--border-gold);
+            border-radius: 0 0 5px 5px;
+            margin-top: -1px;
+            color: var(--text-muted);
+        }
+        .collapsible-content p {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            line-height: 1.5;
+            font-size: 0.9em;
+            color: var(--text-dark);
+        }
+        
+        /* ARAPÇA YAZI STİLİ */
+        .arabic-text {
+            font-family: 'Amiri Quran', serif; 
+            font-size: 1.5em; 
+            color: var(--header-bordo); /* Koyu Haki/Altın */
+            text-align: right;
+            direction: rtl; 
+            display: block;
+            margin: 15px 0;
+            line-height: 1.8;
+            font-weight: 700;
+        }
+        
+        /* Liste numaraları için özel stil */
+        .tab-content ol {
+            padding-left: 0; 
+            margin-top: 0;
+            list-style-type: none; 
+            counter-reset: farz-counter; 
+        }
+        
+        .tab-content ol li {
+            margin-bottom: 8px; 
+            padding-left: 30px; 
+            position: relative;
+            font-size: 0.9em; 
+            line-height: 1.5;
+            color: var(--text-dark); 
+        }
+        
+        .tab-content ol li:before {
+            counter-increment: farz-counter;
+            content: counter(farz-counter) ". ";
+            color: var(--list-marker-green); 
+            font-weight: 700;
+            position: absolute;
+            left: 0;
+            width: 25px; 
+            text-align: right;
+        }
+        
+        /* Scrollbar stilizasyonu */
+        .tab-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .tab-content::-webkit-scrollbar-track {
+            background: var(--widget-bg-inner);
+            border-radius: 10px;
+        }
+
+        .tab-content::-webkit-scrollbar-thumb {
+            background: var(--border-gold);
+            border-radius: 10px;
+            border: 1px solid var(--widget-bg-inner);
+        }
+
+        .tab-content::-webkit-scrollbar-thumb:hover {
+            background: var(--border-gold);
+        }
+
+        /* Alt Sağ Köşe Yazısı */
+        .footer-credit {
+            text-align: right;
+            font-size: 0.7em; 
+            color: var(--text-muted); 
+            margin-top: 15px;
+            opacity: 0.8;
+            font-weight: bold;
+            text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.4); 
+        }
+
+    </style>
+    
+
+</head>
+<body>
+    
+    <div id="info-widget">
+        
+        <div class="besmele">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ</div>
+        
+        <div class="farz-definition">
+            Farz kelimesi sözlükte, “İslâm dîninde Allah’ın emri olduğu kesin bir delille sâbit olan, yapılması sevâbı, özürsüz olarak terki büyük günâhı, inkârı ise küfrü gerektiren îtikādî, amelî, ahlâkî yükümlülük” demektir.
+        </div>
+        
+        <div class="tab-nav">
+            <button class="tab-button active" onclick="openTab('islam-sartlari', this)">
+                <i class="fas fa-mosque"></i> İslam'ın Şartları
+            </button>
+            <button class="tab-button" onclick="openTab('otuziki-farz', this)">
+                <i class="fas fa-hand-holding-heart"></i> 32 Farz
+            </button>
+            <button class="tab-button" onclick="openTab('ellidort-farz', this)">
+                <i class="fas fa-quran"></i> 54 Farz
+            </button>
+        </div>
+
+        <div id="islam-sartlari" class="tab-content">
+            <h3>İSLAMIN ŞARTLARI</h3>
+            
+            <div class="collapsible-item">
+                <div class="collapsible-header" onclick="toggleAccordion(this)">
+                    1. Kelime-i Şehâdet getirmek:
+                </div>
+                <div class="collapsible-content">
+                    <p>İslam'ın ilk ve en önemli şartı olan **Kelime-i Şehâdet**, Allah'tan başka ilah olmadığına ve Hz. Muhammed'in (SAV) O'nun kulu ve resulü olduğuna sözlü olarak tanıklık etmektir. Bu şehadet, tevhidin anahtarı ve temelidir.</p>
+                    
+                    <p style="text-align: center; margin: 15px 0; font-weight: 600; color: var(--border-gold);">Kelime-i Şehâdet'in Arapça Yazılışı:</p>
+                    <span class="arabic-text">أَشْهَدُ أَنْ لَا إِلٰهَ إِلَّا اللّٰهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللّٰهِ</span>
+                    <p style="text-align: center; font-size: 0.9em; font-style: italic;">(Okunuşu: Eşhedü en lâ ilâhe illallâh ve eşhedü enne Muhammeden abdühû ve resûlüh.)</p>
+                    
+                    <p>Bu şehadetin ilk bölümü olan **"Lâ ilâhe illallâh"** (Allah'tan başka hak ilah yoktur) ifadesi, tevhidin özünü oluşturur ve bütün batıl inançları reddeder.</p>
+                    
+                    <p>İkinci bölüm olan **"Muhammedün Resûlullah"** ise; onun getirdiği haberleri tasdik etmek, emrettiği şeyi yapmak ve yasakladığı şeyden kaçınmak, kısacası onun Allah tarafından gönderilmiş bir resul olduğunu kabul etmektir.</p>
+                </div>
+            </div>
+            
+            <div class="collapsible-item">
+                <div class="collapsible-header" onclick="toggleAccordion(this)">
+                    2. Namaz kılmak:
+                </div>
+                <div class="collapsible-content">
+                    <p>Bir günlük süre içinde beş vakit namazı kılmaktır. İslam dininde, Allah'ın, verdiği nimetlere şükretmiş olmaları ve kulları üzerindeki hakkını yerine getirmeleri, bu esnada kulun Rabbi ile arasında bir bağ kurarak yalvarıp dua etmesi ve Müslüman kişiyi kötülükten ve hayasızlıktan alıkoyması için farz kıldığı bir ibadettir. İslam dinindeki en önemli ibadetlerdendir, Kur'an'da sık sık bahsolunur.</p>
+                </div>
+            </div>
+            
+            <div class="collapsible-item">
+                <div class="collapsible-header" onclick="toggleAccordion(this)">
+                    3. Oruç tutmak:
+                </div>
+                <div class="collapsible-content">
+                    <p>Hicri ayların dokuzuncusu olan Ramazan ayında bütün Müslümanların fecrin başlamasından güneş batıncaya kadar gündüz vakti yemeyi, içmeyi ve şehevi arzuları terk ederek oruç tutmalarıdır. Oruç, yalnız aç ve susuz kalmak değildir. Orucun, sabır, şükür, nefs terbiyesi gibi diğer ibadetlerle irtibatı vardır.</p>
+                </div>
+            </div>
+
+            <div class="collapsible-item">
+                <div class="collapsible-header" onclick="toggleAccordion(this)">
+                    4. Zekât vermek:
+                </div>
+                <div class="collapsible-content">
+                    <p>İslam'da, zekat, üzerine vacip olan herkesin, her sene fakir yahut muhtaçlardan onu almak durumunda olan insanlara vermesi gereken sadakadır. Zekat fakirlere vacip değildir yani fakirler zekat vermek zorunda değildir.</p>
+                </div>
+            </div>
+            
+            <div class="collapsible-item">
+                <div class="collapsible-header" onclick="toggleAccordion(this)">
+                    5. Hacca gitmek:
+                </div>
+                <div class="collapsible-content">
+                    <p>İslam şeriatında belirtildiği gibi özel bir zamanda Allah'a özel bir ibadeti yapmak kasdıyla Mekke bulunmaktır. Allah'u Teala güç yetirebilene ömründe bir kere bu ibadeti yapmasını farz kılmıştır. Hacda dünyanın her yerinden gelen Müslümanlar yeryüzünün en hayırlı beldesinde toplanarak ve yönetici yönetilen, zengin fakir, beyaz siyah farkı olmaksızın tek bir elbiseye bürünerek tek olan Allah'a ibadet ederler. Bu ibadetin en önemli bölümü Arafat'ta vakfeye durmak, (Müslümanların kıblesi) Kabe'yi tavaf etmek, Safa ve Merve arasında sa'y yapmaktır.</p>
+                </div>
+            </div>
+
+
+            <h4 style="margin-top: 30px;">İMANIN ŞARTLARI</h4>
+            <ol start="1">
+                <li>Allah'ın varlığına ve birliğine inanmak.</li>
+                <li>Allah'ın meleklerine inanmak.</li>
+                <li>Allah'ın kitablarına inanmak.</li>
+                <li>Allah'ın peygamberlerine inanmak.</li>
+                <li>Âhiret gününe inanmak.</li>
+                <li>Kadere, hayır ve şerrin yaratıcısının Allah (Celle Celâlühü) olduğuna inanmak.</li>
+            </ol>
+        </div>
+
+        <div id="otuziki-farz" class="tab-content">
+            
+            <h3>32 FARZ NEDİR?</h3>
+            <ul class="farz-summary">
+                <li>İmanın şartları: 6</li>
+                <li>İslam’ın şartları: 5</li>
+                <li>Namazın farzları: 12</li>
+                <li>Abdestin farzları: 4</li>
+                <li>Guslün farzları: 3</li>
+                <li>Teyemmümün farzları: 2</li>
+            </ul>
+
+            <h3>AÇIKLAMALI 32 FARZ</h3>
+            
+            <h4>İmanın Şartları (6 Farz)</h4>
+            <ol start="1">
+                <li>Allah'ın birliğine inanmak.</li>
+                <li>Meleklere inanmak.</li>
+                <li>Kitaplara inanmak.</li>
+                <li>Peygamberlere inanmak.</li>
+                <li>Ahiret hayatına inanmak.</li>
+                <li>Kaderin, hayrın ve şerrin Allah'tan geldiğine inanmak.</li>
+            </ol>
+
+            <h4>İslam’ın Şartları (5 Farz)</h4>
+            <ol start="1">
+                <li>Kelime-i Şehadet getirmek.</li>
+                <li>Namaz kılmak.</li>
+                <li>Oruç tutmak.</li>
+                <li>Zekat vermek.</li>
+                <li>Hacca gitmek.</li>
+            </ol>
+
+            <h4>Namazın Farzları (12 Farz)</h4>
+            <h5>Dışındaki Farzları (Şartları) (6 Farz)</h5>
+            <ol start="1">
+                <li>Hadesten tahâret.</li>
+                <li>Necâsetten tahâret.</li>
+                <li>Setr-i avret.</li>
+                <li>İstikbâl-i kıble.</li>
+                <li>Vakit.</li>
+                <li>Niyet.</li>
+            </ol>
+            <h5>İçindeki Farzları (Rükünleri) (6 Farz)</h5>
+            <ol start="1">
+                <li>İftitah tekbiri.</li>
+                <li>Kıyam.</li>
+                <li>Kıraat.</li>
+                <li>Rükû.</li>
+                <li>Secde.</li>
+                <li>Ka'de-i ahîre.</li>
+            </ol>
+
+            <h4>Abdestin Farzları (4 Farz)</h4>
+            <ol start="1">
+                <li>Yüzünü yıkamak.</li>
+                <li>Ellerini dirsekleriyle beraber yıkamak.</li>
+                <li>Başının dörtte birini meshetmek.</li>
+                <li>Ayaklarını topuklarıyla beraber yıkamak.</li>
+            </ol>
+
+            <h4>Guslün Farzları (3 Farz)</h4>
+            <ol start="1">
+                <li>Ağzına su vermek.</li>
+                <li>Burnuna su vermek.</li>
+                <li>Bütün bedenini yıkamak.</li>
+            </ol>
+
+            <h4>Teyemmümün Farzları (2 Farz)</h4>
+            <ol start="1">
+                <li>Niyet etmek.</li>
+                <li>İki elin içini temiz toprağa sürüp, yüzün tamamını mesh etmek. Tekrar elleri temiz toprağa vurup, önce sağ ve sonra sol kolu mesh etmek.</li>
+            </ol>
+        </div>
+
+        <div id="ellidort-farz" class="tab-content">
+            <h3>MÜ'MİNLERİN 54 FARZI</h3>
+            
+            <ol start="1">
+                <li>Allâh Teâlâ’yı zikretmek.</li>
+                <li>Helâlinden kazanıp, yemek içmek.</li>
+                <li>Abdest almak.</li>
+                <li>Beş vakit namaz kılmak.</li>
+                <li>Cünüplükten yıkanmak.</li>
+                <li>Kişinin rızkına Allâh’ın kefil olduğunu bilmek.</li>
+                <li>Helâlden temiz elbise giymek.</li>
+                <li>Allâh’a tevekkül etmek.</li>
+                <li>Kanaat etmek.</li>
+                <li>Nimete karşı şükretmek.</li>
+                <li>Allâh’tan gelen kazâya râzı olmak.</li>
+                <li>Allâh’tan gelen belâya sabretmek.</li>
+                <li>Günahlardan tevbe etmek.</li>
+                <li>İhlâsla Allâh’a ibadet etmek.</li>
+                <li>Şeytanı düşman bilmek.</li>
+                <li>Kur’ân-ı Kerîm’i kesin delil kabul etmek.</li>
+                <li>Ölümü hak bilmek.</li>
+                <li>Allâh’ın sevdiğini sevip, sevmediğinden uzak durmak.</li>
+                <li>Ana-babaya iyilik etmek.</li>
+                <li>İyiliği emretmek, kötülükten sakındırmak.</li>
+                <li>Akrabayı ziyaret etmek.</li>
+                <li>Emânete hiyanet etmemek.</li>
+                <li>Hacca gitmek.</li>
+                <li>Allâh’a ve Peygamberine itaat etmek.</li>
+                <li>Günahlardan kaçıp Allâh’a sığınmak.</li>
+                <li>Müslüman idarecilere itaat etmek.</li>
+                <li>Âleme ibret gözü ile bakmak.</li>
+                <li>Tefekkür etmek, düşünmek.</li>
+                <li>Dili kötü sözlerden korumak.</li>
+                <li>Oruç tutmak.</li>
+                <li>Kimse ile alay etmemek.</li>
+                <li>Harama bakmamak.</li>
+                <li>Sözünde doğru olmak.</li>
+                <li>Kulağı, yasak şeyleri dinlemekten alıkoymak.</li>
+                <li>İlim öğrenmek.</li>
+                <li>Ölçü ve tartıyı doğru yapmak.</li>
+                <li>Allâh’ın azabından korkmak.</li>
+                <li>Allâh uğrunda cihad etmek.</li>
+                <li>Allâh’ın rahmetinden ümit kesmemek.</li>
+                <li>Nefsin arzularına uymamak.</li>
+                <li>Allâh yolunda yemek yedirmek.</li>
+                <li>Yetecek kadar rızık kazanmak.</li>
+                <li>Zekâtı vermek ve fakirlere yardım etmek.</li>
+                <li>Hayız ve nifas hâllerinde zevceye yaklaşmamak.</li>
+                <li>Bütün günahlardan kalbi arındırmak.</li>
+                <li>Kendini büyük görmemek.</li>
+                <li>Büluğa ermemiş yetimin malını korumak.</li>
+                <li>Livâtadan (cinsî sapıklıktan) sakınmak.</li>
+                <li>Beş vakit namaza devam etmek.</li>
+                <li>Haksız yere kimsenin malını yememek.</li>
+                <li>Allâh’a eş koşmamak.</li>
+                <li>Zinâdan sakınmak.</li>
+                <li>İçki içmemek.</li>
+                <li>Yalan yere yemin etmemek ve yalan konuşmamak.</li>
+            </ol>
+        </div>
+
+        <div class="footer-credit">Powered by Dost Yurdu Radyo</div>
+
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Başlangıçta İslam'ın Şartları sekmesini açar
+            document.getElementById('islam-sartlari').style.display = 'block';
+        });
+
+        function openTab(tabName, elmnt) {
+            var i, tabcontent, tablinks;
+            
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            
+            tablinks = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            
+            document.getElementById(tabName).style.display = "block";
+            elmnt.className += " active";
+        }
+        
+        // Yeni Accordion Fonksiyonu (Tekli Açık - Exclusive)
+        function toggleAccordion(headerElement) {
+            const content = headerElement.nextElementSibling;
+            const parent = headerElement.closest('.tab-content');
+            
+            // Yalnızca İslam'ın Şartları sekmesindeki collapsible-header'ları bul
+            const allHeaders = parent.querySelectorAll('.collapsible-header');
+
+            // Eğer şu anki zaten açıksa, kapat ve çık (toggle)
+            if (headerElement.classList.contains("active")) {
+                headerElement.classList.remove("active");
+                content.style.display = "none";
+                return;
+            }
+
+            // Diğer tüm açık olanları kapat
+            allHeaders.forEach(otherHeader => {
+                if (otherHeader.classList.contains("active")) {
+                    otherHeader.classList.remove("active");
+                    // Eğer nextElementSibling var ise kapat
+                    if (otherHeader.nextElementSibling) {
+                         otherHeader.nextElementSibling.style.display = "none";
+                    }
+                }
+            });
+
+            // Tıklananı aç
+            headerElement.classList.add("active");
+            content.style.display = "block";
+        }
+    </script>
+</body>
+</html>
