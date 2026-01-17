@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-width=1.0">
+    <title>Gelişmiş DJ Tanıtım Widget</title>
+    <style>
+        /* Ana Kapsayıcı Stilleri - GENİŞLİK 400PX */
+        .dj-widget-container {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1c1c1c;
+            color: #ffffff;
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 400px; 
+            margin: 0 auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        /* Logo Stili */
+        .dj-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+
+        /* Kaydırma Manşet Stili */
+        .marquee-container {
+            overflow: hidden;
+            background-color: #000000;
+            padding: 5px 0;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            height: 20px;
+        }
+        .marquee-content {
+            white-space: nowrap;
+            display: inline-block;
+            font-size: 0.9em;
+            color: #FF8C00; 
+            animation: marquee-scroll 25s linear infinite; 
+            padding-left: 100%; 
+        }
+        @keyframes marquee-scroll {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        /* DJ Galeri Alanı Stilleri - 4'erli Alt Alta Sıra */
+        .dj-gallery {
+            display: flex;
+            flex-wrap: wrap; 
+            justify-content: space-around; 
+            gap: 10px; 
+            padding: 10px 0;
+        }
+        
+        .dj-item {
+            cursor: pointer;
+            transition: transform 0.3s, opacity 0.3s;
+            width: 70px; 
+            margin-bottom: 15px; 
+            flex-basis: calc(25% - 15px);
+        }
+        .dj-item:hover {
+            transform: translateY(-5px);
+            opacity: 0.8;
+        }
+
+        .dj-item img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%; 
+            border: 3px solid #333;
+            object-fit: cover;
+        }
+        .dj-item p {
+            font-size: 0.7em; 
+            color: #fff;
+            margin: 5px 0 0 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            position: relative; 
+            line-height: 1.5; /* Dikey yükseklik korunuyor */
+            padding-right: 15px; 
+        }
+        
+        /* RÜTBE SİMGESİ STİLLERİ */
+        .dj-rank-icon {
+            display: block;
+            position: absolute;
+            top: 5px; 
+            right: 5px; 
+            width: 9px; 
+            height: 9px; 
+            border-radius: 50%;
+            border: 1px solid #000;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .rank-admin {
+            background-color: #e74c3c; /* Kırmızı */
+            border-color: #c0392b;
+        }
+        .rank-mod {
+            background-color: #3498db; /* Mavi */
+            border-color: #2980b9;
+        }
+        .rank-dj {
+            background-color: #f39c12; /* Turuncu */
+            border-color: #e67e22;
+        }
+        /* /RÜTBE SİMGESİ STİLLERİ */
+
+
+        /* Modal (Açılır Kutu) Stilleri */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 100; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.8); 
+        }
+        .modal-content {
+            background-color: #333333; 
+            margin: 5% auto; 
+            padding: 25px;
+            border: 2px solid #FF8C00;
+            width: 350px;
+            max-width: 400px; 
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.8);
+            animation: modal-open 0.3s;
+        }
+        @keyframes modal-open {
+            from {opacity: 0; transform: scale(0.9);}
+            to {opacity: 1; transform: scale(1);}
+        }
+
+        .modal-dj-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #FF8C00;
+            margin-bottom: 15px;
+        }
+        .modal-title {
+            color: #FFD700; 
+            margin-top: 0;
+            border-bottom: 1px solid #555;
+            padding-bottom: 8px;
+            font-size: 1.8em;
+        }
+        .modal-body p {
+            text-align: left;
+            font-size: 1em;
+            line-height: 1.6;
+            color: #eeeeee; 
+        }
+        .modal-body a {
+            color: #FF8C00;
+            text-decoration: none;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .close-btn {
+            color: #FFD700;
+            float: right;
+            font-size: 32px;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #FF8C00;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dj-widget-container">
+    
+    <img src="https://allaturkaa.de/forum/wcf/images/allaturkaa/logo.png" alt="Allaturkaa Logo" class="dj-logo">
+
+    <div class="marquee-container">
+        <div class="marquee-content">
+            🎉 DJ'lerimizi yakından tanımak için resimlerine tıklayın! En güzel yayınlar Allaturkaa'da! 🎉 DJ'lerimizi yakından tanımak için resimlerine tıklayın!
+        </div>
+    </div>
+    
+    <h2>DJ Kadromuz</h2>
+    <div id="djGallery" class="dj-gallery">
+        </div>
+</div>
+
+<div id="djModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <div id="modalContent">
+            </div>
+    </div>
+</div>
+
+<script>
+// --- DJ VERİLERİNİ BURADAN DÜZENLEYİN (İlk 4 DJ güncellendi) ---
+const djs = [
+    // --- 1. SIRADAKİ DJ (Admin) ---
+    {
+        name: "DJ Mehmet", 
+        img: "https://s1.directupload.eu/images/251010/ittqech4.webp",
+        rank: "admin", // Admin olarak kaldı
+        bio: "En yeni pop hitleri ve canlı istekler. Haftanın ortası enerjisi!",
+        yayin: "Çarşamba: 20:00 - 22:00",
+        social: {
+            facebook: "link-yok",
+            instagram: "link-yok"
+        }
+    },
+    // --- 2. SIRADAKİ DJ (Mod) ---
+    {
+        name: "DJ Papatya",
+        img: "https://s1.directupload.eu/images/251010/g3j4k7pr.webp",
+        rank: "mod", // Mod olarak kaldı
+        bio: "Türk Sanat Müziği'nin ve nostaljinin ruhunu taşıyan eşsiz ses. Huzurlu bir Pazar sabahı için...",
+        yayin: "Pazar: 10:00 - 13:00",
+        social: {
+            facebook: "link-yok",
+            instagram: "link-yok"
+        }
+    },
+    // --- 3. SIRADAKİ DJ (DJ -> MOD) ---
+    {
+        name: "DJ Mustafa",
+        img: "https://s1.directupload.eu/images/251010/gn9ck3nl.webp",
+        rank: "mod", // MOD olarak güncellendi
+        bio: "Enerjisi hiç bitmeyen, 90'ların unutulmaz hitlerini size sunan tecrübeli DJ'imiz. Her Cuma gece yayında!",
+        yayin: "Cuma: 21:00 - 00:00",
+        social: {
+            facebook: "link-yok", 
+            instagram: "link-yok" 
+        }
+    },
+    // --- 4. DJ (DJ -> MOD) ---
+    {
+        name: "DJ Deniz",
+        img: "https://s1.directupload.eu/images/251010/dcngsbs4.webp",
+        rank: "mod", // MOD olarak güncellendi
+        bio: "Yöresel müzik ve türkülerin adresi.",
+        yayin: "Cumartesi: 15:00 - 18:00",
+        social: {
+            facebook: "link-yok",
+            instagram: "link-yok"
+        }
+    },
+    // --- 5. DJ ---
+    {
+        name: "DJ Kaptan",
+        img: "https://s1.directupload.eu/images/251010/su6uvdla.webp",
+        rank: "dj",
+        bio: "Slow parçalar ve romantik anların DJ'i.",
+        yayin: "Pazartesi: 22:00 - 00:00",
+        social: {
+            facebook: "link-yok",
+            instagram: "link-yok"
+        }
+    },
+    // --- 6. DJ ---
+    {
+        name: "DJ Yankı",
+        img: "https://s1.directupload.eu/images/251010/az3o36hu.webp",
+        rank: "dj",
+        bio: "Rock ve Alternatif müziğin sesi.",
+        yayin: "Salı: 21:00 - 23:00",
+        social: {
+            facebook: "link-yok",
+            instagram: "link-ok"
+        }
+    },
+    // --- 7. DJ ---
+    {
+        name: "DJ Gece",
+        img: "https://s1.directupload.eu/images/251010/3yv4mc78.webp",
+        rank: "dj",
+        bio: "Geceye özel chill-out ve lounge müzikler.",
+        yayin: "Perşembe: 00:00 - 02:00",
+        social: {
+            facebook: "link-yok",
+            instagram: "link-yok"
+        }
+    },
+     // --- 8. DJ ---
+    {
+        name: "DJ Rüya",
+        img: "https://s1.directupload.eu/images/251010/4av9v9ju.webp",
+        rank: "dj",
+        bio: "Latin ve dünya müziklerinden seçmeler.",
+        yayin: "Cumartesi: 18:00 - 20:00",
+        social: {
+            facebook: "link-yok",
+            instagram: "link-yok"
+        }
+    },
+    // --- 9. DJ ---
+    {
+        name: "DJ Fırtına",
+        img: "https://s1.directupload.eu/images/251010/wimow7bl.webp",
+        rank: "dj",
+        bio: "Hızlı tempolu dans müzikleri ve remixler.",
+        yayin: "Pazar: 20:00 - 23:00",
+        social: {
+            facebook: "link-yok",
+            instagram: "link-yok"
+        }
+    },
+    // --- 10. DJ ---
+    {
+        name: "DJ Sessiz",
+        img: "https://s1.directupload.eu/images/251010/jmhn4tgh.webp",
+        rank: "dj",
+        bio: "Jazz ve Blues sevenler için özel saatler.",
+        yayin: "Pazartesi: 19:00 - 21:00",
+        social: {
+            facebook: "link-yok",
+            instagram: "link-yok"
+        }
+    },
+];
+
+// --- JAVASCRIPT MODÜLÜ (Slayt ve Modal Yönetimi) ---
+
+document.addEventListener('DOMContentLoaded', () => {
+    const gallery = document.getElementById('djGallery');
+    const modal = document.getElementById('djModal');
+    const closeBtn = document.querySelector('.close-btn');
+    const modalContent = document.getElementById('modalContent');
+
+    // 1. Galeri Oluşturma (4'erli sıra)
+    djs.forEach((dj, index) => {
+        const item = document.createElement('div');
+        item.classList.add('dj-item');
+        
+        // Rütbe ikonunun sınıfını belirle
+        let rankClass = '';
+        if (dj.rank === 'admin') {
+            rankClass = 'rank-admin';
+        } else if (dj.rank === 'mod') {
+            rankClass = 'rank-mod';
+        } else if (dj.rank === 'dj') {
+            rankClass = 'rank-dj';
+        }
+        
+        item.innerHTML = `
+            <img src="${dj.img}" alt="${dj.name}">
+            <p>
+                ${dj.name}
+                <span class="dj-rank-icon ${rankClass}" title="${dj.rank.toUpperCase()}"></span>
+            </p>
+        `;
+        item.dataset.index = index; 
+        item.addEventListener('click', () => openModal(index));
+        gallery.appendChild(item);
+    });
+
+    // 2. Modal Açma Fonksiyonu
+    function openModal(index) {
+        const dj = djs[index];
+
+        // Sosyal medya linklerini oluştur
+        let socialHtml = '';
+        if (dj.social.facebook && dj.social.facebook !== "link-yok") {
+            socialHtml += `<a href="${dj.social.facebook}" target="_blank">Facebook</a>`;
+        }
+        if (dj.social.instagram && dj.social.instagram !== "link-yok") {
+            socialHtml += `<a href="${dj.social.instagram}" target="_blank">Instagram</a>`;
+        }
+
+
+        // Modal içeriğini doldur
+        modalContent.innerHTML = `
+            <img src="${dj.img}" alt="${dj.name}" class="modal-dj-img">
+            <h3 class="modal-title">${dj.name} (${dj.rank.toUpperCase()})</h3>
+            <div class="modal-body">
+                <p><strong>Yayın Günü/Saati:</strong> ${dj.yayin}</p>
+                <p><strong>Biyografi:</strong> ${dj.bio}</p>
+                <p>${socialHtml}</p>
+            </div>
+        `;
+
+        modal.style.display = 'block'; 
+    }
+
+    // 3. Modal Kapama İşlevleri
+    closeBtn.onclick = function() {
+        modal.style.display = 'none';
+    };
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    };
+});
+</script>
+
+</body>
+</html>
