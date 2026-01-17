@@ -1,0 +1,35 @@
+Sesli Rehber Asistan Sibel v1.0 | Tam Etkileşimli & Açık Kaynak, Reklamsız ve Ücretsiz!
+Merhaba Değerli Allaturkaa Forum Üyeleri ve Ziyaretçiler.
+Projelerinizin sağ alt köşesinde kullanıcıları karşılayan, onlara sesli mesajlar veren ve profesyonel bir rehberlik sunan Asistan Sibel modülünü sizlerle paylaşıyorum.
+Bu çalışma, sadece görsel bir öğe değil, web projelerinize "ruh" katacak interaktif bir deneyimdir.
+
+Öne Çıkan Gelişmiş Özellikler
+Sesli Karşılama: Fare ile üzerine gelindiğinde otomatik olarak başlayan, sırasıyla değişen profesyonel sesli mesaj desteği.
+Dinamik Mesaj Balonu: Ses dosyalarıyla senkronize şekilde değişen, kullanıcıya anlık bilgi veren metin kutucukları.
+Geniş Bilgilendirme Paneli: Tıklandığında açılan; oyunlar, müzik player veya YouTube kanalı gibi duyuruları yapabileceğiniz modern arayüz.
+Sıfır Kurulum & Reklamsız: Hiçbir dış kütüphane gerektirmez, tamamen açık kaynaklıdır ve sisteminizi yormadan stabil bir şekilde çalışır.
+Teknik Özellikler ve Özelleştirme
+Konumlandırma: Standart olarak ekranın Sağ Alt köşesinde (Right: 30px, Bottom: 30px) yer alır. Kod içindeki CSS değerleriyle dilediğiniz köşeye taşıyabilirsiniz.
+Boyutlar: Karakter görseli 155px, geniş bilgilendirme paneli ise 340px olarak ayarlanmıştır, her türlü cihazda şık görünür.
+Tam Kişiselleştirme: İsterseniz erkek karakter GIF’leri ve erkek sesleri kullanarak asistanınızı bir saniyede "Erkek Rehber"e dönüştürebilirsiniz. Sadece görsel linkini ve ses dosyalarını değiştirmeniz yeterlidir.
+
+Kendi Seslerinizi Oluşturun (Narakeet Rehberi)
+Asistanınızı kendi metinlerinizle konuşturmak çok kolay! İster kadın ister erkek sesi üretmek için:
+Narakeet Text-to-Audio adresine gidin.
+Metninizi yazın ve projenize en uygun (kadın/erkek) ses tonunu seçin.
+Aldığınız MP3 çıktılarını kod içerisindeki ses dizisine (array) ekleyerek asistanınızı anında güncelleyin.
+
+Teknik Özellikler ve Ses Yönetimi
+Konumlandırma: Standart olarak ekranın Sağ Alt köşesinde yer alır. CSS değerleriyle dilediğiniz köşeye taşıyabilirsiniz.
+Ses Depolama: Narakeet veya benzeri araçlarla oluşturduğunuz ses dosyalarını, kalıcı olması için kendi sunucunuza (server) veya ücretsiz bir depolama alanı olan archive.org adresine yükleyerek kod içerisindeki linklerle değiştirebilirsiniz.
+Tam Kişiselleştirme: Sistem tamamen modülerdir. İsterseniz erkek karakter görselleri ve erkek sesleri kullanarak asistanınızı saniyeler içinde yeni bir kimliğe büründürebilirsiniz.
+
+Önemli Teknik Not: Ses Aktivasyonu
+Modern tarayıcıların (Chrome, Firefox, Safari vb.) güvenlik ve kullanıcı deneyimi politikaları gereği, sayfada otomatik ses çalınması başlangıçta engellenebilir.
+Çözüm: Sayfa yüklendikten sonra ekranın herhangi bir yerine sadece bir kez tıklamanız, asistanın ses dosyalarını aktif hale getirecektir.
+Kullanım: İlk tıklamadan sonra, farenizi asistanın üzerine her getirdiğinizde sesli mesajlar sorunsuz bir şekilde otomatik olarak tetiklenmeye devam edecektir.
+Kodlar ve Demo Adres Ektedir.
+Neden Bayan Resmi derseniz nette araştırdım, Asistan olmaya en uygun gif onu buldum.
+Neden Sibel derseniz 10 isim yazdım kurada Sibel çıktı.
+
+Gerçek teknoloji, sadece ekrandaki piksellerden ibaret değildir; kullanıcıya yalnız olmadığını hissettiren bir rehberi olduğunda anlam kazanır. Sibel, dijital dünyadaki sesiniz ve yol arkadaşınız olmak için hazır. Kendi sınırlarınızı çizmeye bugün başlayın!
