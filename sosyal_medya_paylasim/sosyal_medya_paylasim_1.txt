@@ -1,0 +1,100 @@
+Sayfa Başlığı (Forum Konu Başlığı):
+
+✅ Allaturka Sosyal Medya Hızlı Paylaşım Widget'ı (Özelleştirilebilir Sürüm)
+2. Forum Konu İçeriği (Özelleştirme Kılavuzu Eklendi)
+HTML
+
+<p><b>Değerli Allaturka Forum Üyeleri ve Ziyaretçileri,</b></p>
+
+<p>
+Radyonuzun tanıtımını hızlandıracak, yeni **Logolu ve Simgeli Paylaşım Widget'ı** yayında! Bu widget, dinleyicilerinizin tek bir tıklama ile radyo linkinizi 5 farklı platformda (WhatsApp, Telegram, X/Twitter, Facebook, E-posta) paylaşmasını sağlar.
+</p>
+
+<p>
+Bu araç, dinleyicinin sayfadan ayrılmasını engeller (**yeni sekmede açılır**) ve size özel metin ve linklerle çalışır.
+</p>
+
+<p><br></p>
+
+<p><b>🛠️ Widget Kurulumu ve Özelleştirme Kılavuzu</b></p>
+
+<p>
+Widget'ın tüm ayarları, kodun içindeki <b>< script ></b> etiketleri arasında bulunan değişkenler üzerinden yapılmaktadır. Bu alanı düzenleyerek widget'ı kendi radyonuza özel hale getirebilirsiniz.
+</p>
+
+<p><b>---</b></p>
+
+<p><b>1. SOSYAL MEDYA/SİTE ADRESLERİNİN EKLENMESİ</b></p>
+
+<p>
+Widget, <b>sadece tek bir adres</b> üzerinden çalışır. Koddaki <b><br>
+<br>
+const radyoURL = encodeURIComponent("BURAYA RADYO ADRESİNİZ");<br>
+<br>
+</b> satırındaki tırnak işaretleri arasına, dinleyicilerin paylaşmasını istediğiniz radyonuzun tam linkini (örn: https://sizinradyonuz.com) eklemelisiniz.
+</p>
+
+<p>
+Paylaşım mesajını değiştirmek için ise:<br>
+<br>
+const mesaj = encodeURIComponent("BURAYA TANITIM METNİNİZ");<br>
+<br>
+satırını düzenleyebilirsiniz.
+</p>
+
+<p><br></p>
+
+<p><b>2. LOGO VE ÖLÇÜLERİN DEĞİŞTİRİLMESİ</b></p>
+
+<p>
+<b>Logo Adresi:</b><br>
+Logoyu değiştirmek için, kodun üst kısmındaki <br>
+<br>
+<b>< img src="LOGO_ADRESİ" alt="Allaturka Logo" ></b><br>
+<br>
+etiketi içindeki <b>src</b> kısmına kendi logonuzun internet adresini (URL) ekleyin.
+</p>
+
+<p>
+<b>Logo Ölçüsü:</b><br>
+Logonun boyutunu ayarlamak için, kodun başındaki CSS bölümündeki (stil kodu) <br>
+<br>
+<b>.logo-alani img</b><br>
+<br>
+içerisindeki <b>max-width: 120px;</b> değerini dilediğiniz gibi değiştirebilirsiniz.
+</p>
+
+<p><br></p>
+
+<p><b>3. RENK DEĞİŞİKLİKLERİ</b></p>
+
+<p>
+Widget'ın ana renklerini CSS (stil kodu) bölümünden kolayca değiştirebilirsiniz. Değiştirmeniz gereken temel renk kodları şunlardır:
+</p>
+
+<p>
+- <b>Ana Çerçeve Rengi:</b> <br>
+.widget-wrapper içerisindeki <b>border: 2px solid #FF8C00;</b> (Turuncu)<br>
+<br>
+- <b>Başlık Rengi:</b> <br>
+.baslik içerisindeki <b>color: #2ecc71;</b> (Yeşil)<br>
+<br>
+- <b>Arka Planlar:</b> <br>
+.ust-bolum ve .alt-bolum içerisindeki <b>background-color</b> değerleri.
+</p>
+
+<p>
+Platform butonlarının (WhatsApp, Facebook vb.) kendine özgü renkleri sabit bırakılmıştır.
+</p>
+
+<p><b>---</b></p>
+
+<p>
+<b>[ WIDGET KODU EKTE BULUNMAKTADIR ]</b>
+</p>
+
+<p><b>---</b></p>
+
+<p>
+Lütfen bu kılavuzu dikkatle takip ederek widget'ınızı kişiselleştirin ve radyonuzun tanıtımını hızlandırın!
+</p>

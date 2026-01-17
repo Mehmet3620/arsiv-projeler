@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Bölümlü Paylaşım Widget</title>
+    <style>
+        /* TEMEL STİLLER */
+        body { 
+            background-color: transparent; 
+            margin: 0; 
+            padding: 10px; 
+            font-family: Arial, sans-serif; 
+        }
+        .widget-wrapper {
+            max-width: 350px;
+            border: 2px solid #FF8C00; /* Ana kutu sınırı */
+            border-radius: 8px;
+            overflow: hidden; /* Köşeleri yuvarlak yapmak için */
+            background-color: #34495e; 
+            color: #ecf0f1; 
+            text-align: center;
+        }
+
+        /* 1. ÜST BÖLÜM STİLLERİ */
+        .ust-bolum {
+            background-color: #2c3e50; /* Koyu Mavi Arka Plan */
+            padding: 15px 15px 10px 15px; 
+        }
+        .logo-alani {
+            text-align: center;
+            margin-bottom: 10px; 
+        }
+        .logo-alani img {
+            max-width: 120px; 
+            height: auto;
+            border-radius: 4px; 
+        }
+        .baslik {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #2ecc71; 
+            margin-bottom: 5px;
+        }
+        .aciklama {
+            font-size: 0.9em;
+            color: #bdc3c7;
+        }
+
+        /* 2. ALT BÖLÜM (BUTONLAR) STİLLERİ */
+        .alt-bolum {
+            background-color: #34495e; /* Daha açık arka plan */
+            padding: 15px;
+            border-top: 1px dashed #FF8C00; /* Ayırıcı Çizgi */
+        }
+        .paylas-butonlari {
+            display: flex; 
+            gap: 5px; 
+            justify-content: center;
+            flex-wrap: wrap; 
+        }
+        .paylas-butonlari a {
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-decoration: none; 
+            color: white;
+            flex-grow: 1; 
+            min-width: 80px; 
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px; 
+        }
+        /* Uygulamalara özel renkler */
+        .whatsapp { background-color: #25D366; }
+        .telegram { background-color: #0088cc; }
+        .twitter { background-color: #1DA1F2; }
+        .facebook { background-color: #1877F2; }
+        .email { background-color: #C71610; }
+        
+        .paylas-butonlari a:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="widget-wrapper">
+    
+    <div class="ust-bolum">
+        <div class="logo-alani">
+            <img src="https://allaturkaa.de/forum/wcf/images/allaturkaa/logo.png" alt="Allaturka Logo">
+        </div>
+        <div class="baslik">Hemen Arkadaşlarınla Paylaş!</div>
+        <p class="aciklama">Tek tıkla radyo linkimizi sosyal medyada ve mesajlaşma uygulamalarında duyurun.</p>
+    </div>
+
+    <div class="alt-bolum">
+        <script>
+            // 1. Radyonun URL'si
+            const radyoURL = encodeURIComponent("https://www.radyosayfaniz.com"); 
+            
+            // 2. Paylaşılacak Metin
+            const mesaj = encodeURIComponent("Şu an ALLATURKA RADYO'yu dinliyorum! En iyi yayınlar burada. Hemen katıl: "); 
+
+            // 3. E-posta Konusu
+            const emailKonu = encodeURIComponent("En sevdiğin radyo yayında!");
+        </script>
+        
+        <div class="paylas-butonlari">
+            
+            <a href="#" class="whatsapp" id="btnWhatsapp" target="_blank">
+                <span style="font-size: 1em;">💬</span> WhatsApp
+            </a>
+            
+            <a href="#" class="telegram" id="btnTelegram" target="_blank">
+                <span style="font-size: 1em;">✈️</span> Telegram
+            </a>
+
+            <a href="#" class="twitter" id="btnTwitter" target="_blank">
+                <span style="font-size: 1em;">❌</span> Twitter (X)
+            </a>
+            
+            <a href="#" class="facebook" id="btnFacebook" target="_blank">
+                <span style="font-size: 1em;">👍</span> Facebook
+            </a>
+
+            <a href="#" class="email" id="btnEmail" target="_blank">
+                <span style="font-size: 1em;">📧</span> E-posta
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const fullMessage = mesaj + radyoURL;
+        
+        // Link atamaları (Target "_blank" linklerin içine zaten eklendi)
+        document.getElementById('btnWhatsapp').href = `https://api.whatsapp.com/send?text=${fullMessage}`;
+        document.getElementById('btnTelegram').href = `https://t.me/share/url?url=${radyoURL}&text=${mesaj}`;
+        document.getElementById('btnTwitter').href = `https://twitter.com/intent/tweet?text=${fullMessage}`;
+        document.getElementById('btnFacebook').href = `https://www.facebook.com/sharer/sharer.php?u=${radyoURL}&quote=${mesaj}`;
+        document.getElementById('btnEmail').href = `mailto:?subject=${emailKonu}&body=${fullMessage}`;
+    });
+</script>
+
+</body>
+</html>
