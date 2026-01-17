@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dost Yurdu Radyo Player - Şeffaf</title>
+    <style>
+        body {
+            background-color: transparent;
+            font-family: Arial, sans-serif;
+            /* Forumun kendi yazıları görünmez olmasın diye bu satır kaldırıldı. */
+            /* color: #fff; */
+            margin: 0;
+        }
+
+        .radio-player-container {
+            background-color: #1a1a1a;
+            border-radius: 15px;
+            width: 500px;
+            height: 180px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 
+                0 4px 8px rgba(0, 0, 0, 0.4), 
+                0 8px 16px rgba(0, 0, 0, 0.3), 
+                0 16px 32px rgba(0, 0, 0, 0.2);
+            margin: auto;
+            color: #fff; /* Yazı rengi sadece player'ın içine uygulandı */
+        }
+
+        .player-info-section {
+            background-color: #2a2a2a;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+        }
+
+        .album-art-section {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-right: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .album-art-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .album-art-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(
+                90deg, 
+                rgba(255, 255, 255, 0) 0%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: skewX(-20deg);
+            animation: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .album-art-section.playing::after,
+        .album-art-section:hover::after {
+            animation: shine 2s infinite linear;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 150%; }
+        }
+
+        .station-info {
+            flex-grow: 1;
+        }
+
+        .station-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .artist-title-container {
+            overflow: hidden;
+            white-space: nowrap;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .artist-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #aaa;
+            display: inline-block;
+            animation: marquee 15s linear infinite;
+        }
+
+        @keyframes marquee {
+            0%   { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .equalizer-visual {
+            display: flex;
+            align-items: flex-end;
+            width: 100%;
+            height: 20px;
+            gap: 2px;
+            margin-top: 8px;
+        }
+
+        .equalizer-bar {
+            width: 5%;
+            background-color: #ff5722;
+            animation: bounce 1.2s ease-in-out infinite;
+        }
+
+        .equalizer-bar:nth-child(2) { animation-delay: 0.2s; }
+        .equalizer-bar:nth-child(3) { animation-delay: 0.4s; }
+        .equalizer-bar:nth-child(4) { animation-delay: 0.6s; }
+        .equalizer-bar:nth-child(5) { animation-delay: 0.8s; }
+        .equalizer-bar:nth-child(6) { animation-delay: 1s; }
+        .equalizer-bar:nth-child(7) { animation-delay: 1.2s; }
+        .equalizer-bar:nth-child(8) { animation-delay: 0.5s; }
+        .equalizer-bar:nth-child(9) { animation-delay: 0.9s; }
+        .equalizer-bar:nth-child(10) { animation-delay: 0.1s; }
+
+        @keyframes bounce {
+            0%, 100% { height: 2px; }
+            50% { height: 100%; }
+        }
+
+        .controls-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .playback-area {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .play-pause-btn {
+            background-color: #ff5722;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            margin-right: 20px;
+        }
+
+        .play-pause-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .play-pause-btn .icon {
+            color: #fff;
+            font-size: 28px;
+        }
+
+        .volume-control-area {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            margin-right: 15px;
+        }
+
+        .volume-icon {
+            font-size: 20px;
+            color: #fff;
+            margin-right: 10px;
+        }
+
+        .volume-slider {
+            width: 100%;
+            height: 8px;
+            background-color: #555;
+            border-radius: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background-color: #ff5722;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .time-display {
+            font-size: 14px;
+            color: #aaa;
+            margin-left: 10px;
+        }
+
+        .external-links-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .listen-label {
+            display: none;
+        }
+
+        .player-icons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .player-icons a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .player-icons img {
+            width: 28px;
+            height: 28px;
+            opacity: 1;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .player-icons a:hover img {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="radio-player-container">
+        <div class="player-info-section">
+            <div class="album-art-section">
+                <img id="track-image" src="https://s1.directupload.eu/images/250921/kpdpfrc2.webp" alt="Album Art">
+            </div>
+            <div class="station-info">
+                <div class="station-name">Dost Yurdu Radyo</div>
+                <div class="artist-title-container">
+                    <span id="artist-title-label" class="artist-title">Yükleniyor...</span>
+                    <div class="equalizer-visual">
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <div class="playback-area">
+                <button id="play-pause-btn" class="play-pause-btn">
+                    <span id="play-icon" class="icon">&#9658;</span>
+                </button>
+                <div class="volume-control-area">
+                    <span class="volume-icon">&#128266;</span>
+                    <input type="range" id="volume-slider" class="volume-slider" min="0" max="100" value="50">
+                    <span id="time-display" class="time-display">00:00</span>
+                </div>
+            </div>
+
+            <div class="external-links-section">
+                <div class="player-icons">
+                    <a href="https://eu1.fastcast4u.com/tunein/qpnslltp.pls" title="Winamp, iTunes">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Winamp-logo.svg/596px-Winamp-logo.svg.png?20240531140507" alt="Winamp, iTunes">
+                    </a>
+                    <a href="https://eu1.fastcast4u.com/tunein/qpnslltp.asx" title="Windows Media Player">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Media_Player_Windows_11_logo.svg/640px-Media_Player_Windows_11_logo.svg.png" alt="Windows Media Player">
+                    </a>
+                    <a href="https://eu1.fastcast4u.com/tunein/qpnslltp.ram" title="Real Player">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Realplayer.svg" alt="Real Player">
+                    </a>
+                    <a href="https://eu1.fastcast4u.com/tunein/qpnslltp.qtl" title="QuickTime">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/QuickTime_Logo.svg/249px-QuickTime_Logo.svg.png?20170202170032" alt="QuickTime">
+                    </a>
+                    <a href="https://eu1.fastcast4u.com/stream/qpnslltp/stream.pls" title="Stream Proxy">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Emoji_u1f30e.svg/128px-Emoji_u1f30e.svg.png?20170527190141" alt="Stream Proxy">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="audio-player" style="display:none;" preload="metadata" src="https://eu1.fastcast4u.com/proxy/qpnslltp?mp=/stream"></audio>
+    <div style="display: none;">
+        <a href="https://eu1.fastcast4u.com/tunein/qpnslltp.pls" class="cc_streaminfo" data-type="song" data-username="qpnslltp">Yükleniyor...</a>
+        <script src="https://eu1.fastcast4u.com/system/streaminfo.js"></script>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const playPauseBtn = document.getElementById('play-pause-btn');
+            const playIcon = document.getElementById('play-icon');
+            const volumeSlider = document.getElementById('volume-slider');
+            const artistTitleLabel = document.getElementById('artist-title-label');
+            const audio = document.getElementById('audio-player');
+            const timeDisplay = document.getElementById('time-display');
+            const trackImage = document.getElementById('track-image');
+            const albumArtSection = document.querySelector('.album-art-section');
+
+            let isPlaying = false;
+            let currentTrack = '';
+            let startTime = 0;
+            let intervalId = null;
+
+            const defaultImageUrl = 'https://s1.directupload.eu/images/250921/kpdpfrc2.webp';
+
+            playPauseBtn.addEventListener('click', () => {
+                if (isPlaying) {
+                    audio.pause();
+                } else {
+                    audio.play().catch(e => console.error("Oynatma hatası:", e));
+                }
+            });
+
+            audio.addEventListener('play', () => {
+                isPlaying = true;
+                playIcon.innerHTML = '&#10074;&#10074;';
+                startTime = Date.now();
+                if (intervalId) { clearInterval(intervalId); }
+                intervalId = setInterval(updateTime, 1000);
+                albumArtSection.classList.add('playing');
+            });
+
+            audio.addEventListener('pause', () => {
+                isPlaying = false;
+                playIcon.innerHTML = '&#9658;';
+                if (intervalId) { clearInterval(intervalId); }
+                albumArtSection.classList.remove('playing');
+            });
+
+            volumeSlider.addEventListener('input', (e) => {
+                audio.volume = e.target.value / 100;
+            });
+
+            audio.volume = volumeSlider.value / 100;
+
+            function fetchAndDisplayTrackInfo() {
+                const trackInfoElement = document.querySelector('.cc_streaminfo[data-type="song"]');
+                const imageInfoElement = document.querySelector('.cc_streaminfo[data-type="image"]');
+                const newTrackInfo = trackInfoElement ? trackInfoElement.textContent : 'Yükleniyor...';
+                const newImageUrl = imageInfoElement ? imageInfoElement.textContent : defaultImageUrl;
+
+                if (newTrackInfo && newTrackInfo !== currentTrack) {
+                    currentTrack = newTrackInfo;
+                    artistTitleLabel.textContent = newTrackInfo;
+                    trackImage.src = newImageUrl || defaultImageUrl;
+                    artistTitleLabel.style.animation = 'none';
+                    void artistTitleLabel.offsetWidth;
+                    artistTitleLabel.style.animation = null;
+                }
+            }
+
+            setTimeout(() => {
+                fetchAndDisplayTrackInfo();
+                setInterval(fetchAndDisplayTrackInfo, 10000);
+            }, 1000);
+
+            function updateTime() {
+                const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+                const minutes = Math.floor(elapsedSeconds / 60);
+                const seconds = elapsedSeconds % 60;
+                timeDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+
+            const equalizerBars = document.querySelectorAll('.equalizer-bar');
+            audio.addEventListener('play', () => {
+                equalizerBars.forEach(bar => bar.style.animationPlayState = 'running');
+            });
+            audio.addEventListener('pause', () => {
+                equalizerBars.forEach(bar => bar.style.animationPlayState = 'paused');
+            });
+            equalizerBars.forEach(bar => bar.style.animationPlayState = 'paused');
+        });
+    </script>
+</body>
+</html>
