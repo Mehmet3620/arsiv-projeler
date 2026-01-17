@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esma-ül Hüsna Widget (Giriş Açıklaması Eklendi)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ========================================================= */
+        /* --- GENEL STİLLER VE RENK PALETİ --- */
+        /* ========================================================= */
+        :root {
+            --bg-main: #3a3a3a;      
+            --text-light: #f4f4f4;    
+            --accent-color: #ff9800;  
+            --panel-bg: #4a4a4a;      
+            --active-bg: #333333;     
+            --aciklama-bg: #2a2a2a;   
+            --aciklama-accent: #ff9800; 
+            --shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+            --transition-speed: 0.3s;
+        }
+
+        /* Ana Kapsayıcı: 442px'e Daraltıldı (Tam Oturmalı) */
+        .esma-grid-wrapper {
+            width: 442px; 
+            margin: 20px auto;
+            padding: 0; 
+            background: var(--bg-main);
+            color: var(--text-light);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box; 
+        }
+
+        .esma-grid-wrapper h3 {
+            color: var(--accent-color);
+            text-align: center;
+            border-bottom: 2px solid var(--accent-color);
+            padding: 15px 15px 10px 15px; 
+            margin-top: 0;
+            margin-bottom: 0; 
+            font-size: 1.3em;
+        }
+
+        /* ========================================================= */
+        /* --- YENİ EKLENEN GİRİŞ AÇIKLAMASI STİLİ --- */
+        /* ========================================================= */
+        .aciklama-giris-metni {
+            padding: 10px 15px 15px 15px; 
+            background-color: var(--panel-bg); 
+            font-size: 0.85em;
+            line-height: 1.5;
+            text-align: center;
+            color: #ccc;
+            border-bottom-left-radius: 10px; 
+            border-bottom-right-radius: 10px; 
+            margin-bottom: 6px; /* Buton listesi ile arasında boşluk bırakır */
+        }
+        
+        .aciklama-giris-metni strong {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+
+        /* ========================================================= */
+        /* --- İSİM BUTONLARI DÜZENİ (442px'e Tam Oturuldu) --- */
+        /* ========================================================= */
+        
+        .esma-isim-listesi-container {
+            display: flex;
+            flex-wrap: wrap; 
+            gap: 6px 6px; 
+            margin: 0; 
+            padding: 4px 0 6px 0; 
+            width: 100%; 
+            box-sizing: border-box;
+            position: relative; 
+        }
+        
+        .esma-isim-butonu {
+            /* Kutu Genişliği: 83.6px (Kare) */
+            flex: 0 0 83.6px; 
+            width: 83.6px; 
+            height: 83.6px; 
+            max-width: 83.6px; 
+            
+            padding: 6px 1px;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--panel-bg);
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            user-select: none;
+            line-height: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        
+        .esma-isim-butonu:hover {
+            background-color: #555;
+            border-color: var(--accent-color);
+        }
+        
+        .esma-isim-butonu.active {
+            background-color: var(--active-bg); 
+            color: var(--accent-color); 
+            border-color: var(--accent-color);
+            box-shadow: 0 0 5px rgba(255, 152, 0, 0.7);
+        }
+        
+        /* Arapça Yazı Stili */
+        .esma-isim-butonu .arapca-isim {
+            font-size: 1.6em; 
+            font-family: 'Amiri', serif;
+            font-weight: bold;
+            color: var(--accent-color); 
+            margin-bottom: 3px; 
+        }
+        
+        .esma-isim-butonu .okunusu-isim {
+            font-size: 0.75em; 
+            display: block;
+            color: #ccc;
+            margin-top: 3px; 
+        }
+
+        .esma-isim-butonu[data-uzun="true"] .arapca-isim {
+            font-size: 1.3em; 
+        }
+        
+        /* ========================================================= */
+        /* --- DİNAMİK AÇIKLAMA PANELİ DÜZENİ --- */
+        /* ========================================================= */
+        
+        .aciklama-panel-dinamik {
+            flex: 0 0 100%; 
+            width: 100%; 
+            max-height: 0;
+            padding: 0;
+            background-color: var(--aciklama-bg);
+            border-radius: 6px;
+            overflow: hidden;
+            transition: max-height var(--transition-speed) ease-in-out, padding var(--transition-speed);
+            border: 1px solid var(--aciklama-bg); 
+            box-sizing: border-box;
+            margin-top: 6px; 
+        }
+        
+        .aciklama-panel-dinamik.show {
+            max-height: 600px; 
+            padding: 15px;
+            border-color: var(--aciklama-accent);
+        }
+        
+        .aciklama-baslik {
+            font-weight: bold;
+            color: var(--aciklama-accent);
+            margin-bottom: 5px;
+            display: block;
+            font-size: 1.1em;
+            border-bottom: 1px dashed #444;
+            padding-bottom: 5px;
+        }
+
+        .aciklama-metni {
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #ccc;
+            text-align: justify;
+        }
+        
+        .aciklama-metni p { margin-top: 0.7em; margin-bottom: 0.7em; }
+        .aciklama-metni p:first-child { margin-top: 0; }
+        .aciklama-metni p:last-child { margin-bottom: 0; }
+        
+    </style>
+</head>
+<body>
+
+<div class="esma-grid-wrapper">
+    <h3>ESMA-ÜL HÜSNA (99 İSİM)</h3>
+
+    <div class="aciklama-giris-metni">
+        <strong>Esma-ül Hüsna</strong>, Allah'ın güzel isimleridir. İslam inancına göre O'nun üstün ve kusursuz sıfatlarını ifade eden 99 isme verilen addır. Her bir ismin anlamını görmek için üzerlerine tıklayınız.
+    </div>
+    
+    <div class="esma-isim-listesi-container" id="esma-listesi">
+        </div>
+    
+</div>
+
+<script>
+    // -----------------------------------------------------------------
+    // --- 99 İSİM VE GENİŞ AÇIKLAMALARI (Aynı Kaldı) ---
+    // -----------------------------------------------------------------
+    const EsmaUlHusna = [
+        { arapca: "الله", okunusu: "Allah", anlam: "Varlığı zaruri olan, bütün övgülere layık, yegane ilah. Her türlü noksan sıfatlardan münezzeh, eşi ve benzeri olmayan tek yaratıcı." },
+        { arapca: "الرَّحْمَٰنُ", okunusu: "Er-Rahmân", anlam: "Dünyada bütün yaratılmışlara, inanan ve inanmayan herkese merhamet eden, ihsan eden. Sonsuz rahmet sahibidir." },
+        { arapca: "الرَّحِيمُ", okunusu: "Er-Rahîm", anlam: "Ahirette sadece inananlara merhamet eden, onlara özel lütufta bulunan ve cennetini müjdeleyen." },
+        { arapca: "الْمَلِكُ", okunusu: "El-Melik", anlam: "Bütün kâinatın, görünen ve görünmeyen her şeyin sahibi, mutlak hükümdarı ve yegane maliki." },
+        { arapca: "الْقُدُّوسُ", okunusu: "El-Kuddûs", anlam: "Her türlü eksiklikten, noksanlıktan, ayıptan ve hatadan uzak, tertemiz, pak olan." },
+        { arapca: "السَّلَامُ", okunusu: "Es-Selâm", anlam: "Her türlü tehlikeden kullarını selamete çıkaran, barışın ve güvenliğin kaynağı, esenlik veren." },
+        { arapca: "الْمُؤْمِنُ", okunusu: "El-Mü'min", anlam: "Eman veren, güven sağlayan, sözünde sadık, inananları koruyan ve iman nurunu kalplere koyan." },
+        { arapca: "الْمُهَيْمِنُ", okunusu: "El-Müheymin", anlam: "Gözeten ve koruyan, bütün varlıkları denetimi altında tutan, her şeyi kontrol eden." },
+        { arapca: "الْعَزِيزُ", okunusu: "El-Azîz", anlam: "İzzet sahibi, mağlup edilmesi mümkün olmayan, daima galip ve kudretli olan." },
+        { arapca: "الْجَبَّارُ", okunusu: "El-Cebbâr", anlam: "İradesini zorla uygulayan, kırılanları onaran, eksikleri tamamlayan, dilediğini yapmaya gücü yeten." },
+        { arapca: "الْمُتَكَبِّرُ", okunusu: "El-Mütekebbir", anlam: "Büyüklükte eşi olmayan, azamet ve ululuk kendisine mahsus olan, her şeyden yüce." },
+        { arapca: "الْخَالِقُ", okunusu: "El-Hâlık", anlam: "Yaratma ve yoktan var etme kudretine sahip olan, her şeyi belirli bir ölçüye göre yaratan." },
+        { arapca: "الْبَارِئُ", okunusu: "El-Bâri", anlam: "Yoktan yaratan, her şeyi hatasız ve kusursuz bir şekilde şekillendiren, var eden." },
+        { arapca: "الْمُصَوِّرُ", okunusu: "El-Musavvir", anlam: "Bütün varlıklara suret ve şekil veren, her şeyi en güzel biçimde tasvir eden." },
+        { arapca: "الْغَفَّارُ", okunusu: "El-Gaffâr", anlam: "Kullarının günahlarını çokça bağışlayan, hataları örten, affedici." },
+        { arapca: "الْقَهَّارُ", okunusu: "El-Kahhâr", anlam: "Her şeye galip gelen, istediğini mutlak şekilde yapan, kahredici güce sahip." },
+        { arapca: "الْوَهَّابُ", okunusu: "El-Vehhâb", anlam: "Karşılıksız ve bol bol veren, çok fazla bağışlayan." },
+        { arapca: "الرَّزَّاقُ", okunusu: "Er-Rezzâk", anlam: "Bütün canlıların rızkını veren, rızıklandıran, ihtiyacı olanı karşılayan." },
+        { arapca: "الْفَتَّاحُ", okunusu: "El-Fettâh", anlam: "Hayır kapılarını açan, zorlukları gideren, her şeyi hikmetle açığa çıkaran." },
+        { arapca: "الْعَلِيمُ", okunusu: "El-Alîm", anlam: "Gizli veya açık, geçmiş veya gelecek her şeyi en ince detayına kadar bilen, ilmi sonsuz olan." },
+        { arapca: "الْقَابِضُ", okunusu: "El-Kâbıd", anlam: "Dilediğinin rızkını daraltan, ruhları kabzeden, eli sıkıştıran." },
+        { arapca: "الْبَاسِطُ", okunusu: "El-Bâsıt", anlam: "Dilediğinin rızkını genişleten, bolluk veren, ruhları yayan." },
+        { arapca: "الْخَافِضُ", okunusu: "El-Hâfıd", anlam: "Kâfirleri alçaltan, derecelerini düşüren, zelil kılan." },
+        { arapca: "الرَّافِعُ", okunusu: "Er-Râfi", anlam: "Müminlerin derecelerini yükselten, şan ve şereflerini artıran." },
+        { arapca: "الْمُعِزُّ", okunusu: "El-Muiz", anlam: "Dilediğini yücelten, şereflendiren, izzet ve itibar veren." },
+        { arapca: "الْمُذِلُّ", okunusu: "El-Müzill", anlam: "Dilediğini alçaltan, zelil eden, hor ve hakir kılan." },
+        { arapca: "السَّمِيعُ", okunusu: "Es-Semî", anlam: "Her sesi, gizli ve açık her yakarışı eksiksiz işiten." },
+        { arapca: "الْبَصِيرُ", okunusu: "El-Basîr", anlam: "Her şeyi en iyi şekilde gören, hiçbir şeyin O'nun görüşünden kaçmadığı." },
+        { arapca: "الْحَكَمُ", okunusu: "El-Hakem", anlam: "Hükmeden, hak ile hükmü ayıran, nihai kararı veren." },
+        { arapca: "الْعَدْلُ", okunusu: "El-Adl", anlam: "Mutlak adalet sahibi, zulmetmeyen, her şeyi hak ve ölçüyle yapan." },
+        { arapca: "اللَّطِيفُ", okunusu: "El-Latîf", anlam: "En ince detayları bilen, lütuf ve ihsan sahibi, sezilmesi güç olan şeyleri bilen." },
+        { arapca: "الْخَبِيرُ", okunusu: "El-Habîr", anlam: "Her şeyden haberdar olan, olayların iç yüzünü ve gizli yönlerini bilen." },
+        { arapca: "الْحَلِيمُ", okunusu: "El-Halîm", anlam: "Acele etmeyen, günahkarları hemen cezalandırmayan, yumuşak huylu." },
+        { arapca: "الْعَظِيمُ", okunusu: "El-Azîm", anlam: "Çok büyük, pek yüce, akılla kavranılamayacak kadar azametli olan." },
+        { arapca: "الْغَفُورُ", okunusu: "El-Gafûr", anlam: "Mağfireti bol olan, kullarının günahlarını affeden, bağışlayıcı." },
+        { arapca: "الشَّكُورُ", okunusu: "Eş-Şekûr", anlam: "Az bir amele çok büyük karşılık veren, kullarının şükrünü kabul eden." },
+        { arapca: "الْعَلِيُّ", okunusu: "El-Aliyy", anlam: "Pek yüce, şanı ve makamı yüksek olan, her şeyin üstünde olan." },
+        { arapca: "الْكَبِيرُ", okunusu: "El-Kebîr", anlam: "Büyüklükte, azamette ve ululukta benzeri olmayan, en büyük." },
+        { arapca: "الْحَفِيظُ", okunusu: "El-Hafîz", anlam: "Bütün varlıkları koruyup gözeten, yapılan her şeyi kaydeden, muhafaza eden." },
+        { arapca: "الْمُقِيتُ", okunusu: "El-Mukît", anlam: "Bütün yaratılmışların rızkını veren, besleyen, güç ve kuvvet veren." },
+        { arapca: "الْحَسِيبُ", okunusu: "El-Hasîb", anlam: "Kulların hesabını gören, her şeyi yeterli olan, hesap soran." },
+        { arapca: "الْجَلِيلُ", okunusu: "El-Celîl", anlam: "Celal sahibi, azamet ve ululukla vasıflanan, yüce." },
+        { arapca: "الْكَرِيمُ", okunusu: "El-Kerîm", anlam: "Lütfu, ihsanı ve cömertliği bol olan, affı bol, karşılıksız veren." },
+        { arapca: "الرَّقِيبُ", okunusu: "Er-Rakîb", anlam: "Bütün varlıkları daima gözetleyen, denetleyen, hiçbir şeyi gözden kaçırmayan." },
+        { arapca: "الْمُجِيبُ", okunusu: "El-Mücîb", anlam: "Kendisine dua edenin dualarına cevap veren, kabul eden." },
+        { arapca: "الْوَاسِعُ", okunusu: "El-Vâsi", anlam: "İlmi, rahmeti ve kudreti her şeyi kaplayan, genişlik sahibi." },
+        { arapca: "الْحَكِيمُ", okunusu: "El-Hakîm", anlam: "Her işi hikmetli olan, her şeyi yerli yerince yapan, tam bir bilgi ve adaletle hükmeden." },
+        { arapca: "الْوَدُودُ", okunusu: "El-Vedûd", anlam: "Kullarını çok seven, sevilen ve sevilmeye layık olan, sevgi kaynağı." },
+        { arapca: "الْمَجِيدُ", okunusu: "El-Mecîd", anlam: "Şanı yüce, keremi ve cömertliği sonsuz olan, büyük şeref sahibi." },
+        { arapca: "الْبَاعِثُ", okunusu: "El-Bâis", anlam: "Ölüleri dirilten, peygamber gönderen, gizli şeyleri ortaya çıkaran." },
+        { arapca: "الشَّهِيدُ", okunusu: "Eş-Şehîd", anlam: "Her şeye şahit olan, her an hazır ve nazır bulunan, varlığına kesin delillerle şahit olunan." },
+        { arapca: "الْحَقُّ", okunusu: "El-Hakk", anlam: "Varlığı ve uluhiyeti gerçek olan, varlığı hiç değişmeyen, hakkın ta kendisi." },
+        { arapca: "الْوَكِيلُ", okunusu: "El-Vekîl", anlam: "Kendisine tevekkül edenlerin işlerini en iyi şekilde sonuçlandıran, güvenilir ve vekil tutulmaya layık olan." },
+        { arapca: "الْقَوِيُّ", okunusu: "El-Kaviyy", anlam: "Sonsuz güç ve kudret sahibi, kuvveti hiç azalmayan." },
+        { arapca: "الْمَتِينُ", okunusu: "El-Metîn", anlam: "Çok sağlam, kudreti çok kuvvetli, dayanıklı." },
+        { arapca: "الْوَلِيُّ", okunusu: "El-Veliyy", anlam: "İnananların dostu, yardımcısı, koruyucusu ve sevgilisi." },
+        { arapca: "الْحَمِيدُ", okunusu: "El-Hamîd", anlam: "Bütün övgülere layık olan, hamd ve şükrün tek adresi." },
+        { arapca: "الْمُحْصِي", okunusu: "El-Muhsî", anlam: "Her şeyi tek tek sayan, ilmiyle her varlığın sayısını bilen." },
+        { arapca: "الْمُبْدِئُ", okunusu: "El-Mübdi", anlam: "Varlıkları ilk defa yoktan yaratan, örneksiz olarak icat eden." },
+        { arapca: "الْمُعِيدُ", okunusu: "El-Muîd", anlam: "Yaratılmışları yok ettikten sonra tekrar diriltecek olan, hayatı geri veren." },
+        { arapca: "الْمُحْيِي", okunusu: "El-Muhyî", anlam: "Hayat veren, dirilten, can bağışlayan." },
+        { arapca: "الْمُمِيتُ", okunusu: "El-Mümît", anlam: "Ölümü yaratan, canlıları öldüren, hayatı sona erdiren." },
+        { arapca: "الْحَيُّ", okunusu: "El-Hayy", anlam: "Daima diri olan, sonsuz hayat sahibi, ölümsüz." },
+        { arapca: "الْقَيُّومُ", okunusu: "El-Kayyûm", anlam: "Gökleri, yeri ve her şeyi ayakta tutan, varlığı kendiliğinden olan." },
+        { arapca: "الْوَاجِدُ", okunusu: "El-Vâcid", anlam: "İstediği her şeyi bulan, hiçbir şeye muhtaç olmayan, zengin." },
+        { arapca: "الْمَاجِدُ", okunusu: "El-Mâcid", anlam: "Şanı ve keremi yüce, lütfu bol olan, azamet sahibi." },
+        { arapca: "الْوَاحِدُ", okunusu: "El-Vâhid", anlam: "Eşi ve benzeri olmayan, tek olan, bir olan." },
+        { arapca: "الصَّمَدُ", okunusu: "Es-Samed", anlam: "Herkesin muhtaç olduğu, hiçbir şeye muhtaç olmayan, daimi ve baki olan." },
+        { arapca: "الْقَادِرُ", okunusu: "El-Kâdir", anlam: "Her şeye gücü yeten, dilediğini yapmaya muktedir olan." },
+        { arapca: "الْمُقْتَدِرُ", okunusu: "El-Muktedir", anlam: "Sonsuz kudret sahibi, gücü her şeye yeten, en güçlü." },
+        { arapca: "الْمُقَدِّمُ", okunusu: "El-Mukaddim", anlam: "Dilediğini öne alan, ileriye geçiren, üstün kılan." },
+        { arapca: "الْمُؤَخِّرُ", okunusu: "El-Muahhir", anlam: "Dilediğini sona alan, geriye bırakan, erteleyen." },
+        { arapca: "الْأَوَّلُ", okunusu: "El-Evvel", anlam: "Varlığının başlangıcı olmayan, her şeyden önce var olan." },
+        { arapca: "الْآخِرُ", okunusu: "El-Âhir", anlam: "Varlığının sonu olmayan, her şey yok olduktan sonra da var olacak olan." },
+        { arapca: "الظَّاهِرُ", okunusu: "Ez-Zâhir", anlam: "Varlığı açık ve aşikar olan, her şeyde kendini gösteren, apaçık." },
+        { arapca: "الْبَاطِنُ", okunusu: "El-Bâtın", anlam: "Gözlerden gizli olan, mahiyeti anlaşılamayan, gizli olan her şeyi bilen." },
+        { arapca: "الْوَالِي", okunusu: "El-Vâlî", anlam: "Her şeyin sahibi ve yöneticisi olan, kâinatı idare eden." },
+        { arapca: "الْمُتَعَالِي", okunusu: "El-Müteâlî", anlam: "Yüceliği akılla idrak edilemeyen, her şeyin üstünde olan, çok yüce." },
+        { arapca: "الْبَرُّ", okunusu: "El-Berr", anlam: "İyilik ve lütfu bol olan, kullarına karşı cömert ve merhametli." },
+        { arapca: "التَّوَّابُ", okunusu: "Et-Tevvâb", anlam: "Tövbeleri kabul eden, kullarına tövbe etme imkanı veren, çok bağışlayan." },
+        { arapca: "الْمُنْتَقِمُ", okunusu: "El-Müntekîm", anlam: "Suçluları adaletiyle cezalandıran, intikam alan." },
+        { arapca: "الْعَفُوُّ", okunusu: "El-Afüvv", anlam: "Affetmeyi seven, günahları silen, çok affedici." },
+        { arapca: "الرَّؤُوفُ", okunusu: "Er-Raûf", anlam: "Çok şefkatli, çok merhametli, kullarına acıyan." },
+        { arapca: "مَالِكُ الْمُلْكِ", okunusu: "Mâlikü'l-Mülk", anlam: "Mülkün gerçek sahibi, dilediğine mülkü veren ve ondan geri alan." },
+        { arapca: "ذُو الْجَلَالِ وَالْإِكْرَامِ", okunusu: "Zü'l-Celâl-i Ve'l-İkrâm", anlam: "Hem yücelik ve azamet sahibi hem de cömertlik ve kerem sahibi olan." },
+        { arapca: "الْمُقْسِطُ", okunusu: "El-Muksit", anlam: "Adil davranan, her işi yerli yerince yapan, hakkı yerine getiren." },
+        { arapca: "الْجَامِعُ", okunusu: "El-Câmi", anlam: "Dağılmış olanları toplayan, kıyamette tüm mahlukatı bir araya getiren." },
+        { arapca: "الْغَنِيُّ", okunusu: "El-Ganî", anlam: "Hiçbir şeye muhtaç olmayan, her şeyin kendisine muhtaç olduğu, çok zengin." },
+        { arapca: "الْمُغْنِي", okunusu: "El-Muğnî", anlam: "Dilediğini zengin eden, ihtiyaçları gideren, yoksulluğu gideren." },
+        { arapca: "الْمَانِعُ", okunusu: "El-Mâni", anlam: "Dilemediği şeylerin gerçekleşmesine engel olan, koruyan." },
+        { arapca: "الضَّارُّ", okunusu: "Ed-Dârr", anlam: "Hikmeti gereği dilediği kimselere zarar veren, felaket yaratan." },
+        { arapca: "النَّافِعُ", okunusu: "En-Nâfi", anlam: "Bütün mahlukata fayda veren, iyilik ve menfaat sağlayan." },
+        { arapca: "النُّورُ", okunusu: "En-Nûr", anlam: "Âlemleri nurlandıran, hidayet veren, dilediğini aydınlatan." },
+        { arapca: "الْهَادِي", okunusu: "El-Hâdî", anlam: "Kullarını doğru yola ileten, rehberlik eden, yol gösteren." },
+        { arapca: "الْبَدِيعُ", okunusu: "El-Bedî", anlam: "Eşi ve benzeri olmayan güzellikte yaratan, harika ve benzersiz eserler ortaya koyan." },
+        { arapca: "الْبَاقِي", okunusu: "El-Bâkî", anlam: "Varlığı sürekli olan, ebedi ve daimi olan." },
+        { arapca: "الْوَارِثُ", okunusu: "El-Vâris", anlam: "Varlıklar sona erdiğinde geriye kalan, mülklerin asıl sahibi." },
+        { arapca: "الرَّشِيدُ", okunusu: "Er-Reşîd", anlam: "Bütün işlerini hikmetle yürüten, yol gösteren, irşat eden." },
+        { arapca: "الصَّبُورُ", okunusu: "Es-Sabûr", anlam: "Çok sabırlı olan, cezalandırmada acele etmeyen, mühlet veren." }
+    ];
+
+    
+    let activeIndex = -1;
+    const itemsPerRow = 5; 
+    const listContainer = document.getElementById('esma-listesi');
+
+    // KULLANICI KURALI: Uzun yazıları ikiye bölmek ve bölüm aralarına fazladan paragraf etiketi koymak
+    function splitLongText(text) {
+        const minLength = 50; 
+        let paragraphs = [];
+        let mainText = text.trim();
+        
+        if (mainText.length > minLength) {
+            let splitPoint = -1;
+            
+            let firstDot = mainText.indexOf('.');
+            if (firstDot !== -1 && firstDot > mainText.length * 0.3 && firstDot < mainText.length * 0.7) {
+                splitPoint = mainText.indexOf(' ', firstDot + 1);
+                splitPoint = splitPoint !== -1 ? splitPoint : firstDot + 1; 
+            } else {
+                let middle = Math.floor(mainText.length / 2);
+                let spaceBefore = mainText.lastIndexOf(' ', middle);
+                let spaceAfter = mainText.indexOf(' ', middle);
+
+                if (Math.abs(middle - spaceBefore) < Math.abs(middle - spaceAfter) && spaceBefore !== -1) {
+                    splitPoint = spaceBefore;
+                } else if (spaceAfter !== -1) {
+                    splitPoint = spaceAfter;
+                }
+            }
+
+            if (splitPoint > 0 && splitPoint < mainText.length - 1) { 
+                 paragraphs.push(mainText.substring(0, splitPoint).trim());
+                 paragraphs.push(mainText.substring(splitPoint).trim());
+            } else { paragraphs.push(mainText); }
+        } else { paragraphs.push(mainText); }
+        
+        if (paragraphs.length === 2 && paragraphs[0].length > 0 && paragraphs[1].length > 0) {
+            return `<p>${paragraphs[0]}</p><p>${paragraphs[1]}</p>`;
+        }
+        return `<p>${text}</p>`;
+    }
+
+    function generateEsmaList() {
+        const esmaListesiEl = document.getElementById('esma-listesi');
+        let html = '';
+
+        EsmaUlHusna.forEach((esma, index) => {
+            const isLongName = esma.arapca.length > 15; 
+            const dataAttr = isLongName ? 'data-uzun="true"' : '';
+            
+            html += `
+                <div class="esma-isim-butonu" data-index="${index}" ${dataAttr} onclick="toggleAciklama(${index}, this)">
+                    <span class="arapca-isim">${esma.arapca}</span>
+                    <span class="okunusu-isim">(${esma.okunusu})</span>
+                </div>
+            `;
+        });
+        esmaListesiEl.innerHTML = html;
+    }
+    
+    function toggleAciklama(index, buttonElement) {
+        const selectedEsma = EsmaUlHusna[index];
+        const isCurrentlyActive = buttonElement.classList.contains('active');
+        const activePanel = listContainer.querySelector('.aciklama-panel-dinamik');
+        
+        // 1. Önceki Aktif Butonu ve Paneli Kapat
+        document.querySelectorAll('.esma-isim-butonu').forEach(btn => btn.classList.remove('active'));
+        
+        if (activePanel) {
+            // Açıklama paneli varsa kapat
+            activePanel.classList.remove('show');
+            activePanel.style.maxHeight = '0';
+            activePanel.style.padding = '0';
+            
+            activePanel.addEventListener('transitionend', function removePanel() {
+                activePanel.removeEventListener('transitionend', removePanel);
+                if (activePanel.parentNode) {
+                    activePanel.remove();
+                }
+            });
+            
+            if (isCurrentlyActive) {
+                activeIndex = -1;
+                return;
+            }
+        }
+        
+        // 2. Yeni Paneli Oluştur ve İçeriği Doldur
+        if (!isCurrentlyActive) {
+            buttonElement.classList.add('active');
+            activeIndex = index;
+
+            const newPanel = document.createElement('div');
+            newPanel.classList.add('aciklama-panel-dinamik');
+            newPanel.setAttribute('data-target-row', Math.floor(index / itemsPerRow));
+            
+            const contentHTML = `
+                <span class="aciklama-baslik">Anlamı: ${selectedEsma.okunusu.toUpperCase()}</span>
+                <div class="aciklama-metni">${splitLongText(selectedEsma.anlam)}</div>
+            `;
+            newPanel.innerHTML = contentHTML;
+
+            // 3. Paneli Doğru Konuma Yerleştirme
+            const rowIndex = Math.floor(index / itemsPerRow); 
+            const lastItemInRowIndex = (rowIndex * itemsPerRow) + itemsPerRow - 1; 
+            const targetIndex = Math.min(lastItemInRowIndex, EsmaUlHusna.length - 1);
+            
+            const targetElement = listContainer.children[targetIndex];
+            
+            if (targetElement) {
+                listContainer.insertBefore(newPanel, targetElement.nextSibling);
+            } else {
+                listContainer.appendChild(newPanel);
+            }
+
+            // 4. Paneli Aç
+            setTimeout(() => {
+                newPanel.classList.add('show');
+                const contentScrollHeight = newPanel.querySelector('.aciklama-metni').scrollHeight + newPanel.querySelector('.aciklama-baslik').offsetHeight;
+                newPanel.style.maxHeight = (contentScrollHeight + 40) + 'px'; 
+                newPanel.style.padding = '15px';
+            }, 5);
+        }
+    }
+
+    // Yüklendiğinde listeyi oluştur
+    window.addEventListener('load', generateEsmaList);
+</script>
+
+</body>
+</html>
