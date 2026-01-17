@@ -1,0 +1,43 @@
+<p>
+    <b>✨ RADYO BAĞLANTI MERKEZİ WİDGET'I HAZIR!</b>
+</p>
+
+<p>
+    Değerli Radyo Yöneticileri, Yayıncılar ve Ziyaretçiler,<br>
+    Radyo yayınlarınızın dijital platformlardaki varlığını tek bir merkezde toplamak amacıyla, **evrensel kullanıma uygun** yeni bir widget hazırladık: **Radyo Bağlantı Merkezi.** Bu sekmeli ve görsel odaklı araç sayesinde, dinleyicileriniz yayınlara, sosyal medya hesaplarına ve mobil uygulamalara kolayca ulaşım imkanı bulacaktır.
+</p>
+
+<p><br><b></b></p>
+
+<p>
+    Widget, koyu teması ve belirgin renk vurgularıyla şık bir tasarıma sahiptir. Kullanıcıların platformlar arasında kaybolmasının önüne geçmek için tüm bağlantılar bu merkezde düzenli bir şekilde sunulmuştur. Bu widget, her türlü radyo sitesine kolayca entegre edilebilir bir yapıdadır.
+</p>
+
+<p><br><b></b></p>
+
+<p>
+    <b>🛠️ ÖNEMLİ BİLGİLER VE ÖZELLEŞTİRME</b>
+</p>
+
+<p>
+    Bu widget'ın kodları ektedir ve tamamen açıktır, yani **geliştirilebilir** bir yapıya sahiptir. Lütfen kullanmadan önce aşağıdaki kritik düzenlemeleri yapınız:<br>
+    <br>
+    - **ADRES VE RESİM UYARISI:** Koddaki tüm bağlantıları (`href="..."`) ve resim URL'lerini (`img src="..."`) **kendi radyo sayfalarınıza ve görsellerinize göre değiştirmeyi UNUTMAYIN.** Aksi takdirde bağlantılar çalışmayacaktır.<br>
+    <br>
+    - **GENİŞLİK VE RENK AYARI:** CSS kodundaki `.tab-widget-wrapper` stilinden widget'ın genel genişliğini (**`max-width: 350px;`**) ayarlayabilirsiniz. Vurgu renkleri (Turuncu: `#FF8C00`, Yeşil: `#2ecc71`) CSS'te kolayca değiştirilebilir.
+</p>
+
+<p><br><b></b></p>
+
+<p>
+    - **Görsel Odaklı Linkler:** Her bağlantı, kullanıcıların platformu anında tanımasını sağlayan ikonlar ile desteklenmiştir. Kendi görsellerinizi kullanarak widget'ı markanıza özel hale getirebilirsiniz.<br>
+    - **Kolay Kurulum:** Tüm gerekli kodlar hemen bu yazının altında ek olarak sunulmuştur.
+</p>
+
+<p><br><b></b></p>
+
+<p>
+    Bu widget'ı sitenizin ana bölümüne entegre ederek radyonuz ile dinleyicileriniz arasındaki etkileşim kanalını güçlendirebilirsiniz.
+    <br>
+    <b>Başarılı Ve Yüksek Etkileşimli Yayınlar Dileriz.</b>
+</p>
