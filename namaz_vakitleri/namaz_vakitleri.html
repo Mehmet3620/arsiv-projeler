@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALATURKA Namaz Vakitleri Widgetı - ALADHAN API (350px)</title>
+
+    <style>
+        /* [Stiller buraya eklenir, önceki versiyonlardaki stillerdir.] */
+        :root {
+            --bg-color: #1a1a1a;        
+            --accent-color: #ff9900;    
+            --text-color: #f0f0f0;      
+            --header-bg: #2c2c2c;       
+            --border-color: #444;       
+            --highlight-bg: #40320c;    
+        }
+        body { background-color: transparent !important; margin: 0; padding: 0; font-family: Arial, sans-serif; color: var(--text-color); }
+        .namaz-widget-container { max-width: 350px; width: 100%; margin: 0 auto; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; box-sizing: border-box; }
+        .widget-header { padding: 15px 10px; background-color: var(--header-bg); border-bottom: 2px solid var(--accent-color); border-radius: 6px 6px 0 0; display: flex; justify-content: space-between; align-items: center; }
+        .logo-container { flex-shrink: 0; width: 120px; text-align: left; display: flex; flex-direction: column; align-items: flex-start; }
+        .logo-container img { height: 30px; width: auto; vertical-align: middle; margin-bottom: 3px; }
+        .widget-title { color: var(--accent-color); font-size: 0.85em; font-weight: bold; margin: 0; line-height: 1; }
+        .header-info { flex-grow: 1; text-align: right; }
+        .header-info h3 { color: var(--text-color); margin: 0; font-size: 1em; }
+        .header-info p { margin: 5px 0 0; font-size: 0.8em; color: #ccc; }
+        .city-select-container { padding: 10px 15px; background-color: #222; border-bottom: 1px solid var(--border-color); }
+        #city-select { width: 100%; padding: 8px; border-radius: 4px; background-color: #333; color: var(--text-color); border: 1px solid var(--accent-color); appearance: none; box-sizing: border-box; }
+        .countdown { text-align: center; padding: 10px 15px; font-size: 1.1em; color: var(--text-color); background-color: #333; border-radius: 0 0 6px 6px; font-weight: bold; }
+        .countdown-time { color: var(--accent-color); font-size: 1.2em; }
+        .vakit-list { list-style: none; padding: 10px 15px; margin: 0; }
+        .vakit-list li { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--border-color); font-size: 1.1em; }
+        .vakit-list li:last-child { border-bottom: none; }
+        .vakit-list li.current-vakit { background-color: var(--highlight-bg); border-radius: 4px; padding: 10px 5px; margin: 5px 0; border: 1px solid var(--accent-color); }
+        .vakit-list li.current-vakit .vakit-name, .vakit-list li.current-vakit .vakit-time { color: #fff; }
+    </style>
+</head>
+<body>
+
+    <div class="namaz-widget-container">
+        <div class="widget-header">
+             <div class="logo-container">
+                <img src="https://allaturkaa.de/forum/wcf/images/allaturkaa/logo.png" alt="ALATURKA Logo">
+                <span class="widget-title">NAMAZ VAKİTLERİ</span> 
+             </div>
+             <div class="header-info">
+                 <h3 id="widget-current-time">00:00:00</h3> 
+                 <p id="widget-date-info">Tarih Bilgisi</p>
+             </div>
+        </div>
+        
+        <div class="city-select-container">
+            <select id="city-select"></select>
+        </div>
+
+        <ul class="vakit-list" id="vakit-listesi">
+            <li><span class="vakit-name">Yükleniyor...</span><span class="vakit-time">--:--</span></li>
+        </ul>
+        
+        <div class="countdown">
+            <span id="next-vakit-name">Yükleniyor</span>'a Kalan Süre: <span class="countdown-time" id="countdown-timer">00:00:00</span>
+        </div>
+    </div>
+
+<script>
+    // ========================================================
+    // 1. YAPILANDIRMA VE SABİT VERİLER (BÜYÜK ŞEHİRLER LİSTESİ)
+    // ========================================================
+    
+    const API_BASE_URL = 'https://api.aladhan.com/v1/timingsByCity';
+    const COUNTRY = 'Turkey'; 
+    const METHOD = 3;         
+    const SCHOOL = 1;         
+    
+    const VAKIT_MAP = [
+        { name: "İmsak", key: "Fajr" },
+        { name: "Güneş", key: "Sunrise" },
+        { name: "Öğle", key: "Dhuhr" },
+        { name: "İkindi", key: "Asr" },
+        { name: "Akşam", key: "Maghrib" },
+        { name: "Yatsı", key: "Isha" }
+    ];
+    
+    // YALNIZCA BÜYÜK ŞEHİRLERİN LİSTESİ
+    const TURKISH_CITIES = [
+        "Istanbul", "Ankara", "Izmir", "Bursa", "Adana", "Antalya", "Gaziantep", 
+        "Konya", "Kayseri", "Samsun", "Trabzon", "Diyarbakir", "Denizli", "Mersin", 
+        "Eskisehir", "Kocaeli", "Mugla", "Malatya", "Sakarya", "Kahramanmaras", "Ordu"
+    ].sort();
+    
+    let currentPrayerTimes = {};
+    let nextVakitTime = null;
+    let nextVakitName = "";
+    
+    // [DOM Elementleri tanımlamaları önceki gibi...]
+    const citySelect = document.getElementById('city-select');
+    const widgetDateInfo = document.getElementById('widget-date-info');
+    const widgetCurrentTime = document.getElementById('widget-current-time');
+    const vakitListesi = document.getElementById('vakit-listesi');
+    const countdownTimer = document.getElementById('countdown-timer');
+    const nextVakitNameElement = document.getElementById('next-vakit-name');
+
+
+    // ========================================================
+    // 2. API İŞLEMLERİ VE VERİ ÇEKME
+    // ========================================================
+
+    async function fetchPrayerTimes(cityName) {
+        const url = `${API_BASE_URL}?city=${cityName}&country=${COUNTRY}&method=${METHOD}&school=${SCHOOL}`;
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`API Hatası: ${response.statusText}`);
+            const data = await response.json();
+            if (data.status === "OK") return data.data.timings;
+            else throw new Error(data.data);
+        } catch (error) {
+            console.error(`Vakitler çekilemedi: ${cityName}`, error);
+            return null;
+        }
+    }
+
+    function populateCitySelect() {
+        TURKISH_CITIES.forEach(city => {
+            const option = document.createElement('option');
+            option.value = city; 
+            option.textContent = city; 
+            citySelect.appendChild(option);
+        });
+        
+        citySelect.value = "Istanbul"; 
+        citySelect.addEventListener('change', () => loadPrayerTimes(citySelect.value));
+    }
+
+    async function loadPrayerTimes(cityName) {
+        vakitListesi.innerHTML = '<li><span class="vakit-name">Yükleniyor...</span><span class="vakit-time">--:--</span></li>';
+        const timings = await fetchPrayerTimes(cityName);
+
+        if (timings) {
+            currentPrayerTimes = VAKIT_MAP.reduce((acc, vakit) => {
+                acc[vakit.name] = timings[vakit.key];
+                return acc;
+            }, {});
+            
+            vakitListesi.innerHTML = '';
+            VAKIT_MAP.forEach(({ name, key }) => {
+                const timeStr = currentPrayerTimes[name] || '--:--';
+                const listItem = document.createElement('li');
+                const simpleName = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+                listItem.id = `${simpleName}-vakit`; 
+                listItem.innerHTML = `<span class="vakit-name">${name}</span><span class="vakit-time">${timeStr}</span>`;
+                vakitListesi.appendChild(listItem);
+            });
+            
+        } else {
+            currentPrayerTimes = {};
+            vakitListesi.innerHTML = '<li><span class="vakit-name" style="color: red;">Vakitler Yüklenemedi!</span><span class="vakit-time">--:--</span></li>';
+        }
+        updateTimeAndCountdown();
+    }
+
+
+    // ========================================================
+    // 3. ZAMAN VE GERİ SAYIM YÖNETİMİ
+    // ========================================================
+
+    const timeToDate = (timeStr, date = new Date()) => {
+        const [h, m] = timeStr.split(':').map(Number);
+        const d = new Date(date);
+        d.setHours(h, m, 0, 0);
+        return d;
+    };
+    
+    function updateTimeAndCountdown() {
+        const now = new Date();
+        
+        widgetDateInfo.textContent = now.toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        widgetCurrentTime.textContent = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        
+        if (Object.keys(currentPrayerTimes).length === 0) {
+            nextVakitNameElement.textContent = "Veri Yok";
+            countdownTimer.textContent = "00:00:00";
+            return;
+        }
+
+        let foundNextVakit = false;
+        let timesForToday = VAKIT_MAP.map(({ name, key }) => ({
+            name: name,
+            time: timeToDate(currentPrayerTimes[name])
+        }));
+        let currentVakitName = ""; 
+
+        for (let i = 0; i < timesForToday.length; i++) {
+            const vakit = timesForToday[i];
+            
+            if (now.getTime() < vakit.time.getTime()) {
+                nextVakitTime = vakit.time;
+                nextVakitName = vakit.name;
+                currentVakitName = timesForToday[i > 0 ? i - 1 : 5].name;
+                foundNextVakit = true;
+                break;
+            }
+        }
+        
+        if (!foundNextVakit) {
+            const imsakYarin = timeToDate(currentPrayerTimes['İmsak']);
+            imsakYarin.setDate(imsakYarin.getDate() + 1); 
+            nextVakitTime = imsakYarin;
+            nextVakitName = "İmsak";
+            currentVakitName = VAKIT_MAP[5].name; 
+        }
+
+        highlightCurrentVakit(currentVakitName);
+        
+        const remainingMs = nextVakitTime.getTime() - now.getTime();
+        const seconds = Math.floor((remainingMs / 1000) % 60);
+        const minutes = Math.floor((remainingMs / (1000 * 60)) % 60);
+        const hours = Math.floor((remainingMs / (1000 * 60 * 60)) % 24);
+
+        nextVakitNameElement.textContent = nextVakitName;
+        countdownTimer.textContent = 
+            `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+        if (now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
+            loadPrayerTimes(citySelect.value);
+        }
+    }
+
+    function highlightCurrentVakit(currentVakitName) {
+        document.querySelectorAll('.vakit-list li').forEach(li => li.classList.remove('current-vakit'));
+        const simpleName = currentVakitName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        const currentVakitElement = document.getElementById(`${simpleName}-vakit`);
+        if (currentVakitElement) {
+            currentVakitElement.classList.add('current-vakit');
+        }
+    }
+    
+    // ========================================================
+    // 4. BAŞLANGIÇ VE ZAMANLAYICI
+    // ========================================================
+    
+    populateCitySelect(); 
+    loadPrayerTimes(citySelect.value);
+    setInterval(updateTimeAndCountdown, 1000); 
+
+</script>
+</body>
+</html>

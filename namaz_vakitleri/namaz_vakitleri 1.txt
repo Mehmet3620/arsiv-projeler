@@ -1,0 +1,66 @@
+Namaz Vakitleri Bilgi Kartı Widget'ı (Genişlik: 350px)
+📄 Geniş Widget Açıklama Yazısı
+Merhaba değerli ALATURKA forum üyeleri ve ziyaretçileri!
+
+<div></div>
+
+<p><b>
+
+
+Sizler için forum sayfalarına kolayca entegre edilebilecek, güncel namaz vakitlerini gösteren bir widget hazırladım. Bu widget, seçtiğiniz bir şehir için Diyanet İşleri Başkanlığı'nın verilerine yakın saatleri gösterir ve sade, koyu (ALATURKA) temasıyla sitenizin genel tasarımına uyum sağlar.
+
+
+
+Widget, 5 vakit namaz (İmsak, Güneş, Öğle, İkindi, Akşam, Yatsı) için saatleri ve hangi vakitte olduğumuzu net bir şekilde gösterir. </b></p>
+
+<div></div>
+
+<p><b>
+
+
+Widget'ın varsayılan genişliği 350px olarak belirlenmiştir. Arka planı tamamen şeffaftır, böylece forumun koyu veya açık temasıyla sorunsuz bir şekilde bütünleşebilir. </b></p>
+
+🛠️ Widget Kurulum ve Özelleştirme Kılavuzu
+Kodlar ekte verilmiştir. İşte kurulum ve özelleştirme kılavuzu:
+
+<div></div>
+
+1. Kurulum (Iframe Kodu)
+Widget'ı forum sayfanıza eklemek için, ekteki kod dosyasını sunucunuza yükledikten sonra aşağıdaki iframe kodunu kullanın.
+
+<p><b>
+
+
+> Önemli: iframe kodundaki src kısmına, yüklediğiniz kod dosyasının tam yolunu yazmanız gerekmektedir. </b></p>
+
+<iframe 
+    src="[WIDGET_KODUNUN_SUNUCUDAKI_ADRESI].html" 
+    width="370"           
+    height="350"          
+    frameborder="0" 
+    scrolling="no"        
+    style="border: none; margin: 0 auto; display: block;"
+></iframe>
+<div></div>
+
+2. Özelleştirme Ayarları (Kod İçi)
+<p><b>
+
+
+Varsayılan Şehir Ayarı: Widget'ın varsayılan olarak hangi şehrin namaz vakitlerini göstereceği, ekteki kod dosyasının &lt;script&gt; bölümünde yer alan başlangıç değişkenleri (DEFAULT_CITY veya CITY_ID gibi) düzenlenerek değiştirilmelidir.
+
+<div></div>
+
+3. Geliştirilebilir Konular (İsteğe Bağlı)
+<p><b>
+
+
+Bu widget'ı daha da geliştirmek isterseniz aşağıdaki konular üzerinde çalışabilirsiniz: </b></p>
+
+<p><b>
+
+
+Şehir Seçimi Arayüzü: Kullanıcıların doğrudan widget üzerinden farklı şehirleri seçebileceği (dropdown menü gibi) bir arayüz eklenebilir.
+
+💻 WIDGET KODU
+<p style="font-size: 0.9em; color: #777;"> Bu widget'ın tüm HTML, CSS ve JavaScript kodları ekteki dosyada mevcuttur. Kurulum veya özelleştirme konusunda herhangi bir sorunuz olursa lütfen çekinmeden sorun. İyi kullanımlar dileriz! </p>
