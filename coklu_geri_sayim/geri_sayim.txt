@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Özel Günler Geri Sayım Sayacı (Logolu)</title>
+    
+    <style>
+        /* --- Tema Değişkenleri (Ayni Kaldı) --- */
+        :root {
+            --bg-main: #3a3a3a;      
+            --bg-panel: #4a4a4a;     
+            --text-light: #f4f4f4;    
+            --accent-color: #ff9800; 
+            --secondary-accent: #00bcd4; 
+            --shadow: 0 6px 6px rgba(0, 0, 0, 0.5); 
+        }
+        
+        body {
+            background-color: transparent; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* --- Genel Konteyner: 350px --- */
+        #countdown-wrapper {
+            width: 350px; 
+            margin: 0 auto;
+            background: var(--bg-main);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 20px 15px; 
+            text-align: center;
+        }
+        
+        #widget-title {
+            color: var(--secondary-accent);
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid var(--bg-panel);
+            padding-bottom: 10px;
+        }
+
+        /* Logo Stili */
+        #header-logo-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        #header-logo {
+            max-width: 180px; 
+            height: auto;
+            border-radius: 6px;
+        }
+
+        /* Açılır Liste Stili */
+        #event-select {
+            width: 90%;
+            padding: 8px;
+            margin: 0 auto 20px auto;
+            border-radius: 5px;
+            border: 1px solid var(--secondary-accent);
+            background-color: var(--bg-panel);
+            color: var(--text-light);
+            font-size: 1em;
+            cursor: pointer;
+            display: block;
+            appearance: none; 
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            text-align-last: center; 
+            text-align: center;
+            height: 35px;
+        }
+        
+        /* Sayım Birimleri Ayni Kaldı */
+        #timer-container {
+            display: flex;
+            justify-content: space-around;
+            background-color: var(--bg-panel);
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .time-unit { flex-basis: 25%; padding: 5px; }
+        .time-value { font-size: 2.2em; font-weight: 900; color: var(--text-light); line-height: 1.1; display: block; }
+        .time-label { font-size: 0.8em; font-weight: 400; color: #ccc; display: block; text-transform: uppercase; }
+        
+        /* Mesaj Stili */
+        #message {
+            font-size: 1.2em;
+            color: var(--accent-color);
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        
+        /* YENİ EKLENEN: Footer Yazı Stili */
+        #widget-footer {
+            margin-top: 15px;
+            padding-top: 10px;
+            font-size: 0.8em;
+            color: var(--secondary-accent); /* Forum rengini kullanalım */
+            border-top: 1px dashed var(--bg-panel);
+            font-weight: bold;
+        }
+        
+    </style>
+    
+</head>
+<body>
+
+<div id="countdown-wrapper">
+    
+    <div id="widget-title">Yaklaşan Özel Gün Geri Sayımı</div>
+    
+    <div id="header-logo-container">
+        <img id="header-logo" src="https://allaturkaa.de/forum/wcf/images/allaturkaa/logo.png" alt="Allaturkaa Logo">
+    </div>
+    
+    <select id="event-select"></select>
+    
+    <div id="timer-container">
+        <div class="time-unit">
+            <span id="days" class="time-value">00</span>
+            <span class="time-label">GÜN</span>
+        </div>
+        <div class="time-unit">
+            <span id="hours" class="time-value">00</span>
+            <span class="time-label">SAAT</span>
+        </div>
+        <div class="time-unit">
+            <span id="minutes" class="time-value">00</span>
+            <span class="time-label">DAK.</span>
+        </div>
+        <div class="time-unit">
+            <span id="seconds" class="time-value">00</span>
+            <span class="time-label">SAN.</span>
+        </div>
+    </div>
+    
+    <div id="message" style="display: none;"></div>
+    
+    <div id="widget-footer">
+        ALLATURKA FORUM
+    </div>
+    
+</div>
+
+<script>
+    let countdownInterval;
+    
+    const events = [
+        // Tarih formatı: YYYY-MM-DD
+        { name: "Yeni Yıl", date: "2026-01-01" },
+        { name: "Ramazan Başlangıcı (Oruç)", date: "2026-03-22" },
+        { name: "Ramazan Bayramı (1. Gün)", date: "2026-04-21" },
+        { name: "Kurban Bayramı (1. Gün)", date: "2026-06-29" },
+        { name: "30 Ağustos Zafer Bayramı", date: "2026-08-30" },
+        { name: "29 Ekim Cumhuriyet Bayramı", date: "2026-10-29" },
+        { name: "15 Temmuz Demokrasi ve Milli Birlik Günü", date: "2026-07-15" },
+        { name: "1 Mayıs Emek ve Dayanışma Günü", date: "2026-05-01" },
+        { name: "19 Mayıs Atatürk'ü Anma, Gençlik ve Spor Bayramı", date: "2026-05-19" },
+        { name: "23 Nisan Ulusal Egemenlik ve Çocuk Bayramı", date: "2026-04-23" },
+        { name: "24 Kasım Öğretmenler Günü", date: "2025-11-24" }, 
+        { name: "8 Mart Dünya Kadınlar Günü", date: "2026-03-08" },
+        { name: "14 Şubat Sevgililer Günü", date: "2026-02-14" },
+        { name: "18 Mart Çanakkale Zaferi ve Şehitleri Anma Günü", date: "2026-03-18" },
+        { name: "Babalar Günü", date: "2026-06-21" }, 
+        { name: "Anneler Günü", date: "2026-05-10" }, 
+        { name: "Dünya Kitap Günü", date: "2026-04-23" },
+        { name: "Hıdırellez", date: "2026-05-06" }, 
+        { name: "Kadir Gecesi", date: "2026-04-16" }, 
+        { name: "FORUM Kuruluş Yıl Dönümü", date: "2026-03-15" }, 
+        { name: "Özel Etkinlik / Yarışma Başlangıcı", date: "2026-07-01" },
+    ];
+
+    function calculateTime(targetDate) {
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+
+        if (distance < 0) return null;
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        return { days, hours, minutes, seconds, distance };
+    }
+
+    function updateDisplay(time) {
+        if (!time) {
+             document.getElementById('timer-container').style.display = 'none';
+             document.getElementById('message').textContent = "Bu etkinlik geçmiş, lütfen listeden yenisini seçin.";
+             document.getElementById('message').style.display = 'block';
+             return;
+        }
+        document.getElementById('timer-container').style.display = 'flex';
+        document.getElementById('message').style.display = 'none';
+        
+        document.getElementById('days').textContent = String(time.days).padStart(2, '0');
+        document.getElementById('hours').textContent = String(time.hours).padStart(2, '0');
+        document.getElementById('minutes').textContent = String(time.minutes).padStart(2, '0');
+        document.getElementById('seconds').textContent = String(time.seconds).padStart(2, '0');
+    }
+
+    function startCountdown(targetEvent) {
+        if (countdownInterval) {
+            clearInterval(countdownInterval);
+        }
+        
+        let targetDateObj = new Date(targetEvent.date);
+        let targetTime = targetDateObj.getTime();
+        const now = new Date().getTime();
+
+        if (targetTime < now) {
+            const currentYear = new Date().getFullYear();
+            let nextYearDate = new Date(targetEvent.date.replace(/\d{4}/, currentYear + 1));
+            targetTime = nextYearDate.getTime();
+            targetDateObj = nextYearDate; 
+        }
+
+        const finalEvent = { name: targetEvent.name, target: targetTime, dateObj: targetDateObj };
+        
+        document.getElementById('event-select').title = finalEvent.name + " Sayacı: " + finalEvent.dateObj.toLocaleDateString();
+
+        function tick() {
+            const timeRemaining = calculateTime(finalEvent.target);
+
+            if (timeRemaining === null) {
+                clearInterval(countdownInterval);
+                document.getElementById('timer-container').style.display = 'none';
+                document.getElementById('message').style.display = 'block';
+                document.getElementById('message').textContent = finalEvent.name + " Kutlu Olsun!";
+                
+            } else {
+                updateDisplay(timeRemaining);
+            }
+        }
+        
+        tick(); 
+        countdownInterval = setInterval(tick, 1000); 
+    }
+    
+    function initializeWidget() {
+        const selectElement = document.getElementById('event-select');
+        let nextUpcomingEvent = null;
+        let minTimeDiff = Infinity;
+        let nextUpcomingIndex = -1;
+        const now = new Date().getTime();
+
+        events.forEach((event, index) => {
+            let eventDate = new Date(event.date);
+            let targetTime = eventDate.getTime();
+            
+            if (targetTime < now) {
+                 const currentYear = new Date().getFullYear();
+                 let nextYearDate = new Date(event.date.replace(/\d{4}/, currentYear + 1));
+                 targetTime = nextYearDate.getTime();
+                 
+                 if(targetTime < now) { 
+                    nextYearDate = new Date(event.date.replace(/\d{4}/, currentYear + 2));
+                    targetTime = nextYearDate.getTime();
+                 }
+            }
+
+            const timeDiff = targetTime - now;
+
+            const option = document.createElement('option');
+            option.textContent = event.name; 
+            option.value = index; 
+            selectElement.appendChild(option);
+
+            if (timeDiff > 0 && timeDiff < minTimeDiff) {
+                minTimeDiff = timeDiff;
+                nextUpcomingEvent = event;
+                nextUpcomingIndex = index;
+            }
+        });
+        
+        if (nextUpcomingIndex !== -1) {
+            selectElement.value = nextUpcomingIndex;
+            startCountdown(nextUpcomingEvent);
+        } else if(events.length > 0) {
+            selectElement.value = 0;
+            startCountdown(events[0]);
+        }
+        
+        selectElement.addEventListener('change', function() {
+            const selectedIndex = this.value;
+            const selectedEvent = events[selectedIndex];
+            startCountdown(selectedEvent);
+        });
+    }
+
+    initializeWidget();
+</script>
+
+</body>
+</html>
