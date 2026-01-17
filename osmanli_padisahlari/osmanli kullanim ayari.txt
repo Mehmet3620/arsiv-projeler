@@ -1,0 +1,39 @@
+Sayfalarınıza, Bloglarınıza ,Sitelerinize Osmanlı Padişahları Bilgi Kartı Widget'ı
+Merhaba değerli ALATURKA forum üyeleri ve ziyaretçileri!
+Bloklarınıza, Sitelerinize , Sayfalarınıza kolayca ekleyebileceğiniz, Osmanlı İmparatorluğu'nun 36 padişahının biyografik özetini sunan interaktif bir bilgi kartı widget'ı hazırladık.
+
+Bu widget, modern ve koyu sitenizin tasarımına uyum sağlayacak şekilde tasarlanmıştır. Padişah resimlerine tıklandığında, kısa saltanat süresi ve önemli bilgilerin yer aldığı bir pop-up kart açılır.
+
+
+Widget'ın kendisi 350px genişliğinde olup, açılan bilgi kartı (pop-up) ise 300px genişliğinde yan sayfalara taşmadan dikey olarak uzayacak şekilde ayarlanmıştır.
+Arka planı tamamen şeffaftır, bu sayede hangi tema rengini kullanırsanız kullanın, mükemmel bir uyum yakalar.
+
+
+Widget Kurulum ve Özelleştirme Kılavuzu Kodlar ekte verilmiştir. İşte kurulum ve özelleştirme kılavuzu:
+1. Kurulum (Iframe Kodu) Widget'ı Bloklarınıza, Sitelerinize , Sayfalarınıza veya herhangi bir HTML alanına eklemek için, ekteki kod dosyasını sunucunuza yükledikten sonra aşağıdaki iframe kodunu kullanın.
+> Önemli: iframe kodundaki src kısmına, yüklediğiniz kod dosyasının tam yolunu yazmanız gerekmektedir.
+
+
+	
+Kaynak kod
+
+<iframe 
+    src="[WIDGET_KODUNUN_SUNUCUDAKI_ADRESI].html" 
+    width="370"           
+    height="600"          
+    frameborder="0" 
+    scrolling="no"        
+    style="border: none; margin: 0 auto; display: block;"
+></iframe>
+
+2. Özelleştirme Ayarları (Kod İçi)
+Boyut ve Genişlik Ayarları: Widget'ın genel genişliği (350px) ve açılan kartın genişliği (300px) gibi boyut ayarları, ekteki kod dosyasının <style> bölümünde yer alan .allaturca-widget-container ve .card-content sınıfları içinde değiştirilebilir.
+
+3. Geliştirilebilir Konular (İsteğe Bağlı)
+Bu widget'ı daha da geliştirmek isterseniz aşağıdaki konular üzerinde çalışabilirsiniz:
+
+
+Arama / Filtreleme Özelliği: Padişahlar arasında isim veya saltanat yılına göre arama yapma özelliği eklenebilir.
+WIDGET KODU
+
+Bu widget'ın tüm HTML, CSS ve JavaScript kodları ekteki dosyada mevcuttur. İyi kullanımlar dileriz!
