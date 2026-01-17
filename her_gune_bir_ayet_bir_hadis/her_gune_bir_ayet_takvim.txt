@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Günün Panosu Widget'ı</title>
+    
+    <style>
+        :root {
+            /* KOLAY RENK AYARLAMA BÖLÜMÜ - ORİJİNAL TURUNCU */
+            --bg-dark: #222;
+            --bg-medium: #333;
+            --accent-color: #ff7f00; /* ANA RENK: TURUNCU */
+            --text-light: #f4f4f4;
+            --text-muted: #aaa; 
+            --box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            --hover-shadow: 0 0 10px var(--accent-color), 0 0 5px var(--accent-color); 
+            --transition-speed: 0.3s; 
+        }
+
+        .pano-widget-wrapper {
+            max-width: 350px; 
+            margin: 20px auto;
+            padding: 15px;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            border-radius: 8px;
+            box-shadow: var(--box-shadow);
+            font-family: Arial, sans-serif;
+            transition: box-shadow var(--transition-speed); 
+        }
+        
+        .pano-widget-wrapper:hover {
+            box-shadow: var(--hover-shadow);
+        }
+
+        .pano-widget-wrapper h2 {
+            color: var(--accent-color);
+            text-align: center;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        /* ------------------ TARİH VE SAAT STİLLERİ ------------------ */
+
+        .date-time-container {
+            background: var(--bg-medium);
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--accent-color);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        /* ÖZEL GÜN BÖLÜMÜ STİLİ */
+        #special-day-container {
+            margin-bottom: 20px;
+            padding: 8px;
+            background: var(--bg-medium);
+            border: 1px dashed var(--accent-color); 
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.95em;
+            color: var(--text-light);
+        }
+        #special-day-container strong {
+            color: var(--accent-color); 
+            display: block;
+        }
+        
+        /* ÖZEL GÜN OLMADIĞINDA KULLANILACAK STİL */
+        .generic-message {
+             font-weight: normal;
+             color: var(--text-light);
+             font-style: italic;
+             font-size: 0.9em;
+             display: block;
+        }
+        
+        /* ÖZEL GÜN OLDUĞUNDA KULLANILACAK STİL */
+        .special-day-highlight {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        
+        #calendar-day-info {
+            font-size: 1.8em; 
+            font-weight: bold;
+            color: var(--text-light);
+            margin: 0;
+            display: block;
+            text-transform: uppercase; 
+            padding-bottom: 10px;
+            border-bottom: 1px solid #444; 
+        }
+
+        .calendar-info {
+            display: flex;
+            justify-content: space-around;
+            font-size: 0.9em;
+            padding-top: 5px;
+            margin-top: 5px;
+        }
+
+        .calendar-info div {
+            flex-basis: 50%;
+            text-align: center;
+        }
+        
+        .calendar-info .label {
+            color: var(--text-muted);
+            display: block;
+            font-size: 0.8em;
+        }
+        
+        .calendar-info .value {
+            color: var(--text-light);
+            font-weight: bold;
+            display: block;
+        }
+
+        /* ------------------ GÜNLÜK İÇERİK STİLLERİ ------------------ */
+
+        .daily-content-section {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid var(--bg-medium);
+            border-radius: 4px;
+            background: #2a2a2a; 
+            transition: background var(--transition-speed); 
+        }
+        
+        .daily-content-section:hover {
+            background: #363636;
+        }
+
+
+        /* AYET, HADİS, SÖZ, İSİM VE YEMEK BAŞLIKLARI (HEPSİ EŞİT) */
+        .content-title {
+            color: var(--accent-color); 
+            font-size: 1em; 
+            font-weight: bold;
+            margin: 0 0 5px 0;
+            padding-bottom: 3px;
+            border-bottom: 1px solid var(--accent-color); 
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
+            transition: color var(--transition-speed); 
+        }
+        
+        .daily-content-section:hover .content-title {
+            color: #ffaa44; 
+        }
+        
+        /* YENİ İSİM ÖNERİSİ STİLİ */
+        #daily-isim-section .isim-onerileri {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        .isim-onerileri .cinsiyet-kutu {
+            flex-basis: 48%;
+            padding: 5px 0;
+            border-radius: 4px;
+            background: #363636;
+        }
+
+        .isim-onerileri .cinsiyet-kutu .label {
+            display: block;
+            font-size: 0.8em;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+        }
+
+        .isim-onerileri .cinsiyet-kutu .isim {
+            display: block;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--text-light);
+        }
+        
+        /* YEMEK ADININ ÖZEL STİLİ: UFACIK VE GRİ */
+        #daily-yemek-section .content-title #yemek-adi {
+            color: var(--text-muted); 
+            font-size: 0.85em; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            max-width: 70%; 
+            display: inline-block;
+        }
+        
+        /* Uzun yazıları ikiye bölme kuralı için: */
+        .content-text p {
+            margin-top: 0.5em; 
+            margin-bottom: 0.5em;
+        }
+        .content-text p:first-child {
+            margin-top: 0;
+        }
+        .content-text p:last-child {
+            margin-bottom: 0;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="pano-widget-wrapper">
+    
+    <h2>GÜNÜN PANOSU</h2>
+
+    <div class="date-time-container">
+        <span id="calendar-day-info">-- -- ----</span>
+        
+        <div id="year-and-time-line">
+            <span id="current-year">----</span> 
+            <span id="live-time-small">--:--:--</span>
+        </div>
+        
+        <div class="calendar-info">
+            <div>
+                <span class="label">MİLADİ TAKVİM</span>
+                <span class="value" id="miladi-date">--</span>
+            </div>
+            <div>
+                <span class="label">HİCRİ TAKVİM</span>
+                <span class="value" id="hicri-date">--</span>
+            </div>
+        </div>
+    </div>
+    
+    <div id="special-day-container">
+        <strong>GÜNÜN ÖNEMİ:</strong> <span id="special-day-text">Yükleniyor...</span>
+    </div>
+    <div class="daily-content-section">
+        <p class="content-title"><b>Günün Ayet-i Kerimesi</b></p>
+        <div class="content-text" id="daily-ayet">Yükleniyor...</div>
+    </div>
+
+    <div class="daily-content-section">
+        <p class="content-title"><b>Günün Hadis-i Şerifi</b></p>
+        <div class="content-text" id="daily-hadis">Yükleniyor...</div>
+    </div>
+
+    <div class="daily-content-section">
+        <p class="content-title"><b>Günün Güzel Sözü</b></p>
+        <div class="content-text" id="daily-soz">Yükleniyor...</div>
+    </div>
+    
+    <div class="daily-content-section" id="daily-isim-section">
+        <p class="content-title"><b>Günün Bebek İsimleri (Önerisi)</b></p>
+        <div class="isim-onerileri" id="daily-isimler-container">
+            </div>
+    </div>
+    <div class="daily-content-section" id="daily-yemek-section">
+        <p class="content-title"><span><b>Günün Yemeği:</b></span> <span id="yemek-adi">Yükleniyor...</span></p>
+        <div class="content-text">
+             <p id="yemek-tarifi-kismi">Tarif bilgisi yükleniyor...</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // --- GÜNLÜK İÇERİK VERİLERİ (Ayet, Hadis, Söz, Yemek) ---
+    const DailyContents = [
+        {
+            ayet: "Rabbinizin bağışına ve takva sahipleri için hazırlanmış olup genişliği göklerle yer kadar olan cennete koşun. (Âl-i İmrân, 3/133)",
+            hadis: "Amellerin en hayırlısı, az da olsa devamlı olanıdır. Bu sayede istikrar sağlanır ve kulluk bilinci daim olur. (Buhari, İman, 32)",
+            soz: "İlim maldan daha hayırlıdır. Çünkü ilim seni korur, sen ise malı korursun. Bu sebeple ilme öncelik ver. (Hz. Ali)",
+            yemek: { ad: "Kuru Fasulye ve Pilav", tarif: "Önceden ıslatılmış fasulyeleri haşlayın. Soğan ve salçayı kavurup fasulyeyi ekleyin, sıcak suyla kısık ateşte pişirin. Yanına sade pilav yapın." }
+        },
+        {
+            ayet: "Şüphesiz güçlükle beraber bir kolaylık vardır. Gerçekten, güçlükle beraber bir kolaylık vardır. (İnşirah, 94/5-6)",
+            hadis: "Müslüman, elinden ve dilinden diğer Müslümanların emin olduğu kimsedir. Bu temel kaide, toplumda huzurun anahtarıdır. (Buhari, İman, 4)",
+            soz: "Bizi bizden daha iyi bilen bir Rabbimiz varken, kendimizi anlatma çabası neye yarar? Tevekkül etmek en doğru olandır. (Necip Fazıl Kısakürek)",
+            yemek: { ad: "Mercimek Çorbası ve Köfte", tarif: "Kırmızı mercimeği haşlayıp blendırdan geçirin. Köfteleri hazırlayıp tavada kızartın. Yanında limon dilimiyle servis edin." }
+        },
+        {
+            ayet: "Gevşemeyin, üzülmeyin. Eğer inanıyorsanız, üstün gelecek olan sizsiniz. Allah'a tam bir güvenle bağlanın. (Âl-i İmrân, 3/139)",
+            hadis: "Kıyamet günü mü'minin terazisinde güzel ahlaktan daha ağır bir şey bulunmaz. Ahlak, imanın yansımasıdır. (Ebu Davud, Edeb, 7)",
+            soz: "Sabır, şikayet etmeden katlanmak ve beklemektir. Şikayetsiz bekleyiş, en büyük teslimiyettir. (Mevlana)",
+            yemek: { ad: "Tavuk Sote ve Makarna", tarif: "Tavukları jülyen doğrayın. Biber ve domatesle soteleyin. Kekik, kırmızı biber ve tuz ekleyin. Yanında tereyağlı makarna ile servis edin." }
+        },
+        // Daha fazla gün için bu diziyi uzatabilirsiniz.
+    ];
+
+    // --- GÜNLÜK İSİM ÖNERİLERİ VERİSİ (Yeni ve Basitleştirilmiş) ---
+    const DailyNames = [
+        { kiz: "Eylül", erkek: "Emir" },
+        { kiz: "Asel", erkek: "Yusuf" },
+        { kiz: "Zeynep", erkek: "Alp" },
+        { kiz: "Elif", erkek: "Aras" },
+        { kiz: "Ece", erkek: "Mert" },
+        { kiz: "Bade", erkek: "Kerem" },
+        // Diziyi istediğiniz kadar uzatabilirsiniz. Günlük döngü bu listeye göre devam eder.
+    ];
+
+    // --- ÖZEL GÜNLER VERİSİ ---
+    const SpecialDays = {
+        '10-29': '29 Ekim Cumhuriyet Bayramı',
+        // Şu an 27 Ekim. Yarın 28 Ekim.
+        '10-28': '28 Ekim Cumhuriyet Bayramı Arifesi (Yarın Öğleden Sonra Tatil)', 
+        '4-23': '23 Nisan Ulusal Egemenlik ve Çocuk Bayramı',
+        '1-17': 'Mevlid Kandili', 
+    };
+    
+    // --- MOTİVASYON MESAJLARI ---
+    const MotivationMessages = [
+        "Unutma ki her gün yeni bir başlangıçtır.",
+        "Hedeflerine odaklan ve bugün için bir adım at.",
+        "Günün Ayet ve Hadisleri rehberin olsun.",
+        "Bugün sıradan bir gün olabilir, ama onu özel kılmak senin elinde.",
+        "Önemli bir gün gelene kadar, her anı dolu dolu yaşa!"
+    ];
+
+    // DOM Elementlerini tanımla
+    const calendarDayInfoEl = document.getElementById('calendar-day-info');
+    const specialDayTextEl = document.getElementById('special-day-text');
+    const currentYearEl = document.getElementById('current-year');
+    const liveTimeSmallEl = document.getElementById('live-time-small'); 
+    const miladiDateEl = document.getElementById('miladi-date');
+    const hicriDateEl = document.getElementById('hicri-date');
+    const dailyAyetEl = document.getElementById('daily-ayet');
+    const dailyHadisEl = document.getElementById('daily-hadis');
+    const dailySozEl = document.getElementById('daily-soz');
+    const dailyIsimlerContainerEl = document.getElementById('daily-isimler-container'); // Container elemanı
+    const yemekAdiEl = document.getElementById('yemek-adi'); 
+    const yemekTarifiEl = document.getElementById('yemek-tarifi-kismi'); 
+
+    const TurkishDays = ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"];
+    const TurkishMonths = ["OCAK", "ŞUBAT", "MART", "NİSAN", "MAYIS", "HAZİRAN", "TEMMUZ", "AĞUSTOS", "EYLÜL", "EKİM", "KASIM", "ARALIK"];
+    
+    // --- YARDIMCI FONKSİYONLAR ---
+    
+    function getHicriDate(date) {
+        try { return new Intl.DateTimeFormat('tr-TR-u-ca-islamic', { day: 'numeric', month: 'long', year: 'numeric' }).format(date); } catch (e) { return "Hata"; }
+    }
+    
+    function getDayOfYear(now) {
+        const start = new Date(now.getFullYear(), 0, 0);
+        const diff = now - start;
+        const oneDay = 1000 * 60 * 60 * 24;
+        return Math.floor(diff / oneDay);
+    }
+    
+    function splitLongText(text) {
+        // [2025-10-10] Uzun yazıları ikiye bölme ve paragraf ekleme kuralı uygulanmaktadır.
+        const minLength = 50; 
+        let paragraphs = [];
+        let parts = text.split('(');
+        let mainText = parts[0].trim();
+        let reference = parts.length > 1 ? ' (' + parts.slice(1).join('(') : '';
+        if (mainText.length > minLength) {
+            let bestSplitIndex = -1;
+            let searchIndex = mainText.indexOf('.');
+            if (searchIndex === -1) { searchIndex = mainText.indexOf(','); }
+            if (searchIndex !== -1) {
+                let spaceAfterSplit = mainText.indexOf(' ', searchIndex + 1);
+                bestSplitIndex = spaceAfterSplit !== -1 ? spaceAfterSplit : searchIndex;
+            }
+            if (bestSplitIndex !== -1 && bestSplitIndex > mainText.length * 0.3 && bestSplitIndex < mainText.length * 0.7) { 
+                 paragraphs.push(mainText.substring(0, bestSplitIndex).trim());
+                 paragraphs.push(mainText.substring(bestSplitIndex).trim() + reference);
+            } else { paragraphs.push(mainText + reference); }
+        } else { paragraphs.push(mainText + reference); }
+        if (paragraphs.length === 2 && paragraphs[0].length > 0 && paragraphs[1].length > 0) {
+            return `<p>${paragraphs[0]}</p><p>${paragraphs[1]}</p>`;
+        }
+        return `<p>${text}</p>`;
+    }
+
+    // --- ANA İÇERİK AYARLAYICILARI ---
+
+    // Motivasyon mesajını veya özel günü ayarlar - GÜNDE BİR KEZ SABİT KALIR
+    function setDailySpecialContent(now) {
+        const month = now.getMonth() + 1;
+        const day = now.getDate();
+        const key = `${month}-${day}`;
+        
+        if (SpecialDays[key]) {
+            // ÖZEL GÜN VAR
+            specialDayTextEl.innerHTML = `<span class="special-day-highlight">${SpecialDays[key]}</span>`;
+        } else {
+            // ÖZEL GÜN YOK - Rastgele mesajı seç
+            const randomIndex = Math.floor(Math.random() * MotivationMessages.length);
+            specialDayTextEl.innerHTML = `<span class="generic-message">${MotivationMessages[randomIndex]}</span>`;
+        }
+    }
+    
+    // Günlük İçerikleri (Ayet, Hadis, Söz, Yemek, İsim) Ayarlar - GÜNDE BİR KEZ SABİT KALIR
+    function setDailyContent(now) {
+        const dayIndex = getDayOfYear(now);
+        
+        // Ana içerikler (Ayet, Hadis, Söz, Yemek)
+        const contentIndex = dayIndex % DailyContents.length;
+        const daily = DailyContents[contentIndex];
+        
+        dailyAyetEl.innerHTML = splitLongText(daily.ayet);
+        dailyHadisEl.innerHTML = splitLongText(daily.hadis);
+        dailySozEl.innerHTML = splitLongText(daily.soz);
+        
+        yemekAdiEl.textContent = daily.yemek.ad.toUpperCase();
+        yemekTarifiEl.innerHTML = splitLongText(daily.yemek.tarif);
+        
+        // Yeni İsimler Bölümü (Tek Kız, Tek Erkek)
+        const nameIndex = dayIndex % DailyNames.length;
+        const dailyName = DailyNames[nameIndex];
+        
+        dailyIsimlerContainerEl.innerHTML = `
+            <div class="cinsiyet-kutu">
+                <span class="label">KIZ İSMİ</span>
+                <span class="isim">${dailyName.kiz}</span>
+            </div>
+            <div class="cinsiyet-kutu">
+                <span class="label">ERKEK İSMİ</span>
+                <span class="isim">${dailyName.erkek}</span>
+            </div>
+        `;
+    }
+    
+    // Her saniye çalışacak fonksiyon (Sadece Zamanı Günceller)
+    function updateTime() {
+        try {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            liveTimeSmallEl.textContent = timeString; 
+        } catch (error) {
+            console.error("Zaman güncellenirken bir hata oluştu:", error);
+        }
+    }
+
+    // İlk yüklemede ve gün değiştiğinde çalışacak ana fonksiyon
+    function initializePano() {
+        try {
+            const now = new Date();
+            
+            // 1. STATİK GÜNLÜK BİLGİLERİ AYARLA (Günde 1 kez)
+            setDailySpecialContent(now); 
+            setDailyContent(now);
+
+            // 2. TARİH BİLGİLERİNİ AYARLA (İlk yükleme)
+            const dayName = TurkishDays[now.getDay()].toUpperCase();
+            const monthName = TurkishMonths[now.getMonth()].toUpperCase();
+            const dayOfMonth = now.getDate();
+            
+            calendarDayInfoEl.textContent = `${dayOfMonth} ${monthName} ${dayName}`;
+            currentYearEl.textContent = now.getFullYear();
+
+            miladiDateEl.textContent = `${dayOfMonth}.${now.getMonth() + 1}.${now.getFullYear()}`;
+            hicriDateEl.textContent = getHicriDate(now);
+            
+            // 3. ZAMANI BAŞLAT (Her saniye çalışır)
+            updateTime(); 
+            setInterval(updateTime, 1000);
+
+        } catch (error) {
+            console.error("Pano başlatılırken kritik bir hata oluştu:", error);
+        }
+    }
+
+
+    // Widget yüklendiğinde bir kez çalıştır
+    window.addEventListener('load', initializePano);
+</script>
+
+</body>
+</html>
