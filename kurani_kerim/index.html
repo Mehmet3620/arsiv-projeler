@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Kuran Dinleme Widget'ı</title>
+    
+    <style>
+        :root {
+            --bg-dark: #222;
+            --bg-medium: #333;
+            --accent-orange: #ff7f00; /* Ana Turuncu Rengimiz */
+            --text-light: #f4f4f4;
+            --text-muted: #aaa; /* Koyu gri ton */
+            --player-control-size: 36px;
+        }
+
+        .kuran-widget-wrapper {
+            max-width: 350px; 
+            margin: 20px auto;
+            padding: 15px;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            font-family: Arial, sans-serif;
+        }
+
+        /* Besmele Görseli SON Stilleri (Siyah görseli TURUNCU Renge çevirir) */
+        .basmala-image-final {
+            display: block; 
+            margin: 0 auto 15px auto; 
+            max-width: 90%; 
+            height: auto; 
+            
+            /* Siyah görseli, turuncu rengine dönüştüren hassas filtre */
+            filter: invert(50%) sepia(80%) saturate(2400%) hue-rotate(350deg) brightness(110%) contrast(100%); 
+        }
+
+        .kuran-widget-wrapper h2 {
+            color: var(--accent-orange);
+            text-align: center;
+            border-bottom: 2px solid var(--accent-orange);
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        
+        #reciter-name {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .player-container {
+            padding: 15px;
+            background: var(--bg-medium);
+            border-radius: 6px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid var(--accent-orange);
+            position: relative;
+        }
+
+        #sure-adi-display {
+            font-weight: bold;
+            color: var(--text-light);
+            margin: 0 0 10px 0;
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+            line-height: 1.5; 
+            text-align: left; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            padding-left: 5px; 
+        }
+        
+        #sure-adi-display .arabic {
+            font-family: 'Amiri', 'Traditional Arabic', serif;
+            direction: rtl;
+            font-size: 1.1em;
+            margin-left: 5px; 
+            margin-right: 5px;
+        }
+        #sure-adi-display .turkish {
+            font-weight: normal;
+        }
+
+
+        #kuran-player { display: none; }
+
+        .custom-controls {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-top: 10px;
+        }
+
+        .custom-control-btn {
+            background: var(--bg-dark);
+            color: var(--accent-orange);
+            border: 2px solid var(--accent-orange);
+            border-radius: 50%;
+            width: var(--player-control-size);
+            height: var(--player-control-size);
+            line-height: var(--player-control-size);
+            text-align: center;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.1s, color 0.1s, transform 0.1s;
+            user-select: none;
+        }
+
+        .custom-control-btn:hover {
+            background: var(--accent-orange);
+            color: var(--bg-dark);
+        }
+        
+        .custom-control-btn:active {
+            transform: scale(0.9);
+            box-shadow: 0 0 5px var(--accent-orange);
+        }
+        
+        .player-details {
+            color: var(--text-light);
+            font-size: 0.8em;
+            margin-top: 10px;
+        }
+        
+        /* Volume Slider */
+        #volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            height: 4px;
+            background: var(--bg-dark);
+            border-radius: 2px;
+            vertical-align: middle;
+            margin: 0;
+        }
+        #volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-orange);
+            border: none;
+        }
+        #volume-slider::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-orange);
+            border: none;
+        }
+        #volume-slider::-moz-range-track {
+            background: var(--bg-dark);
+            height: 4px;
+            border-radius: 2px;
+        }
+        
+        /* Sure Listesi */
+        .sure-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 350px;
+            overflow-y: auto;
+            border: 1px solid var(--bg-medium);
+            border-radius: 4px;
+            margin-bottom: 10px; 
+        }
+        .sure-list::-webkit-scrollbar {
+            width: 8px;
+            background: var(--bg-medium);
+        }
+        .sure-list::-webkit-scrollbar-thumb {
+            background: var(--accent-orange);
+            border-radius: 4px;
+        }
+        .sure-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #444;
+            transition: background-color 0.2s, color 0.2s;
+            font-size: 0.95em;
+            color: var(--text-light);
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+        }
+        .sure-item:last-child { border-bottom: none; }
+        .sure-item:hover {
+            background-color: #4a4a4a;
+            color: var(--accent-orange);
+        }
+        .sure-item.active {
+            background-color: var(--accent-orange);
+            color: var(--bg-dark);
+            font-weight: bold;
+        }
+
+        /* Liste elemanlarının tek satır ayarları */
+        .full-name-line {
+            display: inline;
+        }
+        .sure-item .arabic-name {
+            font-family: 'Amiri', 'Traditional Arabic', serif;
+            direction: rtl;
+            font-size: 1.1em; 
+            color: var(--text-muted); 
+            margin-left: 5px;
+        }
+        .sure-item .english-name {
+            font-style: italic;
+            color: var(--text-muted); 
+        }
+        .sure-item .turkish-name {
+            font-weight: normal; 
+            color: var(--text-muted); 
+        }
+        .sure-item .sure-no {
+            font-weight: bold;
+            color: var(--accent-orange); 
+            margin-right: 5px;
+        }
+        
+        /* Aktif öğe renkleri */
+        .sure-item.active .sure-no,
+        .sure-item.active .arabic-name,
+        .sure-item.active .english-name,
+        .sure-item.active .turkish-name {
+            color: var(--bg-dark); 
+        }
+
+        /* Footer Bilgisi */
+        .footer-info {
+            text-align: right; 
+            font-size: 0.75em;
+            color: var(--text-muted); 
+            padding-top: 5px;
+            border-top: 1px solid #444;
+        }
+    </style>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="kuran-widget-wrapper">
+    
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEisDPCmKdndCJQhY7w0SWW2C5i734nSqXWa-uPG-I9BhAldeFBXJQtzR96mhvmJFIuRvlBm-W9wFc8q-zxbYkgBU3kDgc3lXdkz-aSHRNcmDymChuA-aesG_PpfiAys2MnhCq0Q4R6XWrQIGTPkLfMePtoGcsO1V3hOivGtFBJotXEXtt6M_cCbdhAWJnI/s2000/2000px-Basmala.svg.png" 
+         alt="Bismillahirrahmanirrahim" class="basmala-image-final">
+
+    <h2>Kuran-ı Kerim Sureleri</h2>
+    <div id="reciter-name">Okuyucu: Abdur-Rahman as-Sudais</div>
+
+    <div class="player-container">
+        <p id="sure-adi-display">Lütfen bir sure seçiniz.</p> 
+        
+        <audio id="kuran-player" preload="auto" volume="1"></audio>
+
+        <div class="custom-controls">
+            <div id="play-btn" class="custom-control-btn">▶</div>
+            <div id="pause-btn" class="custom-control-btn">❚❚</div>
+            <div id="stop-btn" class="custom-control-btn">■</div>
+        </div>
+        
+        <div class="player-details">
+             <span id="current-time">0:00</span> / <span id="duration">--:--</span>
+             <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1" style="width: 50%; margin-left: 10px;">
+        </div>
+    </div>
+
+    <ul class="sure-list" id="sure-listesi">
+        <li style="text-align: center; padding: 10px;">Yükleniyor... Lütfen bekleyiniz.</li>
+    </ul>
+    
+    <div class="footer-info">
+        Powered by Dost Yurdu Radyo
+    </div>
+
+</div>
+
+<script>
+    // MP3 KAYNAĞI (Okuyucu: Abdur-Rahman as-Sudais)
+    const BASE_MP3_CDN_URL = 'https://download.quranicaudio.com/quran/abdurrahmaan_as-sudays/'; 
+    const SURE_LIST_API_URL = 'https://api.alquran.cloud/v1/meta'; 
+
+    // TÜRKÇE SÛRE İSİMLERİ 
+    const TurkishSurahNames = {
+        1: "Fâtiha", 2: "Bakara", 3: "Âl-i İmrân", 4: "Nisâ", 5: "Mâide", 6: "En'âm", 7: "A'râf", 8: "Enfâl", 9: "Tevbe", 10: "Yûnus",
+        11: "Hûd", 12: "Yûsuf", 13: "Ra'd", 14: "İbrâhîm", 15: "Hicr", 16: "Nahl", 17: "İsrâ", 18: "Kehf", 19: "Meryem", 20: "Tâ-Hâ",
+        21: "Enbiyâ", 22: "Hac", 23: "Mü'minûn", 24: "Nûr", 25: "Furkân", 26: "Şuarâ", 27: "Neml", 28: "Kasas", 29: "Ankebût", 30: "Rûm",
+        31: "Lokmân", 32: "Secde", 33: "Ahzâb", 34: "Sebe", 35: "Fâtır", 36: "Yâsîn", 37: "Sâffât", 38: "Sâd", 39: "Zümer", 40: "Mü'min (Gâfir)",
+        41: "Fussılet", 42: "Şûrâ", 43: "Zuhruf", 44: "Duhân", 45: "Câsiye", 46: "Ahkâf", 47: "Muhammed", 48: "Fetih", 49: "Hucurât", 50: "Kâf",
+        51: "Zâriyât", 52: "Tûr", 53: "Necm", 54: "Kamer", 55: "Rahmân", 56: "Vâkıa", 57: "Hadîd", 58: "Mücâdele", 59: "Haşr", 60: "Mümtehine",
+        61: "Saff", 62: "Cum'a", 63: "Münâfikûn", 64: "Teğabün", 65: "Talâk", 66: "Tahrîm", 67: "Mülk", 68: "Kalem", 69: "Hâkka", 70: "Meâric",
+        71: "Nûh", 72: "Cinn", 73: "Müzzemmil", 74: "Müddessir", 75: "Kıyâmet", 76: "İnsân (Dehr)", 77: "Mürselât", 78: "Nebe", 79: "Nâziât", 80: "Abese",
+        81: "Tekvîr", 82: "İnfitâr", 83: "Mutaffifîn", 84: "İnşikâk", 85: "Burûc", 86: "Târık", 87: "A'lâ", 88: "Gâşiye", 89: "Fecr", 90: "Beled",
+        91: "Şems", 92: "Leyl", 93: "Duhâ", 94: "İnşirâh (Şerh)", 95: "Tîn", 96: "Alak", 97: "Kadir", 98: "Beyyine", 99: "Zilzâl", 100: "Âdiyât",
+        101: "Kâria", 102: "Tekâsür", 103: "Asr", 104: "Hümeze", 105: "Fîl", 106: "Kureyş", 107: "Mâûn", 108: "Kevser", 109: "Kâfirûn", 110: "Nasr",
+        111: "Tebbet (Mesed)", 112: "İhlâs", 113: "Felak", 114: "Nâs"
+    };
+
+    // DOM Elementleri
+    const sureListesi = document.getElementById('sure-listesi');
+    const kuranPlayer = document.getElementById('kuran-player');
+    const sureAdiDisplay = document.getElementById('sure-adi-display');
+
+    const playBtn = document.getElementById('play-btn');
+    const pauseBtn = document.getElementById('pause-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const volumeSlider = document.getElementById('volume-slider');
+    const currentTimeDisplay = document.getElementById('current-time');
+    const durationDisplay = document.getElementById('duration');
+
+    let currentPlayingSure = null;
+
+    function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = Math.floor(seconds % 60);
+        return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    }
+    
+    function updateDisplayMessage(prefix) {
+        if (!currentPlayingSure) {
+            sureAdiDisplay.textContent = 'Yeni sure seçin.';
+            return;
+        }
+        
+        const message = `<span class="arabic">${currentPlayingSure.arabicName}</span> (<span class="turkish">${currentPlayingSure.turkishName}</span>)`;
+        
+        sureAdiDisplay.innerHTML = `${prefix}: ${message}`;
+    }
+
+
+    // Sure Listesini API'den Çekme ve Tek Satırda Çizme
+    async function fetchAndRenderSurahs() {
+        sureAdiDisplay.textContent = 'Sure listesi yükleniyor...';
+        
+        try {
+            const response = await fetch(SURE_LIST_API_URL);
+            if (!response.ok) throw new Error('API bağlantı hatası: ' + response.statusText);
+            const data = await response.json();
+            
+            const surahs = data.data.surahs.references;
+            let html = '';
+            
+            surahs.forEach(sure => {
+                const sureNo = sure.number;
+                const sureNoPadded = String(sureNo).padStart(3, '0'); 
+                const turkishName = TurkishSurahNames[sureNo] || sure.englishName;
+                const arabicName = sure.name; 
+                const englishName = sure.englishName; 
+                
+                // TEK SATIR FORMATI: 1. Arapça (İngilizce) (Türkçe)
+                html += `
+                    <li class="sure-item" 
+                        data-sure-number="${sureNo}" 
+                        data-sure-no-padded="${sureNoPadded}"
+                        data-sure-name-tr="${turkishName}"
+                        data-sure-name-ar="${arabicName}"> 
+                        
+                        <span class="full-name-line">
+                            <span class="sure-no">${sureNo}.</span>
+                            <span class="arabic-name">${arabicName}</span>
+                            <span class="english-name">(${englishName})</span> 
+                            <span class="turkish-name">(${turkishName})</span>
+                        </span>
+                    </li>
+                `;
+            });
+            
+            sureListesi.innerHTML = html;
+            sureAdiDisplay.textContent = 'Lütfen dinlemek istediğiniz sureyi seçin.';
+            
+        } catch (error) {
+            console.error("Kuran API hatası:", error);
+            sureListesi.innerHTML = '<li style="color: red; text-align: center; padding: 10px;">HATA: Sure listesi yüklenemedi.</li>';
+            sureAdiDisplay.textContent = 'HATA: Liste yüklenemedi.';
+        }
+    }
+
+    // Sureyi Yükleme ve Oynatma Girişimi
+    function loadAndPlaySure(sureItem) {
+        const sureNoPadded = sureItem.dataset.sureNoPadded;
+        const turkishName = sureItem.dataset.sureNameTr;
+        const arabicName = sureItem.dataset.sureNameAr; 
+        
+        currentPlayingSure = {
+            turkishName: turkishName,
+            arabicName: arabicName
+        };
+        
+        const mp3URL = `${BASE_MP3_CDN_URL}${sureNoPadded}.mp3`;
+        
+        document.querySelectorAll('.sure-item').forEach(item => item.classList.remove('active'));
+        sureItem.classList.add('active');
+        
+        kuranPlayer.src = mp3URL;
+        
+        sureAdiDisplay.innerHTML = `Yükleniyor: <span class="arabic">${arabicName}</span> (<span class="turkish">${turkishName}</span>)`;
+        
+        kuranPlayer.load();
+        
+        kuranPlayer.play().then(() => {
+            updateDisplayMessage('▶ Oynatılıyor');
+        }).catch(error => {
+            updateDisplayMessage('Lütfen ▶ tuşuna basınız');
+        });
+    }
+
+    // Olay Dinleyicileri (Özel Player Kontrolü)
+    function setupEventListeners() {
+        if (sureListesi) {
+            sureListesi.addEventListener('click', function(event) {
+                const sureItem = event.target.closest('.sure-item');
+                if (sureItem && sureItem.dataset.sureNoPadded) {
+                    loadAndPlaySure(sureItem);
+                }
+            });
+        }
+        
+        playBtn.addEventListener('click', () => {
+             if (kuranPlayer.src && currentPlayingSure) {
+                 kuranPlayer.play();
+                 updateDisplayMessage('▶ Oynatılıyor');
+             }
+        });
+        pauseBtn.addEventListener('click', () => {
+             if (currentPlayingSure) {
+                 kuranPlayer.pause();
+                 updateDisplayMessage('❚❚ Durduruldu');
+             }
+        });
+        stopBtn.addEventListener('click', () => {
+             kuranPlayer.pause();
+             kuranPlayer.currentTime = 0;
+             durationDisplay.textContent = '--:--';
+             sureAdiDisplay.textContent = '■ Durduruldu. Yeni sure seçin.';
+             if (document.querySelector('.sure-item.active')) {
+                document.querySelector('.sure-item.active').classList.remove('active');
+             }
+             currentPlayingSure = null;
+        });
+
+        volumeSlider.addEventListener('input', (e) => {
+             kuranPlayer.volume = e.target.value;
+        });
+        
+        kuranPlayer.addEventListener('timeupdate', () => {
+             currentTimeDisplay.textContent = formatTime(kuranPlayer.currentTime);
+        });
+
+        kuranPlayer.addEventListener('loadedmetadata', () => {
+             durationDisplay.textContent = formatTime(kuranPlayer.duration);
+        });
+
+        kuranPlayer.addEventListener('ended', () => {
+            if (currentPlayingSure) {
+                if (document.querySelector('.sure-item.active')) {
+                    document.querySelector('.sure-item.active').classList.remove('active');
+                }
+                sureAdiDisplay.textContent = 'Oynatma bitti. Lütfen yeni bir sure seçin.';
+                currentPlayingSure = null;
+            }
+        });
+
+        fetchAndRenderSurahs();
+    }
+
+    window.addEventListener('load', setupEventListeners);
+</script>
+
+</body>
+</html>
