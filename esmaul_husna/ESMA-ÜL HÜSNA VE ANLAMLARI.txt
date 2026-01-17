@@ -1,0 +1,100 @@
+ESMA-ÜL HÜSNA VE ANLAMLARI
+1-“Allah“O kendinden başka hiç bir ilah bulunmayan tek bir Allah’tır.
+2-“er-Rahman“:Esirgeyici,bütün mahlukatına rahmetiyle muamele eden(dünyada)
+3-“er-Rahim“:Bağışlayıcı,sevdiklerine ve müminlere merhamet eden(ahirette)
+4-“el-Melik“:Mülkün sahibi, mülk ve saltanatı devamlı olan.
+5-“el-Kuddüs“:Her türlü eksiklik ve ayıplardan münezzeh olan.
+6-“el-Selam“:Her çeşit afet ve kederlerden emin olan.
+7-“el-Mü’min“:Kullarına emniyet veren. Kendinin ve peygamberlerinin doğruluğunu ortaya koyan, kullarına yaptığı vadinde sadık.
+8-“el-Müheymin” Saltanatı hakkında dilediği gibi tasarruf eden, her şeyi gözetip koruyan.
+9-“el-Aziz“:İzzet sahibi, mağlup edilmesi imkansız olan, her şeye galip olan.
+10-“el-Cabbar“:Azamet ve kudret sahibi, istediğini mutlak yapan, dilediğine muktedir olan.
+11-“el-Mütekebbir“:Ululuk sahibi, her şeyde ve her hadisede büyüklüğünü gösteren.
+12-“el-Halik”:Her şeyin varlığını ve geçireceği halleri takdir eden, yaratan, yoktan vareden büyüklükte eşi olmayan.
+13-“el-Bari“:Her şeyin aza ve cihazını birbirine uygun yaratan.
+14-“el-Musavvir“:Tasvir eden ,her şeye bir şekil ve hususiyet veren.
+15-“el-Gaffar“:Kullarının günahını örten, mağfireti çok, günahları bağışlayıcı.
+16-“el-Kahhar“:Her şeye, her istediğini yapacak surette galip ve hakim.
+17-“el-Vahhab“:Çok fazla ihsan eden, çeşit çeşit nimetleri daima bağışlayan.
+18-“el-Rezzak“:Bütün mahlukatın rızkını veren ve ihtiyacını karşılayan.
+19-“el-Fettah“:Her türlü müşkülleri açan ve kolaylaştıran, darlıktan kurtaran.
+20-“el-Alim“:Her şeyi en ince noktasına kadar bilen, ilmi ebedi ve ezeli olan.
+21-“el-Kabıt” Dilediğine darlık veren, sıkan, daraltan.
+22-“el-Basit” Dilediğine bolluk veren, açan, genişleten.
+23-“el-Hafıd“:Yukarıdan aşağıya indiren, alçaltan, dereceleri düşüren.
+24-“el-Rafi“:Yukarı kaldıran, yükselten, dereceleri yükselten.
+25-“el-Muiz“:İzzet veren, aziz kılan.
+26-“el-Müzil“:Zillete düşüren, hor ve hakir eden.
+27-“el-Semi“:Her şeyi işiten, kullarının niyazını kabul eden.
+28-“el-Basir“:Her şeyi gören.
+29-“el-Hakem“:Hikmet sahibi olan, yaptığı her işte hikmeti gözeten, hükmeden.
+30-“el-Adl” Son derece adaletli olan.
+31-“el-Latif“:En ince işlerin bütün inceliklerini bilen, lütuf ve ihsan sahibi olan.
+32-“el-Habir“:Her şeyi iç yüzünden, gizli tarafından haberdar olan.
+33-“el-Halim“:Yumuşak davranan, hilmi çok olan.
+34-“el-Azim“:Pek azametli olan, yüce.
+35-“el-Gafur“:Çok bağışlayan, magfireti çok.
+36-“el-Şekur“:Kendini rızası için yapılan amelleri daha ziyadesi ile karşılayan.
+37-“el-Aliyy“:Çok yüce.
+38-“el-Kebir“:Pek büyük.
+39-“el-Hafız“:Yapılan işleri bütün tavsilatıyla hıfzeden, her şeyi afat ve beladan koruyan.
+40-“el-Mukit“:Bilen,tayin eden. Her yaradılanın rızkını veren.
+41-“el-Hasib“:Herkesin hayatı boyunca yaptıklarının bütün teferruatıyla hesabını iyi bilen. Mahlukatına kafi olan.
+42-“el-Celil“:Azamet sahibi olan, ululuk sahibi olan.
+43-“el-Kerim“:Çok ikram edici
+44-“el-Rakib“.Bütün varlıklar ve bütün işler murakabesi altında bulunan.
+45-“el-Mucib“.Kendine yalvaranların isteklerini veren, duaları kabul eden.
+46-“el-Vasi“:Lütfu bol olan.
+47-“el-Hakim“:Emirleri,kelamı ve bütün işleri hikmetli, hikmet sahibi olan.
+48-“el-Vedud“:İyi kullarını seven, rızasına indiren ve sevilmeye layık olan.
+49-“el-Mecid“.Şanı,şerefi çok üstün olan.
+50-“el-Bais“.Ölüleri dirilten ,kabirlerden çıkaran.
+51-“el-Şehid”.Her zaman ve her yerde hazır ve nazır olan.
+52-“el-Hakk”:Vacib’ul vücut olan, varlığı hiç değişmeden duran.
+53-“el-Vekil”:Tevekkül sahiplerinin işini düzeltip onlardan daha iyi temin eden.
+54-“el-Kaviyy”:Pek kuvvetli.
+55-“el-Metin”:Pek güçlü.
+56-“el-Veliyy” Seçkin kullarının dostu.
+57-“el-Hamid”:Ancak kendine hamd edilen, bütün varlığın diliyle övülen.
+58-“el-Muhsin”:Namütanahi de olsa, bir bir her şeyin sayısını bilen.
+59-“el-Mubdi”:Mahlukatı maddesiz ve örneksiz olarak baştan yaratan.
+60-“el-Muid”:Yaradılmışları yok ettikten sonra tekrar yaratan.
+61-“el-Muhyi”:İhya eden, dirilten, can bağışlayan, sağlık veren.
+62-“el-Mümit”:Canlı,bir mahlukatın ölümünü yaratan, öldüren.
+63-“el-Hayy” Diri, tam ve mükemmel manasıyla hayat sahibi.
+64-“el-Kayyum”:Yarattıklarının işini çeviren her işleneni bilen, evveli olmayan.
+65-“el-Vacid”.istediğini,istediği vakit bulan.
+66-“el-Macid”.Kadri ve şanı büyük, kerem ve müsamahası bol.
+67-“el-Vahid”:Tek.Zatında,sıfatlarında,isimlerinde,efailinde ortağı ve benzeri olmayan.
+68-“el-Samed”:Her şey O'na muhtaç, fakat O hiçbir şeye muhtaç değil.
+69-“el-Kadir”:istediğini,istediği gibi yaratmaya muktedir olan.
+70-“el-Mukdedir”:kuvvet ve kudret sahipleri üzerinde dilediği gibi tasarruf eden.
+71-“el-Mukaddim”:İstediğini öne getiren, öne alan.
+72-“el-Muahhir”.İstediğini geri koyan, arkaya bırakan.
+73-“el-Evvel”:Her şeyden önce var olan.
+74-“el-Ahir”:Her şey helak olduktan sonra geri kalan.
+75-“el-Zahir”:Varlığı sayısız delillerle açık olan.
+76-“el-Batın”:Akılların idrak edemeyeceği yüceliği gizli olan.
+77-“el-Vali”:Bu muazzam kainatı ve bütün hadisatı tek başına idare eden.
+78-“el-Müteali”:Aklın mümkün gördüğü her şeyden, her halden pek yüce olan.
+79-“el-Berr”:Kullarına iyilik ve ihsanı, nimetleri bol olan.
+80-“el-Tevvab”:Tevbeleri kabul edip günahları bağışlayan.
+81-“el-Muntekım”.Günahkarlara,adaletiyle,müstahak oldukları cezayı veren.
+82-“el-Afüvv”.Affeden,magfiret eden.
+83-“el-Rauf”:Merhamet edici. pek şefkatli.
+84-“Malik’ül-Mülk”:Mülkün ebedi ezeli sahibi.
+85-“Zülcelali ve’l-İkram”: Hem azamet sahibi, hem fazl-ı kerem sahibi.
+86-“el-Muksit”:Hükmünde ve işlerinde adaletli olan.
+87-“el-Cami”:İstediğini istediği zaman istediği yerde toplayan.
+88-“el-Ganiyy”:Çok zengin, hiçbir şeye muhtaç olmayan.
+89-“el-Mugni” Dilediğine zenginlik veren müstağni kılan.
+90-“el-Mani”:Bazı şeylerin meydana gelmesine müsaade etmeyen, engelleyen.
+91-“el-Darr”:Elem ve zarar verecek şeyleri yaratan, hüsrana uğratan.
+92-“el-Nafi”:Hayır ve menfaat verecek şeyleri yaratan, faydalandıran.
+93-“el-Nur”:Alemleri nurlandıran, dilediğine nur eden, nur olan.
+94-“el-Hadi”:Hidayete kavuşturan, kulunu hayırla muvaffak kılan.
+95-“el-Bedi”:Örneksiz,misalsiz,acaip ve hayret verici alemler yaratan.
+96-“el-Baki”:Varlıgının sonu bulunmayan, ebedi olan.
+97-“el-Varis”:Varlığı devam eden, servetlerin hakiki sahibi.
+98-“el-Raşit”:Bütün alemleri dosdoğru bir nizam ve hikmetle akıbetine ulaştıran.
+99-“es-Sabur”:Çok sabırlı olan, isyankarlardan acele intikam almayan.
