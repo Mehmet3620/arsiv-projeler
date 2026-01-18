@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çiçeklerin Dili Widget (5 Sekmeli, Başlık Rengi Daha Koyu)</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        :root {
+            /* TEMA RENKLERİ: KOYU SİYAH, TURUNCU, BEYAZ */
+            --color-bg-dark: #1c1c1c; 
+            --color-accent-orange: #CC4400; /* Menülerdeki ve tablolardaki Vurgu Turuncusu */
+            --color-header-accent: #8B2E00; /* DAHA KOYU: Ana Başlık İçin Bordo/Kahve Turuncu */
+            --color-text-light: #FFFFFF; 
+            --color-border: #444444; 
+            --color-content-bg: #2a2a2a; 
+            --color-tab-inactive: #333333;
+            --color-header-bg: #333333; 
+        }
+
+        body {
+            /* SAYDAM ARKA PLAN */
+            background-color: transparent; 
+        }
+
+        .flower-widget-container {
+            width: 450px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            border: 1px solid var(--color-accent-orange);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px auto;
+            color: var(--color-text-light);
+            background-color: var(--color-bg-dark);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Ana Başlık */
+        .flower-header-title {
+            background-color: var(--color-header-accent); /* YENİ KOYU RENK KULLANILDI */
+            color: var(--color-text-light);
+            font-size: 1.1em;
+            font-weight: bold;
+            text-align: center;
+            padding: 12px;
+            margin: 0;
+            border-bottom: 1px solid var(--color-bg-dark); 
+        }
+        
+        /* Üstteki Tek Sekme Başlığı (Widget Bilgisi) */
+        .tab-header-top-row {
+            display: flex;
+            background-color: var(--color-tab-inactive);
+            border-bottom: 2px solid var(--color-accent-orange);
+        }
+        .tab-header-single {
+            flex-grow: 1;
+            text-align: center;
+            padding: 10px 0;
+            cursor: pointer;
+            color: var(--color-text-light);
+            font-weight: bold;
+            transition: background-color 0.3s;
+            font-size: 0.9em; 
+            background-color: var(--color-tab-inactive);
+        }
+        .tab-header-single:hover, .tab-header-single.active {
+            background-color: var(--color-accent-orange);
+            color: var(--color-text-light);
+        }
+
+        /* Ana Sekme Başlıkları Konteyneri (Alttaki 5 Sekme) */
+        .tab-headers {
+            display: flex;
+            justify-content: space-around;
+            background-color: var(--color-tab-inactive);
+            border-bottom: 2px solid var(--color-accent-orange);
+        }
+        .tab-header {
+            /* 5 sekme için flex-grow her birine eşit alan tanır */
+            flex-grow: 1; 
+            text-align: center;
+            padding: 8px 0; 
+            cursor: pointer;
+            color: var(--color-text-light);
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+            font-size: 0.7em; 
+            border-right: 1px solid #222; 
+        }
+        .tab-header:last-child {
+            border-right: none;
+        }
+        .tab-header:hover, .tab-header.active {
+            background-color: var(--color-accent-orange);
+            color: var(--color-text-light);
+        }
+
+        /* Sekme İçerikleri */
+        .tab-content { display: none; padding: 0; }
+        .tab-content.active { display: block; }
+
+        /* Giriş Sekmesi İçeriği Stili - SIKILAŞTIRILMIŞ VE KÜÇÜLTÜLMÜŞ */
+        #giris {
+            padding: 15px;
+            font-size: 0.85em; 
+            line-height: 1.4; 
+        }
+        #giris p {
+             margin-bottom: 5px; 
+        }
+        #giris h3 {
+             color: var(--color-accent-orange);
+             margin-top: 10px;
+        }
+
+        /* İçerik Tablosu Stili */
+        .flower-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+            background-color: var(--color-content-bg);
+            color: var(--color-text-light);
+            border: none; 
+        }
+        
+        .flower-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--color-border);
+            vertical-align: top;
+        }
+
+        .flower-table tr:last-child td {
+            border-bottom: none; 
+        }
+
+        /* Çiçek Adı Sütunu */
+        .flower-name {
+            width: 35%; 
+            font-weight: bold;
+            color: var(--color-accent-orange); 
+            text-transform: uppercase;
+            font-size: 0.9em;
+            border-right: 1px solid var(--color-border);
+        }
+
+        /* Anlamı Sütunu */
+        .flower-meaning {
+            width: 65%;
+            font-size: 0.85em; 
+            line-height: 1.4;
+        }
+        
+        /* Footer Stili */
+        .widget-footer {
+            background-color: var(--color-header-bg); 
+            color: var(--color-accent-orange);
+            padding: 8px;
+            font-size: 0.8em;
+            text-align: center;
+            border-top: 1px solid var(--color-border);
+            font-weight: bold;
+        }
+    </style>
+    </head>
+<body>
+
+<div class="flower-widget-container">
+    
+    <p class="flower-header-title">
+        <i class="fas fa-heart"></i> ÇiÇEKLERiN DiLi <i class="fas fa-heart"></i>
+    </p>
+
+    <div class="tab-header-top-row">
+        <div class="tab-header-single active" onclick="openTabFlower('giris')">
+            <i class="fas fa-info-circle"></i> Widget Bilgisi
+        </div>
+    </div>
+    
+    <div class="tab-headers">
+        <div class="tab-header" onclick="openTabFlower('A_C')">
+            <i class="fas fa-heart"></i> A - Ç
+        </div>
+        <div class="tab-header" onclick="openTabFlower('D_H')">
+            <i class="fas fa-heart"></i> D - H
+        </div>
+        <div class="tab-header" onclick="openTabFlower('I_L')">
+            <i class="fas fa-heart"></i> I - L
+        </div>
+        <div class="tab-header" onclick="openTabFlower('M_P')">
+            <i class="fas fa-heart"></i> M - P
+        </div>
+        <div class="tab-header" onclick="openTabFlower('R_Z')">
+            <i class="fas fa-heart"></i> R - Z
+        </div>
+    </div>
+
+    <div id="giris" class="tab-content active">
+        <p>Merhaba Çiçek Severler ve Romantik Ruhlar! Doğu'dan gelip Avrupa’da popüler bir kültür yaratan **"Çiçeklerin Dili"** ile konuşuyoruz. Bu, evrenselleşmiş, duygularımızı ve düşüncelerimizi iletmek için çiçekleri kullandığımız o şifreli mesajlar sistemidir.</p>
+        
+        <p>Bu gizemli iletişim biçimi, Avrupa sosyetesiyle ilk kez **18. yüzyılda** tanıştı. Elçilik eşi **Leydi Mary Wortley Montagu**, Lale Devri İstanbul’unda kadınların kullandığı çiçekler yoluyla yapılan bir mesajlaşmadan mektuplarında hayranlıkla bahsediyordu. 19. yüzyılda, özellikle Oryantalizm akımının etkisiyle, çiçeklerin dili kültürü zirveye ulaştı. Avrupa'da, her çiçeğin anlamını açıklayan "Çiçeklerin Dili" el kitapları moda oldu. Hatta o dönemde Goethe gibi isimler, eserlerinde tılsımlara ve çiçeklere dair şifreli şiirler yazıyordu.</p>
+        
+        <p>Bu dilin kökeni karmaşıktır; bazı araştırmacılar, İstanbul'da sadece kadınların boş zamanlarında geliştirdiği, çiçek adlarıyla **kafiye** oluşturarak şifrelediği bir mesajlaşma yöntemi olduğunu öne sürüyordu. Ancak, botanik keşiflerinin arttığı bir dönemde, Paris'te yayımlanan ilk kitaplarla çiçeklerin evrensel sembolizmi bugünkü popüler haline geldi.</p>
+        
+        <h3>🌷 Çiçeğinizin Mesajı Ne?</h3>
+        <p>Siz de bu kadim geleneğin bir parçası olun! Yukarıdaki **A-Ç, D-H, I-L, M-P ve R-Z Harfleri** sekmelerini kullanarak, mesajınızı veya merak ettiğiniz çiçeğin gizli anlamını kolayca bulun. Hangi çiçeğin hangi duyguyu temsil ettiğini keşfederek iletişim gücünüzü artırın!</p>
+    </div>
+
+    <div id="A_C" class="tab-content">
+        <table class="flower-table">
+            <tr><td class="flower-name">AÇELYA</td><td class="flower-meaning">Nefse hakimiyet.</td></tr>
+            <tr><td class="flower-name">AÇELYA (HİNT)</td><td class="flower-meaning">"Gerçek şu ki, herşey bitti!"</td></tr>
+            <tr><td class="flower-name">ADAÇAYI</td><td class="flower-meaning">Eşler arasında "Biz iyi bir aileyiz" mesajıdır.</td></tr>
+            <tr><td class="flower-name">AKASYA (PEMBE VEYA KIRMIZI)</td><td class="flower-meaning">Güzellik, zerafet ve incelik; "Seni beğeniyorum."</td></tr>
+            <tr><td class="flower-name">AKASYA (BEYAZ)</td><td class="flower-meaning">Dostluk; "Bizimki temiz bir sevgi, belki biraz arkadaşça..."</td></tr>
+            <tr><td class="flower-name">AKASYA (SARI)</td><td class="flower-meaning">Platonik aşk, isimsiz aşık...</td></tr>
+            <tr><td class="flower-name">ANANAS</td><td class="flower-meaning">"Sen kusursuz birisin!"</td></tr>
+            <tr><td class="flower-name">ARDIÇ</td><td class="flower-meaning">"Seni koruyacağım!"</td></tr>
+            <tr><td class="flower-name">AYÇİÇEĞİ (ÇİÇEK OLARAK)</td><td class="flower-meaning">"Sana tapıyorum!"</td></tr>
+            <tr><td class="flower-name">BADEM</td><td class="flower-meaning">"Aşkımızın sürmesini ümit ediyorum."</td></tr>
+            <tr><td class="flower-name">BİBERİYE</td><td class="flower-meaning">Anma</td></tr>
+            <tr><td class="flower-name">ÇAN ÇİÇEĞİ</td><td class="flower-meaning">"Aşkımıza sadakatle bağlıyım!"</td></tr>
+            <tr><td class="flower-name">ÇİNGÜLÜ</td><td class="flower-meaning">"Zarif ve çok güzelsin!"</td></tr>
+            <tr><td class="flower-name">ÇUHA ÇİÇEĞİ</td><td class="flower-meaning">"Çok güzelsin."</td></tr>
+        </table>
+    </div>
+
+    <div id="D_H" class="tab-content">
+        <table class="flower-table">
+            <tr><td class="flower-name">DEFNE</td><td class="flower-meaning">Terfi eden kiŞilere gönderilir; "Şan, ün, görkem" anlamı taşır.</td></tr>
+            <tr><td class="flower-name">EĞRELTiOTU</td><td class="flower-meaning">Samimiyet.</td></tr>
+            <tr><td class="flower-name">ELMA</td><td class="flower-meaning">"İtiraf etmem gerekirse, seni görünce şeytana uyasım geliyor; ya senin?"</td></tr>
+            <tr><td class="flower-name">ERİK</td><td class="flower-meaning">"Sözüme sadık kalacağım."</td></tr>
+            <tr><td class="flower-name">FESLEĞEN</td><td class="flower-meaning">İyi dilekte bulunmak için.</td></tr>
+            <tr><td class="flower-name">FINDIK</td><td class="flower-meaning">"Barışmak istiyorum!"</td></tr>
+            <tr><td class="flower-name">FULYA</td><td class="flower-meaning">"Sevgilim, geri dön!"</td></tr>
+            <tr><td class="flower-name">GARDENYA</td><td class="flower-meaning">"Beni unutma; gerçek aşkımsın..."</td></tr>
+            <tr><td class="flower-name">GELİN EL ÇİÇEĞİ</td><td class="flower-meaning">"Mutlu olabiliriz."</td></tr>
+            <tr><td class="flower-name">GÜL</td><td class="flower-meaning">Sevgiyi ifade eder.</td></tr>
+            <tr><td class="flower-name">GÜL (PEMBE)</td><td class="flower-meaning">"Arkadaşımsın."</td></tr>
+            <tr><td class="flower-name">GÜL (KIRMIZI)</td><td class="flower-meaning">"Seni seviyorum; ihtirasla bağlıyım sana!"</td></tr>
+            <tr><td class="flower-name">GÜL (KIRMIZI & BEYAZ)</td><td class="flower-meaning">Birliktelik isteği.</td></tr>
+            <tr><td class="flower-name">GÜL GONCASI (KIRMIZI)</td><td class="flower-meaning">"Genç ve güzelsin."</td></tr>
+            <tr><td class="flower-name">HANIMELİ</td><td class="flower-meaning">"Sana olan bağlılığım sonsuza kadar sürecek."</td></tr>
+            <tr><td class="flower-name">HERCAİ MENEKŞE</td><td class="flower-meaning">"Beynimi işgal ediyorsun; ama ben bu durumdan şikayetçi değilim..."</td></tr>
+        </table>
+    </div>
+
+    <div id="I_L" class="tab-content">
+        <table class="flower-table">
+            <tr><td class="flower-name">IHLAMUR</td><td class="flower-meaning">Evli çiftler için "Seni seviyorum" anlamı taşır.</td></tr>
+            <tr><td class="flower-name">İSPANYOL YASEMİNİ</td><td class="flower-meaning">"Bence, sen çok seksi ve şehvetlisin!"</td></tr>
+            <tr><td class="flower-name">KAKTÜS</td><td class="flower-meaning">İçtenlik; "Aşkımız için zorluklara katlanmalıyız!"</td></tr>
+            <tr><td class="flower-name">KAMELYA</td><td class="flower-meaning">"Kusursuz bir aşıksın!"</td></tr>
+            <tr><td class="flower-name">KARANFİL</td><td class="flower-meaning">Kişinin kendine olan öz saygısını ve güzelliği ifade eder.</td></tr>
+            <tr><td class="flower-name">KARAÇALI</td><td class="flower-meaning">"Dostluğumuz uzun ömürlü olsun!"</td></tr>
+            <tr><td class="flower-name">KARANFİL (KOYU KIRMIZI)</td><td class="flower-meaning">"Kalbimi kırdın!"</td></tr>
+            <tr><td class="flower-name">KARANFİL (PEMBE)</td><td class="flower-meaning">"Seni unutmayacağım..."</td></tr>
+            <tr><td class="flower-name">KARANFİL (KIRÇILLI)</td><td class="flower-meaning">"Üzgünüm, ama bitmek zorunda..."</td></tr>
+            <tr><td class="flower-name">KARANFİL (SARI)</td><td class="flower-meaning">"Beni hayal kırıklığına uğrattın!"</td></tr>
+            <tr><td class="flower-name">KRIZANTEM (BEYAZ)</td><td class="flower-meaning">"Bana gerçeği söyle!"</td></tr>
+            <tr><td class="flower-name">LALE</td><td class="flower-meaning">Aşkı ifade eder.</td></tr>
+            <tr><td class="flower-name">LALE (KIRMIZI)</td><td class="flower-meaning">"Aşkımı itiraf etmek istiyorum!"</td></tr>
+            <tr><td class="flower-name">LALE (ALACALI)</td><td class="flower-meaning">"Gözlerin çok güzel."</td></tr>
+            <tr><td class="flower-name">LALE (SARI)</td><td class="flower-meaning">Umutsuz aşkı ifade eder.</td></tr>
+            <tr><td class="flower-name">LEYLAK (MOR)</td><td class="flower-meaning">"Sana ilk görüşte aşık oldum!"</td></tr>
+            <tr><td class="flower-name">LEYLAK (BEYAZ)</td><td class="flower-meaning">"Hoş ve namuslu birisin."</td></tr>
+        </table>
+    </div>
+
+    <div id="M_P" class="tab-content">
+        <table class="flower-table">
+            <tr><td class="flower-name">MENEKŞE</td><td class="flower-meaning">Alçakgönüllüğü ifade eder.</td></tr>
+            <tr><td class="flower-name">MENEKŞE (MAVİ)</td><td class="flower-meaning">"Sana sadık kalacağım."</td></tr>
+            <tr><td class="flower-name">MENEKŞE (MOR)</td><td class="flower-meaning">"Düşüncelerimi zaptettin!"</td></tr>
+            <tr><td class="flower-name">MELEKOTU</td><td class="flower-meaning">"İlham kaynağımsın."</td></tr>
+            <tr><td class="flower-name">MERSİNAĞACI</td><td class="flower-meaning">"Çok mutluyum, çünkü seni seviyorum!"</td></tr>
+            <tr><td class="flower-name">MİMOZA</td><td class="flower-meaning">"Fazla alıngansın!"</td></tr>
+            <tr><td class="flower-name">NANE</td><td class="flower-meaning">"Sana karşı içimde sıcak hisler besliyorum."</td></tr>
+            <tr><td class="flower-name">NERGİS</td><td class="flower-meaning">"Saygılarımla..."</td></tr>
+            <tr><td class="flower-name">ORKİDE</td><td class="flower-meaning">"Aıkım, sen çok güzelsin, sen çok özelsin!"</td></tr>
+            <tr><td class="flower-name">ÖKSEKOTU</td><td class="flower-meaning">"Sorunların üstesinden geleceğim."</td></tr>
+            <tr><td class="flower-name">PAPATYA</td><td class="flower-meaning">Temiz bir kalbin simgesi.</td></tr>
+            <tr><td class="flower-name">PAPATYA (BAHÇE)</td><td class="flower-meaning">"Fikirlerini paylaşıyorum."</td></tr>
+            <tr><td class="flower-name">PELESENK</td><td class="flower-meaning">Sabırsızlık "Aşkım, daha fazla bekletme!"</td></tr>
+            <tr><td class="flower-name">PETUNYA</td><td class="flower-meaning">"Umudunu yitirme!"</td></tr>
+            <tr><td class="flower-name">PORTAKAL</td><td class="flower-meaning">Karşılıklı aşk; "Ben de seni seviyorum."</td></tr>
+        </table>
+    </div>
+
+    <div id="R_Z" class="tab-content">
+        <table class="flower-table">
+            <tr><td class="flower-name">REZENE</td><td class="flower-meaning">Övgüye değer.</td></tr>
+            <tr><td class="flower-name">SARDUNYA</td><td class="flower-meaning">"İçin rahat olsun, her zaman yanındayım!"</td></tr>
+            <tr><td class="flower-name">SARMAŞIK</td><td class="flower-meaning">"Aşkıma sadığım!"</td></tr>
+            <tr><td class="flower-name">SEDİR YAPRAĞI</td><td class="flower-meaning">"Senin için yaşıyorum."</td></tr>
+            <tr><td class="flower-name">SÜSEN ÇİÇEĞİ</td><td class="flower-meaning">"Sana bir haberim var!"</td></tr>
+            <tr><td class="flower-name">SÜSEN ÇİÇEĞİ (SARI)</td><td class="flower-meaning">İhtiraslı bir aşk.</td></tr>
+            <tr><td class="flower-name">ŞEFTALİ</td><td class="flower-meaning">"Seninim!"</td></tr>
+            <tr><td class="flower-name">YASEMİN</td><td class="flower-meaning">"Güzel ve çekicisin."</td></tr>
+            <tr><td class="flower-name">YENİBAHAR</td><td class="flower-meaning">"Acını paylaşıyorum."</td></tr>
+            <tr><td class="flower-name">ZAMBAK (SARI)</td><td class="flower-meaning">"Seni neşeli ve nazik (çekici) buluyorum!"</td></tr>
+            <tr><td class="flower-name">ZEYTİN</td><td class="flower-meaning">"Barışalım!"</td></tr>
+        </table>
+    </div>
+
+    
+    <div class="widget-footer">
+        Powered by Allaturka
+    </div>
+    
+</div>
+
+<script>
+    // Widget için sekme açma fonksiyonu
+    function openTabFlower(tabId) {
+        // Tüm sekme içeriklerini gizle
+        const contents = document.getElementsByClassName('tab-content');
+        for (let i = 0; i < contents.length; i++) {
+            contents[i].classList.remove('active');
+        }
+
+        // Tüm sekme başlıklarını pasif yap (Her iki satırdakileri de)
+        const allHeaders = document.querySelectorAll('.tab-header, .tab-header-single');
+        allHeaders.forEach(h => h.classList.remove('active'));
+
+        // İstenen sekme içeriğini göster
+        document.getElementById(tabId).classList.add('active');
+        
+        // Tıklanan başlığı aktif yap (querySelectorAll ile buluyoruz)
+        const clickedHeader = document.querySelector(`[onclick*="'${tabId}'"]`);
+        if (clickedHeader) clickedHeader.classList.add('active');
+    }
+    
+    // Sayfa yüklendiğinde varsayılan sekmeyi aç ('giris')
+    document.addEventListener('DOMContentLoaded', () => {
+        openTabFlower('giris');
+    });
+</script>
+</body>
+</html>
