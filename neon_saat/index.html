@@ -1,0 +1,147 @@
+<style>
+/* ================== PREMIUM ANALOG SAAT ================== */
+.premium-clock {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 30px auto;
+  background: #2c3e50; /* Koyu füme kadran - her zeminde görünür */
+  border-radius: 50%;
+  border: 10px solid #bdc3c7; /* Gümüş çerçeve */
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3), inset 0 0 20px rgba(0,0,0,0.5);
+}
+
+/* Orta Göbek */
+.premium-clock::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #ecf0f1;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+/* Forum Yazısı */
+.clock-brand {
+  position: absolute;
+  width: 100%;
+  top: 65%;
+  text-align: center;
+  font-family: 'Georgia', serif;
+  font-size: 14px;
+  color: #bdc3c7;
+  letter-spacing: 1px;
+  opacity: 0.7;
+}
+
+/* Seyyah Yazısı */
+.clock-brands {
+  position: absolute;
+  width: 100%;
+  top: 75%;
+  text-align: center;
+  font-family: 'Georgia', serif;
+  font-size: 14px;
+  color: #bdc3c7;
+  letter-spacing: 1px;
+  opacity: 0.7;
+}
+
+/* Rakamlar - Her zeminde okunması için beyaz/gümüş */
+.clock-num {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+  font-size: 22px;
+  font-weight: bold;
+  color: #ecf0f1;
+  padding: 15px;
+  box-sizing: border-box;
+  transform: rotate(calc(var(--i) * 30deg));
+}
+.clock-num span {
+  display: inline-block;
+  transform: rotate(calc(var(--i) * -30deg));
+}
+
+/* İbreler */
+.p-hand {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform-origin: bottom;
+  border-radius: 4px;
+}
+
+#p-hour {
+  width: 6px;
+  height: 70px;
+  background: #ecf0f1;
+  margin-left: -3px;
+  z-index: 5;
+}
+
+#p-min {
+  width: 4px;
+  height: 100px;
+  background: #bdc3c7;
+  margin-left: -2px;
+  z-index: 6;
+}
+
+#p-sec {
+  width: 2px;
+  height: 120px;
+  background: #e74c3c; /* Saniye ibresi dikkat çekici kırmızı */
+  margin-left: -1px;
+  z-index: 7;
+}
+</style>
+
+<div class="premium-clock">
+  <div class="clock-brand">ALLATURKAA</div>
+  <div class="clock-brands">Seyyah</div>
+  
+  <div class="clock-num" style="--i:1"><span>1</span></div>
+  <div class="clock-num" style="--i:2"><span>2</span></div>
+  <div class="clock-num" style="--i:3"><span>3</span></div>
+  <div class="clock-num" style="--i:4"><span>4</span></div>
+  <div class="clock-num" style="--i:5"><span>5</span></div>
+  <div class="clock-num" style="--i:6"><span>6</span></div>
+  <div class="clock-num" style="--i:7"><span>7</span></div>
+  <div class="clock-num" style="--i:8"><span>8</span></div>
+  <div class="clock-num" style="--i:9"><span>9</span></div>
+  <div class="clock-num" style="--i:10"><span>10</span></div>
+  <div class="clock-num" style="--i:11"><span>11</span></div>
+  <div class="clock-num" style="--i:12"><span>12</span></div>
+
+  <div class="p-hand" id="p-hour"></div>
+  <div class="p-hand" id="p-min"></div>
+  <div class="p-hand" id="p-sec"></div>
+</div>
+
+<script>
+function runPremiumClock() {
+  const now = new Date();
+  const h = now.getHours() % 12;
+  const m = now.getMinutes();
+  const s = now.getSeconds();
+
+  const hDeg = (h * 30) + (m / 2);
+  const mDeg = (m * 6) + (s / 10);
+  const sDeg = s * 6;
+
+  document.getElementById('p-hour').style.transform = `rotate(${hDeg}deg)`;
+  document.getElementById('p-min').style.transform = `rotate(${mDeg}deg)`;
+  document.getElementById('p-sec').style.transform = `rotate(${sDeg}deg)`;
+}
+setInterval(runPremiumClock, 1000);
+runPremiumClock();
+</script>
