@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seyyah - Mehmet Can Özel Player</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0f111a;
+            --panel-bg: #1c1f2b;
+            --accent-blue: #0088cc;
+            --soft-blue: rgba(0, 136, 204, 0.3);
+            --text-main: #ffffff;
+            --text-dim: #aaaaaa;
+            --hover-bg: #2a2f3d;
+        }
+
+        body {
+            background: transparent;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: block;
+        }
+
+        .player-container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--bg-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid var(--soft-blue);
+            margin-top: 5px;
+        }
+
+        .video-screen {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+            background: #000;
+        }
+
+        .video-screen iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border: none;
+        }
+
+        .playlist-header {
+            background: linear-gradient(90deg, #004466, var(--accent-blue));
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .playlist-header h3 { margin: 0; font-size: 14px; font-weight: 600; }
+
+        .video-list {
+            max-height: 300px;
+            overflow-y: auto;
+            background: var(--panel-bg);
+        }
+
+        /* --- MAVİ KAYDIRMA ÇUBUĞU DÜZENLEMESİ --- */
+        .video-list::-webkit-scrollbar { 
+            width: 8px; 
+        }
+        .video-list::-webkit-scrollbar-track { 
+            background: #252a3a; 
+        }
+        .video-list::-webkit-scrollbar-thumb { 
+            background: var(--accent-blue); 
+            border-radius: 10px;
+            border: 2px solid #252a3a;
+        }
+        .video-list::-webkit-scrollbar-thumb:hover { 
+            background: #00aaff; 
+        }
+
+        .video-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .video-item:hover { background: var(--hover-bg); }
+        .video-item.active { background: #141721; border-left: 4px solid var(--accent-blue); }
+
+        .thumb {
+            width: 70px; height: 40px;
+            border-radius: 4px; margin-right: 12px;
+            object-fit: cover;
+        }
+
+        .video-info { 
+            flex: 1; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        
+        .video-info .title {
+            color: var(--text-main); 
+            font-size: 11px; 
+            font-weight: 500;
+            padding-right: 10px;
+            line-height: 1.2;
+        }
+
+        .video-info .duration {
+            color: var(--accent-blue);
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .channel-link {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            background: #141721;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+            border-top: 1px solid #2a2f3d;
+        }
+
+        .channel-link:hover { color: var(--accent-blue); }
+
+        .footer-credit {
+            text-align: center; 
+            padding: 8px; 
+            font-size: 10px; 
+            color: #666; 
+            background: #0a0c12;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<div class="player-container">
+    <div class="video-screen">
+        <iframe id="mainPlayer" src="https://www.youtube-nocookie.com/embed/1i6nc8NU8Sg?rel=0" allowfullscreen></iframe>
+    </div>
+
+    <div class="playlist-header">
+        <h3><i class="fab fa-youtube"></i> Seyyah - Şiirin Rengi</h3>
+        <span style="font-size: 10px;">Mehmet Can</span>
+    </div>
+
+    <div id="playlist" class="video-list"></div>
+
+    <a href="https://www.youtube.com/@siirinrengi" target="_blank" class="channel-link">
+        <i class="fab fa-youtube" style="color:red"></i> Kanala Abone Ol
+    </a>
+
+    <div class="footer-credit">Powered by Seyyah</div>
+</div>
+
+<script>
+    const videos = [
+        { id: "1i6nc8NU8Sg", title: "Ey Yaralı Kalbim", time: "6:49" },
+        { id: "m9Qjp2DXIK8", title: "Zehra", time: "5:22" },
+        { id: "10EDraKWGsE", title: "Bir Delilik Yaptım", time: "4:15" },
+        { id: "5VQr0rHDYOs", title: "Sıladan Gurbete Mektup", time: "5:40" },
+        { id: "xLiDhanQQCM", title: "Ne Zaman Bir Tren Sesi Duysam", time: "4:55" },
+        { id: "7eTK0ydE4Rw", title: "Benim Babam", time: "6:10" },
+        { id: "otliMe05djQ", title: "Sen Gülünce", time: "3:45" },
+        { id: "L1IJ-kdSjbI", title: "Yüreğimdesin Her Daim", time: "5:05" },
+        { id: "qsQXs_Kpjc0", title: "Ayırmayın Sevenleri", time: "4:30" },
+        { id: "3368lowsx7g", title: "Ana Bizim Bacı Bizim Yar Bizim", time: "5:50" }
+    ];
+
+    const playlistContainer = document.getElementById('playlist');
+    const mainPlayer = document.getElementById('mainPlayer');
+
+    function loadPlaylist() {
+        videos.forEach((video, index) => {
+            const item = document.createElement('div');
+            item.className = `video-item ${index === 0 ? 'active' : ''}`;
+            item.onclick = function() { playVideo(video.id, item); };
+
+            item.innerHTML = `
+                <img src="https://img.youtube.com/vi/${video.id}/mqdefault.jpg" class="thumb">
+                <div class="video-info">
+                    <div class="title">${video.title}</div>
+                    <div class="duration">${video.time}</div>
+                </div>
+            `;
+            playlistContainer.appendChild(item);
+        });
+    }
+
+    function playVideo(id, element) {
+        mainPlayer.src = "https://www.youtube-nocookie.com/embed/" + id + "?autoplay=1&rel=0";
+        document.querySelectorAll('.video-item').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+    }
+
+    window.onload = loadPlaylist;
+</script>
+
+</body>
+</html>
