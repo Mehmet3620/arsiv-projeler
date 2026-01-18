@@ -1,0 +1,141 @@
+<style>
+/* ================== GOLD PREMIUM ANALOG SAAT ================== */
+.premium-clock-gold {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 30px auto;
+  background: radial-gradient(circle, #2c3e50, #000); /* Derinlik veren kadran */
+  border-radius: 50%;
+  /* Gerçek altın çerçeve efekti */
+  border: 10px solid #d4af37;
+  outline: 2px solid #f9d976;
+  box-shadow: 
+    0 15px 35px rgba(0,0,0,0.5), 
+    inset 0 0 15px rgba(0,0,0,0.8),
+    0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+/* Orta Göbek - Altın Varaklı */
+.premium-clock-gold::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: linear-gradient(135deg, #f9d976 0%, #d4af37 50%, #b8860b 100%);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.8);
+}
+
+/* Forum Yazısı - Altın Rengi */
+.clock-brand-gold {
+  position: absolute;
+  width: 100%;
+  top: 65%;
+  text-align: center;
+  font-family: 'Georgia', serif;
+  font-size: 13px;
+  color: #d4af37;
+  letter-spacing: 2px;
+  opacity: 0.8;
+  text-shadow: 1px 1px 2px #000;
+}
+
+/* Rakamlar - Parlak Altın */
+.clock-num-gold {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+  font-size: 22px;
+  font-weight: bold;
+  color: #f9d976; /* Parlak altın rengi */
+  padding: 15px;
+  box-sizing: border-box;
+  transform: rotate(calc(var(--i) * 30deg));
+  text-shadow: 1px 1px 2px #000;
+}
+.clock-num-gold span {
+  display: inline-block;
+  transform: rotate(calc(var(--i) * -30deg));
+}
+
+/* Altın İbreler */
+.g-hand {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform-origin: bottom;
+  border-radius: 4px;
+  /* İbrelere metalik geçiş efekti */
+  background: linear-gradient(to top, #b8860b, #f9d976);
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+#g-hour {
+  width: 7px;
+  height: 70px;
+  margin-left: -3.5px;
+  z-index: 5;
+}
+
+#g-min {
+  width: 4px;
+  height: 105px;
+  margin-left: -2px;
+  z-index: 6;
+}
+
+#g-sec {
+  width: 2px;
+  height: 125px;
+  background: #ff4d4d; /* Saniye yine netlik için kırmızı kalsın */
+  margin-left: -1px;
+  z-index: 7;
+}
+</style>
+
+<div class="premium-clock-gold">
+  <div class="clock-brand-gold">ALLATURKAA FORUM</div>
+  
+  <div class="clock-num-gold" style="--i:1"><span>1</span></div>
+  <div class="clock-num-gold" style="--i:2"><span>2</span></div>
+  <div class="clock-num-gold" style="--i:3"><span>3</span></div>
+  <div class="clock-num-gold" style="--i:4"><span>4</span></div>
+  <div class="clock-num-gold" style="--i:5"><span>5</span></div>
+  <div class="clock-num-gold" style="--i:6"><span>6</span></div>
+  <div class="clock-num-gold" style="--i:7"><span>7</span></div>
+  <div class="clock-num-gold" style="--i:8"><span>8</span></div>
+  <div class="clock-num-gold" style="--i:9"><span>9</span></div>
+  <div class="clock-num-gold" style="--i:10"><span>10</span></div>
+  <div class="clock-num-gold" style="--i:11"><span>11</span></div>
+  <div class="clock-num-gold" style="--i:12"><span>12</span></div>
+
+  <div class="g-hand" id="g-hour"></div>
+  <div class="g-hand" id="g-min"></div>
+  <div class="g-hand" id="g-sec"></div>
+</div>
+
+<script>
+function runGoldClock() {
+  const now = new Date();
+  const h = now.getHours() % 12;
+  const m = now.getMinutes();
+  const s = now.getSeconds();
+
+  const hDeg = (h * 30) + (m / 2);
+  const mDeg = (m * 6) + (s / 10);
+  const sDeg = s * 6;
+
+  document.getElementById('g-hour').style.transform = `rotate(${hDeg}deg)`;
+  document.getElementById('g-min').style.transform = `rotate(${mDeg}deg)`;
+  document.getElementById('g-sec').style.transform = `rotate(${sDeg}deg)`;
+}
+setInterval(runGoldClock, 1000);
+runGoldClock();
+</script>
