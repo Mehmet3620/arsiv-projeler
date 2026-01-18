@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>DOST YURDU RADYO - GIFLİ TAM SET (FİKS)</title>
+    <style>
+        body { 
+            background: transparent; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 40px; 
+            padding: 60px 0;
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .glass-frame {
+            background: rgba(15, 15, 15, 0.9);
+            border-radius: 25px;
+            border-width: 2px;
+            border-style: solid;
+        }
+
+        .top-info-bar { width: 630px; display: flex; gap: 10px; margin-bottom: 12px; }
+        .marquee-box { flex: 1; padding: 8px 20px; display: flex; align-items: center; overflow: hidden; white-space: nowrap; }
+
+        /* Talimat: Uzun yazıları bölmek için paragraflar */
+        .marquee-box p { display: inline; margin: 0 30px; }
+
+        .listener-box { padding: 8px 20px; font-weight: bold; font-size: 14px; min-width: 130px; text-align: center; display: flex; align-items: center; justify-content: center; }
+        .player-outer-frame { width: 630px; padding: 12px 0; display: flex; align-items: center; justify-content: center; position: relative; }
+        
+        /* --- İSTEDİĞİN GIF DÜZENİ --- */
+        .spk-container { position: relative; width: 55px; height: 55px; margin: 0 5px; }
+        .spk-unit { 
+            width: 100%; height: 100%; 
+            background: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhMtzcOgYHFDKaiDg8FgheVqBmfU_UKnHa-JNbQ8Jgq9UBU0kNLsx8nc0n40bmGh3OiorP97htIuzWklFivIBTZC4Rd7oIbauoA5z0R8n926q8fp0Xwj_kpujdGTkLCh7_Lrn1_eazTubqpPWClU0XD29BMsBqJ-yi43ETn_1nEo7WJoBXz90cyFm0QY4g/s1600/N5MqEZ.gif') no-repeat center; 
+            background-size: cover; border-radius: 50%; border: 2px solid #333; position: relative; z-index: 1;
+        }
+        .spk-overlay {
+            position: absolute; top: -25px; left: -25px; width: 105px; height: 105px; 
+            background: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjW4_-n_zL2bReMm9RxLvXKgU0_hHHzpV042cdaUvaa9W2Cta_lw2jaIbMVcJ1Sv9xZZOvZ_4rzT0riSJkfNlUFOZKhxqPkSufDe7k0fbYRx-7cIoesq76MJ1wYcfIRg-PUCbukOKK8rwKf-4fmPmtzCWHVpxWG-u9qy6nzWRgRP-xuw6bVLPyapiu6tOc/s320/d9wfexupqtm.gif') no-repeat center;
+            background-size: contain; z-index: 5; pointer-events: none;
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.5));
+        }
+
+        .capsule-core { background: linear-gradient(180deg, #32353a 0%, #0f1113 100%); width: 386px; height: 47px; margin: 0 10px; border-radius: 24px; display: flex; align-items: center; padding: 0 15px; border: 1px solid #444; box-sizing: border-box; }
+        .radio-tag { color: #f9b000; font-size: 10px; font-weight: bold; width: 75px; }
+        .glass-play-btn { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #ffffff; cursor: pointer; display: flex; justify-content: center; align-items: center; margin: 0 10px; transform: translateY(-1px); }
+        .play-tri { width: 0; height: 0; border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-left: 13px solid white; margin-left: 3px; }
+        .pause-rect { width: 14px; height: 14px; border-left: 4px solid white; border-right: 4px solid white; display: none; }
+        .vol-slider-alt { -webkit-appearance: none; width: 70px; height: 4px; background: #000; border-radius: 2px; outline: none; }
+        .vol-slider-alt::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border: 2px solid #fff; border-radius: 50%; cursor: pointer; }
+        .nav-svg { fill: #fff; width: 20px; cursor: pointer; }
+
+        /* --- TEMALAR --- */
+        .theme-blue .glass-frame { border-color: #0080FF; }
+        .theme-blue .text-color { color: #0080FF; }
+        .theme-blue .glass-play-btn { background: radial-gradient(circle at 35% 35%, #4fa3ff, #003d80 90%); }
+        .theme-blue .vol-slider-alt::-webkit-slider-thumb { background: #0080FF; }
+
+        .theme-red .glass-frame { border-color: #f90021; }
+        .theme-red .text-color { color: #f90021; }
+        .theme-red .glass-play-btn { background: radial-gradient(circle at 35% 35%, #ff4f4f, #990000 90%); }
+        .theme-red .vol-slider-alt::-webkit-slider-thumb { background: #f90021; }
+
+        .theme-orange .glass-frame { border-color: #ff8c00; }
+        .theme-orange .text-color { color: #ff8c00; }
+        .theme-orange .glass-play-btn { background: radial-gradient(circle at 35% 35%, #ffb347, #cc7000 90%); }
+        .theme-orange .vol-slider-alt::-webkit-slider-thumb { background: #ff8c00; }
+
+        .theme-green .glass-frame { border-color: #2ecc71; }
+        .theme-green .text-color { color: #2ecc71; }
+        .theme-green .glass-play-btn { background: radial-gradient(circle at 35% 35%, #58d68d, #1d8348 90%); }
+        .theme-green .vol-slider-alt::-webkit-slider-thumb { background: #2ecc71; }
+    </style>
+</head>
+<body>
+
+    <div class="theme-blue">
+        <div class="top-info-bar">
+            <div class="marquee-box glass-frame">
+                <marquee scrollamount="4">
+                    <span class="text-color" style="font-weight:bold;">DOST YURDU RADYO</span><p></p>
+                    <span style="color:#fff;">- ŞU AN YAYINDA -</span><p></p>
+                    <span class="cc_streaminfo" data-type="song" data-username="qpnslltp" style="color:#fff;">Yükleniyor...</span>
+                </marquee>
+            </div>
+            <div class="listener-box glass-frame text-color"><span class="cc_streaminfo" data-type="listeners" data-username="qpnslltp">0</span>&nbsp;DİNLEYİCİ</div>
+        </div>
+        <div class="player-outer-frame glass-frame">
+            <div class="spk-container"><div class="spk-unit"></div><div class="spk-overlay"></div></div>
+            <div class="spk-container"><div class="spk-unit"></div><div class="spk-overlay"></div></div>
+            <div class="capsule-core">
+                <div class="radio-tag">DOST YURDU</div>
+                <div style="display:flex; align-items:center; flex-grow:1; justify-content:center;">
+                    <svg class="nav-svg" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6L18 18V6z"/></svg>
+                    <div class="glass-play-btn" onclick="togglePlay(0, this)"><div class="play-tri"></div><div class="pause-rect"></div></div>
+                    <svg class="nav-svg" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                </div>
+                <input type="range" class="vol-slider-alt" min="0" max="1" step="0.1" value="0.8" oninput="setVol(0, this.value)">
+            </div>
+            <div class="spk-container"><div class="spk-unit"></div><div class="spk-overlay"></div></div>
+            <div class="spk-container"><div class="spk-unit"></div><div class="spk-overlay"></div></div>
+        </div>
+        <audio id="r-0" src="https://eu1.fastcast4u.com/proxy/qpnslltp?mp=/1"></audio>
+    </div>
+
+    <div class="theme-red">
+        <div class="top-info-bar">
+            <div class="marquee-box glass-frame">
+                <marquee scrollamount="4">
+                    <span class="text-color" style="font-weight:bold;">DOST YURDU RADYO</span><p></p>
+                    <span style="color:#fff;">- ŞU AN YAYINDA -</span><p></p>
+                    <span class="cc_streaminfo" data-type="song" data-username="qpnslltp" style="color:#fff;">Yükleniyor...</span>
+                </marquee>
+            </div>
+            <div class="listener-box glass-frame text-color"><span class="cc_streaminfo" data-type="listeners" data-username="qpnslltp">0</span>&nbsp;DİNLEYİCİ</div>
+        </div>
+        <div class="player-outer-frame glass-frame">
+            <div class="spk-container"><div class="spk-unit"></div><div class="spk-overlay"></div></div>
+            <div class="spk-container"><div class="spk-unit"></div><div class="spk-overlay"></div></div>
+            <div class="capsule-core">
+                <div class="radio-tag">DOST YURDU</div>
+                <div style="display:flex; align-items:center; flex-grow:1; justify-content:center;">
+                    <svg class="nav-svg" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6L18 18V6z"/></svg>
+                    <div class="glass-play-btn" onclick="togglePlay(1, this)"><div class="play-tri"></div><div class="pause-rect"></div></div>
+                    <svg class="nav-svg" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                </div>
+                <input type="range" class="vol-slider-alt" min="0" max="1" step="0.1" value="0.8" oninput="setVol(1, this.value)">
+            </div>
+            <div class="spk-container"><div class="spk-unit"></div><div class="spk-overlay"></div></div>
+            <div class="spk-container"><div class="spk-unit"></div><div class="spk-overlay"></div></div>
+        </div>
+        <audio id="r-1" src="https://eu1.fastcast4u.com/proxy/qpnslltp?mp=/1"></audio>
+    </div>
+
+    <div class="theme-orange">
+        <div class="top-info-bar">
+            <div class="marquee-box glass-frame">
+                <marquee scrollamount="4">
+                    <span class="text-color" style="font-weight:bold;">DOST YURDU RADYO</span><p></p>
+                    <span style="color:#fff;">- ŞU AN YAYINDA -</span><p></p>
+                    <span class="cc_streaminfo" data-type="song" data-username="qpnslltp" style="color:#fff;">Yükleniyor...</span>
+                </marquee>
+            </div>
+            <div class="listener-box glass-frame text-color"><span class="cc_streaminfo" data-type="listeners" data-username="qpnslltp">0</span>&nbsp;DİNLEYİCİ</div>
+        </div>
+        <div class="player-outer-frame glass-frame">
+            <div class="spk-container"><div class="spk-unit"></div><div class="spk-overlay"></div></div>
+            <div class="spk-container"><div class="spk-unit"></div><div class="spk-overlay"></div></div>
+            <div class="capsule-core">
+                <div class="radio-tag">DOST YURDU</div>
+                <div style="display:flex; align-items:center; flex-grow:1; justify-content:center;">
+                    <svg class="nav-svg" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6L18 18V6z"/></svg>
+                    <div class="glass-play-btn" onclick="togglePlay(2, this)"><div class="play-tri"></div><div class="pause-rect"></div></div>
+                    <svg class="nav-svg" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                </div>
+                <input type="range" class="vol-slider-alt" min="0" max="1" step="0.1" value="0.8" oninput="setVol(2, this.value)">
+            </div>
+            <div class="spk-container"><div class="spk-unit"></div><div class="spk-overlay"></div></div>
+            <div class="spk-container"><div class="spk-unit"></div><div class="spk-overlay"></div></div>
+        </div>
+        <audio id="r-2" src="https://eu1.fastcast4u.com/proxy/qpnslltp?mp=/1"></audio>
+    </div>
+
+    <div class="theme-green">
+        <div class="top-info-bar">
+            <div class="marquee-box glass-frame">
+                <marquee scrollamount="4">
+                    <span class="text-color" style="font-weight:bold;">DOST YURDU RADYO</span><p></p>
+                    <span style="color:#fff;">- ŞU AN YAYINDA -</span><p></p>
+                    <span class="cc_streaminfo" data-type="song" data-username="qpnslltp" style="color:#fff;">Yükleniyor...</span>
+                </marquee>
+            </div>
+            <div class="listener-box glass-frame text-color"><span class="cc_streaminfo" data-type="listeners" data-username="qpnslltp">0</span>&nbsp;DİNLEYİCİ</div>
+        </div>
+        <div class="player-outer-frame glass-frame">
+            <div class="spk-container"><div class="spk-unit"></div><div class="spk-overlay"></div></div>
+            <div class="spk-container"><div class="spk-unit"></div><div class="spk-overlay"></div></div>
+            <div class="capsule-core">
+                <div class="radio-tag">DOST YURDU</div>
+                <div style="display:flex; align-items:center; flex-grow:1; justify-content:center;">
+                    <svg class="nav-svg" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6L18 18V6z"/></svg>
+                    <div class="glass-play-btn" onclick="togglePlay(3, this)"><div class="play-tri"></div><div class="pause-rect"></div></div>
+                    <svg class="nav-svg" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                </div>
+                <input type="range" class="vol-slider-alt" min="0" max="1" step="0.1" value="0.8" oninput="setVol(3, this.value)">
+            </div>
+            <div class="spk-container"><div class="spk-unit"></div><div class="spk-overlay"></div></div>
+            <div class="spk-container"><div class="spk-unit"></div><div class="spk-overlay"></div></div>
+        </div>
+        <audio id="r-3" src="https://eu1.fastcast4u.com/proxy/qpnslltp?mp=/1"></audio>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://eu1.fastcast4u.com/system/streaminfo.js"></script>
+    <script>
+        function togglePlay(idx, btn) {
+            var aud = document.getElementById("r-" + idx);
+            var p = btn.querySelector(".play-tri");
+            var s = btn.querySelector(".pause-rect");
+            if (aud.paused) { 
+                aud.play(); 
+                p.style.display="none"; 
+                s.style.display="block"; 
+            } else { 
+                aud.pause(); 
+                p.style.display="block"; 
+                s.style.display="none"; 
+            }
+        }
+        function setVol(idx, val) { 
+            document.getElementById("r-" + idx).volume = val; 
+        }
+    </script>
+</body>
+</html>
