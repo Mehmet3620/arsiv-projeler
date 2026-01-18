@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-initial-scale=1.0">
+    <title>Hangi Otsunuz? Ot Widget (Yeni Düzen)</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        :root {
+            /* TEMA RENKLERİ: KOYU SİYAH, TURUNCU, BEYAZ */
+            --color-bg-dark: #1c1c1c; 
+            --color-accent-orange: #CC4400; /* Koyu Turuncu */
+            --color-text-light: #FFFFFF; 
+            --color-border: #444444; 
+            --color-content-bg: #2a2a2a; 
+            --color-tab-inactive: #333333;
+        }
+
+        body {
+            /* Önceden: background-color: #333; */
+            background-color: transparent; 
+        }
+
+        .ot-widget-container {
+            width: 450px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            border: 1px solid var(--color-accent-orange);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px auto;
+            color: var(--color-text-light);
+            background-color: var(--color-bg-dark);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Ana Başlık */
+        .ot-header-title {
+            background-color: var(--color-accent-orange); 
+            color: var(--color-text-light);
+            font-size: 1.1em;
+            font-weight: bold;
+            text-align: center;
+            padding: 12px;
+            margin: 0;
+            border-bottom: 1px solid var(--color-bg-dark); 
+        }
+
+        /* Üstteki Tek Sekme Başlığı (Widget Bilgisi) */
+        .tab-header-top-row {
+            display: flex;
+            background-color: var(--color-tab-inactive);
+            border-bottom: 2px solid var(--color-accent-orange);
+        }
+        .tab-header-single {
+            flex-grow: 1;
+            text-align: center;
+            padding: 10px 0;
+            cursor: pointer;
+            color: var(--color-text-light);
+            font-weight: bold;
+            transition: background-color 0.3s;
+            font-size: 0.9em; /* Tek olduğu için biraz büyük tutuldu */
+            background-color: var(--color-tab-inactive);
+        }
+        .tab-header-single:hover, .tab-header-single.active {
+            background-color: var(--color-accent-orange);
+            color: var(--color-text-light);
+        }
+
+        /* Ana Sekme Başlıkları Konteyneri (Alttaki 4 Sekme) */
+        .tab-headers {
+            display: flex;
+            justify-content: space-around;
+            background-color: var(--color-tab-inactive);
+            border-bottom: 2px solid var(--color-accent-orange);
+        }
+        .tab-header {
+            flex-grow: 1;
+            text-align: center;
+            padding: 10px 0;
+            cursor: pointer;
+            color: var(--color-text-light);
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+            /* FONT BOYUTU KÜÇÜLTÜLDÜ */
+            font-size: 0.8em; 
+            border-right: 1px solid #222; 
+        }
+        .tab-header:last-child {
+            border-right: none;
+        }
+        .tab-header:hover, .tab-header.active {
+            background-color: var(--color-accent-orange);
+            color: var(--color-text-light);
+        }
+
+        /* Sekme İçerikleri */
+        .tab-content { display: none; padding: 0; }
+        .tab-content.active { display: block; }
+
+        /* Giriş Sekmesi İçeriği Stili */
+        #giris {
+            padding: 15px;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+        #giris h3 {
+            color: var(--color-accent-orange);
+            font-size: 1.1em;
+            margin: 10px 0 5px 0;
+            padding-top: 10px;
+            border-top: 1px solid var(--color-border);
+        }
+        
+        /* Tarih Listesi (Tablo) */
+        .date-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+            background-color: var(--color-content-bg);
+            color: var(--color-text-light);
+        }
+        .date-table th, .date-table td {
+            padding: 8px;
+            border: 1px solid var(--color-border);
+            text-align: center;
+        }
+        .date-table th:first-child, .date-table td:first-child {
+             text-align: left;
+             font-weight: bold;
+             width: 50%;
+        }
+        .date-table th {
+            color: var(--color-accent-orange);
+        }
+        
+        /* Akordiyon Stilleri */
+        .accordion-container {
+             margin-top: 10px;
+             border-top: 1px solid var(--color-border);
+        }
+        .accordion-header {
+            background-color: var(--color-tab-inactive);
+            color: var(--color-text-light);
+            padding: 12px 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .accordion-header:hover {
+            background-color: #444;
+        }
+        .accordion-header.active {
+            background-color: var(--color-accent-orange);
+            color: var(--color-text-light);
+        }
+        .accordion-header.active i {
+            transform: rotate(180deg);
+        }
+        .accordion-content {
+            display: none;
+            padding: 15px;
+            background-color: var(--color-content-bg);
+            color: var(--color-text-light);
+            font-size: 0.9em;
+            line-height: 1.5;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .accordion-content p {
+             margin: 0 0 8px 0;
+        }
+
+        /* Footer Stili */
+        .widget-footer {
+            background-color: #333333;
+            color: var(--color-accent-orange);
+            padding: 8px;
+            font-size: 0.8em;
+            text-align: center;
+            border-top: 1px solid var(--color-border);
+            font-weight: bold;
+        }
+        /* Yeni eklenen akordiyon başlık stili */
+        .accordion-group-title {
+            background-color: #333333;
+            color: var(--color-accent-orange);
+            padding: 8px 12px;
+            font-size: 0.95em;
+            text-align: center;
+            font-weight: bold;
+            border-bottom: 1px solid var(--color-border);
+        }
+    </style>
+    </head>
+<body>
+
+<div class="ot-widget-container">
+    <p class="ot-header-title">Doğum Tarihinize Göre Hangi Otsunuz?</p>
+
+    <div class="tab-header-top-row">
+        <div class="tab-header-single active" onclick="openTabOt('giris')">
+            <i class="fas fa-info-circle"></i> Widget Bilgisi
+        </div>
+    </div>
+    
+    <div class="tab-headers">
+        <div class="tab-header" onclick="openTabOt('kis')">
+            <i class="fas fa-snowflake"></i> Kış Otları
+        </div>
+        <div class="tab-header" onclick="openTabOt('ilkbahar')">
+            <i class="fas fa-seedling"></i> İlkbahar Otları
+        </div>
+        <div class="tab-header" onclick="openTabOt('yaz')">
+            <i class="fas fa-sun"></i> Yaz Otları
+        </div>
+        <div class="tab-header" onclick="openTabOt('sonbahar')">
+            <i class="fas fa-cloud-sun-rain"></i> Sonbahar Otları
+        </div>
+    </div>
+    
+    <div id="giris" class="tab-content active">
+        <p>Bitkiler, insanlar için yalnızca estetik bir öğe değil, aynı zamanda hayati bir öneme sahip canlılardır. Yüzyıllardır, insanlar bitkilerle etkileşimde bulunarak yaşamlarını sürdürebilmiştir.</p>
+        <p>Bitkiler, hem fiziksel hem de psikolojik sağlık üzerinde derin bir etkiye sahiptir. Hava kalitesini artırmaktan, ruh halimizi iyileştirmeye kadar bitkiler, hayatımızı zenginleştiren doğanın önemli parçalarıdır. Doğru bitkilerle yaşam alanınızı güzelleştirirken, sağlığınıza da katkıda bulunabilirsiniz.</p>
+
+        <h3>🌱 Ruhunuzun Otunu Keşfedin!</h3>
+        <p>Anadolu ve dünya mitolojilerinde her bitkinin kendine has bir ruhu, karakteri ve enerjisi olduğuna inanılır. Tıpkı bitkiler gibi, her insanın da kendine özgü bir karakteri vardır. Peki, sizin ruhunuz hangi ota benziyor?</p>
+        <p>Bu eğlenceli widget, doğum tarihinizi kullanarak size en yakın olan ot karakterini gösterir. Yukarıdaki sekmelerden mevsiminize uygun olanı seçerek hangi ot olduğunuzu bulun ve kişilik özelliklerinizi öğrenin! Sağlıklı yaşamın başlangıcı doğayı anlamaktan geçer; kendinizi bir otun ruhuyla tanıyarak başlayın.</p>
+    </div>
+
+    <div id="kis" class="tab-content">
+        <table class="date-table">
+            <tr><th>Aralik 1 - 16</th><td>Isırgan otu</td></tr>
+            <tr><th>Aralik 17 - 25</th><td>Sarmaşık</td></tr>
+            <tr><th>Aralik 26 - 31</th><td>Çimen</td></tr>
+            <tr><th>Ocak 1 - 9 </th><td>Isırgan otu</td></tr>
+            <tr><th>Ocak 10 - 24</th><td>Ebemgümeci</td></tr>
+            <tr><th>Ocak 25 - 31</th><td>Dereotu</td></tr>
+            <tr><th>Şubat 1 - 5 </th><td>Bildiğimiz ot</td></tr>
+            <tr><th>Şubat 6 - 14</th><td>Çimen</td></tr>
+            <tr><th>Şubat 5 - 21 </th><td>Maydanoz</td></tr>
+            <tr><th>Şubat 22 - 28</th><td>Kıvırcık</td></tr>
+        </table>
+    </div>
+
+    <div id="ilkbahar" class="tab-content">
+        <table class="date-table">
+            <tr><th>Mart 1 - 12</th><td>Sarmaşık</td></tr>
+            <tr><th>Mart 13 - 15</th><td>Dereotu</td></tr>
+            <tr><th>Mart 16 - 23</th><td>Ebemgümeci</td></tr>
+            <tr><th>Mart 24 - 31</th><td>Bildiğimiz ot</td></tr>
+            <tr><th>Nisan 1 - 3</th><td>Isırgan otu</td></tr>
+            <tr><th>Nisan 4 - 14</th><td>Kıvırcık</td></tr>
+            <tr><th>Nisan 15 - 26</th><td>Ebemgümeci</td></tr>
+            <tr><th>Nisan 27 - 30</th><td>Maydanoz</td></tr>
+            <tr><th>Mayıs 1 - 13</th><td>Sarmaşık</td></tr>
+            <tr><th>Mayıs 14 - 21</th><td>Çimen</td></tr>
+            <tr><th>Mayıs 22 - 31</th><td>Dereotu</td></tr>
+        </table>
+    </div>
+
+    <div id="yaz" class="tab-content">
+        <table class="date-table">
+            <tr><th>Haziran 1 - 3</th><td>Ebemgümeci</td></tr>
+            <tr><th>Haziran 4 - 14</th><td>Maydanoz</td></tr>
+            <tr><th>Haziran 15 - 20</th><td>Isırgan otu</td></tr>
+            <tr><th>Haziran 21 -24</th><td>Sarmaşık</td></tr>
+            <tr><th>Haziran 25 - 30</th><td>Bildiğimiz ot</td></tr>
+            <tr><th>Temmuz 1 - 9</th><td>Ebemgümeci</td></tr>
+            <tr><th>Temmuz 10 - 15</th><td>Isırgan otu</td></tr>
+            <tr><th>Temmuz 16 - 26</th><td>Çimen</td></tr>
+            <tr><th>Temmuz 27 - 31</th><td>Bildiğimiz ot</td></tr>
+            <tr><th>Ağustos 1 - 15</th><td>Sarmaşık</td></tr>
+            <tr><th>Ağustos 16 - 25</th><td>Ebemgümeci</td></tr>
+            <tr><th>Ağustos 26 - 31</th><td>Maydanoz</td></tr>
+        </table>
+    </div>
+    
+    <div id="sonbahar" class="tab-content">
+        <table class="date-table">
+            <tr><th>Eylul 1 - 14</th><td>Çimen</td></tr>
+            <tr><th>Eylul 15 - 27</th><td>Bildiğimiz ot</td></tr>
+            <tr><th>Eylul 28 - 30</th><td>Isırgan otu</td></tr>
+            <tr><th>Ekim 1 - 15</th><td>Sarmaşık</td></tr>
+            <tr><th>Ekim 16 - 27</th><td>Maydanoz</td></tr>
+            <tr><th>Ekim 28 - 31 </th><td>Kıvırcık</td></tr>
+            <tr><th>Kasim 1 - 16</th><td>Dereotu</td></tr>
+            <tr><th>Kasim 17 -30</th><td>Bildiğimiz ot</td></tr>
+        </table>
+    </div>
+
+
+    <div class="accordion-container">
+        
+        <p class="accordion-group-title">Ot Karakteristikleri (Tıkla ve Öğren)</p>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordionOt(this)">
+                <span><i class="fas fa-hand-paper"></i> Isırgan otu</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="accordion-content">
+                <p>Çekici ve popülersiniz.. Kolayca arkadaş edinebiliyorsunuz..</p>
+                <p>Kendinden emin tavırlarınızla grup içinde liderliğe yakışıyorsunuz.</p>
+                <p>Eğer sizin liderliğinizi kabul etmiyorlarsa uygun bir yöntemle kabul ettiriyorsunuz, yine olmazsa ısırıyorsunuz...</p>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordionOt(this)">
+                <span><i class="fas fa-leaf"></i> Bildiğimiz ot</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="accordion-content">
+                <p>Utangaç ve sevimlisiniz. Tanımadığınız insanlarla konuşmayı sevmez ama arkadaşlarınızla her şeyi paylaşabilirsiniz.</p>
+                <p>Arkadaş seçiminde oldukça dikkatlisiniz. Sevilen birisiniz. Doğayı çok seversiniz öylesine bir otsunuz.</p>
+            </div>
+        </div>
+        
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordionOt(this)">
+                <span><i class="fas fa-vines"></i> Sarmaşık</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="accordion-content">
+                <p>Yerinde duramayan birisiniz. Durmadan ona buna sarılıp duruyorsunuz.</p>
+                <p>Çok arkadaşınız var ve sosyal yaşamınız çok renkli. Dedikoduyu biraz seviyorsunuz.</p>
+                <p>Sizi tanıyan sizin gibi biri daha olmadığını düşünüyor. Dikkat çekmeyi çok seviyorsunuz.</p>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordionOt(this)">
+                <span><i class="fas fa-salad"></i> Kıvırcık</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="accordion-content">
+                <p>Esrarengiz birisiniz. Ne zaman nasıl davranacağınız pek belli olmuyor. Bazen her şeye salata oluyorsunuz.</p>
+                <p>Çoğu şeyden ilk sizin haberiniz oluyor bu yüzden çok ilgi görüyorsunuz.</p>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordionOt(this)">
+                <span><i class="fas fa-flower"></i> Ebemgümeci</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="accordion-content">
+                <p>Sessiz, sakin ama çok zekisiniz. Dost canlısı, sevilmeyi bekleyen tavırlarınız ilgi çekiyor.</p>
+                <p>Her yerde olmayan, insan sağlığına yararlı bir kişiliğe sahipsiniz. Küçük bir arkadaş grubu size yetiyor. Fazla popüler olmasanız da yakınlarının el üstünde tuttuğu birisiniz.</p>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordionOt(this)">
+                <span><i class="fas fa-feather-alt"></i> Dereotu</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="accordion-content">
+                <p>Siz lider olmak için doğmuşsunuz. Ama yapacak bir şey yok, bazı organizasyonlarda sadece değişik tad bırakıyorsunuz o kadar.</p>
+                <p>Sözünü dinleten, dediğini yaptıran birisiniz. Kararlı tavırlarınız çevrenizdekileri etkiliyor. İnsanların arkadaş olmak isteyebileceği birisiniz.</p>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordionOt(this)">
+                <span><i class="fas fa-utensils"></i> Maydanoz</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="accordion-content">
+                <p>Uyumlu, her şeye maydanoz olmak (buradan gelir), sıcakkanlı birisiniz. Size nasıl davranılmasını istiyorsanız siz de herkese öyle davranıyorsunuz.</p>
+                <p>Sadık ve dürüstsünüz, yapmacık insanlara ve dedikoduya karşısınız.</p>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordionOt(this)">
+                <span><i class="fas fa-grass"></i> Çimen</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="accordion-content">
+                <p>Çok hassas ve narinsiniz (çimlere basmayın!). Kolay aşık oluyorsunuz.</p>
+                <p>Ne çok utangaç ne çok girişkensiniz. Arkadaş grubunuzda kırılmaması için kollanan birisiniz.</p>
+            </div>
+        </div>
+        
+    </div>
+    <div class="widget-footer">
+        Powered by Allaturka
+    </div>
+    
+</div>
+
+<script>
+    function openTabOt(tabId) {
+        // Tüm sekme içeriklerini gizle
+        const contents = document.getElementsByClassName('tab-content');
+        for (let i = 0; i < contents.length; i++) {
+            contents[i].classList.remove('active');
+        }
+
+        // Tüm sekme başlıklarını pasif yap (Her iki satırdakileri de)
+        const allHeaders = document.querySelectorAll('.tab-header, .tab-header-single');
+        allHeaders.forEach(h => h.classList.remove('active'));
+
+        // İstenen sekme içeriğini göster
+        document.getElementById(tabId).classList.add('active');
+        
+        // Tıklanan başlığı aktif yap (querySelectorAll ile buluyoruz)
+        const clickedHeader = document.querySelector(`[onclick*="'${tabId}'"]`);
+        if (clickedHeader) clickedHeader.classList.add('active');
+
+
+        // Akordiyon konteynerinin görünürlüğünü kontrol et
+        const accordion = document.querySelector('.accordion-container');
+        if (accordion) {
+            // Eğer aktif sekme 'giris' ise (Widget Bilgisi), akordiyonu gizle
+            if (tabId === 'giris') {
+                accordion.style.display = 'none';
+            } else {
+                // Diğer sekmeler aktifse (Kış, İlkbahar, Yaz, Sonbahar), akordiyonu göster
+                accordion.style.display = 'block';
+            }
+        }
+    }
+
+    function toggleAccordionOt(header) {
+        // Tıklanan başlığın altındaki içeriği bul
+        const content = header.nextElementSibling;
+        const isActive = header.classList.contains('active');
+        const parent = header.closest('.accordion-container');
+
+        // Aynı konteyner içindeki tüm aktif akordiyonları kapat
+        const allContents = parent.querySelectorAll('.accordion-content');
+        const allHeaders = parent.querySelectorAll('.accordion-header');
+
+        allContents.forEach(c => {
+            if (c !== content) {
+                c.style.display = 'none';
+            }
+        });
+        allHeaders.forEach(h => {
+            if (h !== header) {
+                h.classList.remove('active');
+            }
+        });
+
+        // Tıklanan akordiyonu aç/kapat
+        if (isActive) {
+            content.style.display = 'none';
+            header.classList.remove('active');
+        } else {
+            content.style.display = 'block';
+            header.classList.add('active');
+        }
+    }
+    
+    // Sayfa yüklendiğinde varsayılan sekmeyi aç ('giris')
+    document.addEventListener('DOMContentLoaded', () => {
+        openTabOt('giris');
+    });
+</script>
+</body>
+</html>
