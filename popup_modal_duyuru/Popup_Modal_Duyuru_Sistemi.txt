@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <title>Mehmet3620 Popup V4</title>
+    <style>
+        #popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        #popup-box {
+            background: #ffffff;
+            width: 600px;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            animation: popupAcilis 0.4s ease-out;
+        }
+
+        @keyframes popupAcilis {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 24px;
+            z-index: 100;
+            transition: 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .close-btn:hover { background: #e67e22; color: #fff; transform: rotate(90deg); }
+
+        /* Resmin kırpılmasını engelleyen ayar */
+        .popup-resim {
+            width: 100%;
+            height: auto; 
+            max-height: 280px; 
+            object-fit: contain; /* Resmi kutuya sığdırır, kırpmaz */
+            background: #f9f9f9;
+            display: block;
+        }
+
+        .popup-icerik {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .popup-baslik {
+            font-size: 22px;
+            font-weight: 800;
+            color: #003d52;
+            margin-bottom: 15px;
+        }
+
+        .popup-metin {
+            color: #444;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        /* Talimatın: Bölüm aralarına fazladan paragraf */
+        .bolum-ayrac {
+            margin: 25px 0;
+            display: block;
+        }
+
+        .popup-buton {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 14px 40px;
+            background: #0071b7;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .popup-buton:hover { background: #003d52; box-shadow: 0 5px 15px rgba(0,113,183,0.4); }
+    </style>
+</head>
+<body>
+
+<div id="popup-overlay" onclick="closeMyPopup()">
+    <div id="popup-box" onclick="event.stopPropagation()">
+        <div class="close-btn" onclick="closeMyPopup()">×</div>
+        
+        <img src="https://images.pexels.com/photos/926390/pexels-photo-926390.jpeg" class="popup-resim" alt="PHP Blog">
+
+        <div class="popup-icerik">
+            <div class="popup-baslik">PHP İle Akıllı Popup Rehberi</div>
+            
+            <div class="popup-metin">
+                Açılır pencereler, web sitenizin dönüşüm satışlarını ve etkileşimini artırmak için faydalıdır. PHP, dinamik ve etkileşimli sayfalar oluşturmak için kullanılan güçlü bir dildir. PHP ile yapılan pencereler kullanıcıyı doğrudan harekete geçirir.
+                
+                <p class="bolum-ayrac"></p> Bu yazımızda basit bir PHP açılır penceresinin nasıl oluşturulacağını tartışacağız. Hadi, PHP açılır pencereleri oluşturmak için verdiğimiz bu özel ipuçlarını projelerinizde hemen deneyin!
+            </div>
+
+            <a href="#" class="popup-buton">Hadi başlayalım!</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openMyPopup() {
+        document.getElementById('popup-overlay').style.display = 'flex';
+    }
+
+    function closeMyPopup() {
+        const overlay = document.getElementById('popup-overlay');
+        overlay.style.opacity = '0';
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            overlay.style.opacity = '1';
+            localStorage.setItem('popup_final_v1', new Date().getTime());
+        }, 400);
+    }
+
+    window.onload = function() {
+        const lastSeen = localStorage.getItem('popup_final_v1');
+        const now = new Date().getTime();
+        const birGun = 24 * 60 * 60 * 1000;
+
+        if (!lastSeen || (now - lastSeen) > birGun) {
+            setTimeout(openMyPopup, 500);
+        }
+    };
+</script>
+
+</body>
+</html>
