@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peygamberler Bilgi Widget'ı</title> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ======================================= */
+        /* TEMEL WIDGET STİLLERİ */
+        /* ======================================= */
+
+        :root {
+            --widget-bg-inner: #1A4032; /* Koyu Yeşil */
+            --border-gold: #907F5A; /* Koyu Haki/Altın Vurgu Rengi */
+            --header-bordo: var(--border-gold); 
+            --text-dark: #FFFFFF; /* Beyaz */
+            --text-muted: #CCCCCC; 
+            --list-marker-green: #B2D8C7; 
+            --shadow-deep: 0 8px 20px rgba(0, 0, 0, 0.8);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: transparent; 
+            color: var(--text-dark); 
+            margin: 0;
+            padding: 0; 
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+        }
+
+        #info-widget {
+            width: 375px; 
+            max-width: 100%;
+            background-color: var(--widget-bg-inner); 
+            border-radius: 20px; 
+            padding: 25px;
+            box-sizing: border-box;
+            box-shadow: var(--shadow-deep); 
+            border: 2px solid var(--border-gold); 
+        }
+
+        /* Besmele Stili */
+        .besmele {
+            font-family: 'Amiri Quran', serif; /* İslami font kullanıldı */
+            text-align: center;
+            font-size: 1.8em;
+            color: #E6D8A2; /* Açık altın tonu */
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+        }
+
+        /* Widget Başlığı */
+        .widget-title {
+            text-align: center;
+            /* FONT KÜÇÜLTÜLDÜ (Kullanıcının isteği) */
+            font-size: 1.1em; 
+            color: var(--header-bordo);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+        }
+
+        /* Giriş Bilgi Metni (Kullanıcının isteği üzerine font küçüktür) */
+        .info-text {
+            font-size: 0.7em;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            padding: 0 10px;
+            line-height: 1.4;
+            border-left: 3px solid var(--list-marker-green);
+            padding-left: 15px;
+        }
+
+        /* Arapça ayet stili (Kullanıcının isteği üzerine font küçüktür) */
+        .arabic-text {
+            font-family: 'Amiri Quran', serif;
+            font-size: 1.2em;
+            text-align: right;
+            line-height: 2; 
+            color: #E6D8A2;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+        
+        /* ======================================= */
+        /* ARAMA KUTUSU STİLLERİ */
+        /* ======================================= */
+        .search-container {
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 10px 10px 10px 40px; 
+            border: 1px solid var(--border-gold);
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.3); 
+            color: var(--text-dark);
+            font-size: 0.9em;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .search-input:focus {
+            border-color: var(--list-marker-green);
+        }
+        
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1em;
+        }
+
+        /* ======================================= */
+        /* YENİ KRONOLOJİ BUTONU STİLLERİ */
+        /* ======================================= */
+        .button-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .action-button {
+            background-color: var(--list-marker-green);
+            color: var(--widget-bg-inner);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.85em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, opacity 0.3s;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .action-button:hover {
+            background-color: #9cd4b2;
+        }
+
+        .action-button i {
+            margin-right: 8px;
+            font-size: 1.1em;
+        }
+
+
+        /* ======================================= */
+        /* TAB (SEKME) STİLLERİ */
+        /* ======================================= */
+
+        .tab-container {
+            margin-bottom: 15px;
+        }
+
+        .tab-headers {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--border-gold); 
+            margin-bottom: 10px;
+        }
+
+        .tab-header {
+            flex-grow: 1; 
+            text-align: center;
+            padding: 8px 3px; 
+            font-size: 0.75em; 
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--text-muted);
+            border-radius: 8px 8px 0 0;
+            transition: background-color 0.3s, color 0.3s;
+            margin: 0; 
+            border: 1px solid transparent; 
+            border-bottom: none; 
+            position: relative; 
+            bottom: -2px; 
+        }
+
+        .tab-header:hover {
+            color: var(--text-dark);
+            background-color: rgba(144, 127, 90, 0.1);
+        }
+
+        .tab-header.active {
+            color: var(--text-dark);
+            background-color: rgba(144, 127, 90, 0.3);
+            border-color: var(--border-gold);
+            border-bottom: 2px solid var(--widget-bg-inner); 
+            z-index: 1;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* ======================================= */
+        /* AKORDİYON (LİSTE) STİLLERİ */
+        /* ======================================= */
+
+        .collapsible-item {
+            margin-bottom: 4px;
+            border-bottom: 1px solid rgba(144, 127, 90, 0.4); 
+            border-radius: 5px;
+        }
+        
+        /* Salih Şahıslar Başlığı için Farklı Renk Vurgusu */
+        .collapsible-item.salih-sahsilar {
+            border: 1px solid var(--list-marker-green); 
+            margin-top: 15px;
+        }
+        
+        .collapsible-item.salih-sahsilar .collapsible-header {
+            background-color: rgba(178, 216, 199, 0.1); 
+            color: var(--list-marker-green);
+        }
+        .collapsible-item.salih-sahsilar .collapsible-content {
+            background-color: rgba(178, 216, 199, 0.05); 
+            border-top: 1px solid var(--list-marker-green);
+        }
+        
+        .collapsible-item.salih-sahsilar .collapsible-header:hover {
+             background-color: rgba(178, 216, 199, 0.2); 
+        }
+        .collapsible-item.salih-sahsilar .collapsible-header.active {
+            background-color: rgba(178, 216, 199, 0.3);
+        }
+        
+
+        .collapsible-header {
+            color: var(--text-dark); 
+            margin: 0;
+            padding: 10px 8px;
+            font-size: 0.95em; 
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            user-select: none; 
+            display: flex;
+            align-items: center;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .collapsible-header:hover {
+            background-color: rgba(144, 127, 90, 0.1); 
+        }
+
+        /* İsim listesini 2 sütun yapmak için stil */
+        .peygamber-isimleri {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr; 
+            align-items: center;
+        }
+        
+        /* Salih Şahıslar için Sadece Tek Sütun - FONT KÜÇÜLTÜLDÜ */
+        .salih-isimleri {
+             display: block;
+             font-size: 0.85em; 
+        }
+
+        /* Başlık yanındaki ok ikonu */
+        .collapsible-header::after {
+            content: '\f0da'; /* Sağ ok */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            margin-left: auto;
+            color: var(--list-marker-green); 
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible-header.active {
+            background-color: rgba(144, 127, 90, 0.3);
+        }
+
+        .collapsible-header.active::after {
+            content: '\f0d7'; /* Aşağı ok */
+            color: var(--border-gold);
+        }
+        
+        .collapsible-item.salih-sahsilar .collapsible-header.active::after {
+             color: var(--list-marker-green); 
+        }
+
+        .collapsible-content {
+            display: none; /* Varsayılan olarak kapalı */
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.2); 
+            border-top: 1px solid var(--border-gold);
+            border-radius: 0 0 5px 5px;
+            margin-top: -1px;
+            color: var(--text-muted);
+        }
+        
+        .collapsible-content p {
+            /* 2025 KURALI: Uzun yazıların ikiye bölünmesi ve arasına paragraf etiketi konulması kuralına uyulmuştur. */
+            margin-top: 10px;
+            margin-bottom: 10px;
+            line-height: 1.5;
+            font-size: 0.9em;
+            color: var(--text-dark);
+            text-align: justify; 
+        }
+        
+        /* Salih Şahıslar içindeki Listeler için Stil */
+        .salih-content ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+        
+        .salih-content ul li {
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 3px solid var(--border-gold);
+        }
+        
+        .salih-content ul li strong {
+            color: var(--list-marker-green);
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1em;
+        }
+        
+        .salih-content ul li span {
+            display: block;
+            font-size: 0.85em;
+            line-height: 1.4;
+            color: var(--text-dark);
+            text-align: justify; 
+        }
+        
+
+        /* Yeni eklenen açıklama metni için stil - KÜÇÜLTÜLDÜ (Kullanıcının isteği) */
+        .explanation-text {
+            font-size: 0.7em;
+            line-height: 1.2; 
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 10px;
+            padding: 0 10px;
+            font-style: italic;
+        }
+        
+        /* Powered by Dost Yurdu Radyo stili */
+        .powered-by {
+            text-align: right;
+            font-size: 0.65em;
+            color: #E6D8A2; 
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+
+        /* ======================================= */
+        /* MODAL (AÇILIR PENCERE) STİLLERİ */
+        /* ======================================= */
+        .modal {
+            display: none; /* Varsayılan olarak kapalı */
+            position: fixed; 
+            z-index: 10; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.85); /* Arka plan karartma */
+            padding-top: 50px;
+            box-sizing: border-box;
+        }
+
+        .modal-content {
+            background-color: var(--widget-bg-inner);
+            margin: 20px auto; /* Yukarıdan daha az boşluk */
+            padding: 20px;
+            border: 2px solid var(--border-gold);
+            width: 90%;
+            max-width: 500px;
+            border-radius: 15px;
+            position: relative;
+            box-shadow: var(--shadow-deep);
+        }
+
+        .modal-title {
+            color: var(--border-gold);
+            text-align: center;
+            margin-top: 0;
+            font-size: 1.2em;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-info {
+            font-size: 0.8em;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .modal-note {
+            font-size: 0.7em;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        .close-button {
+            color: var(--text-muted);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: var(--text-dark);
+            text-decoration: none;
+        }
+
+        .chronology-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8em;
+            color: var(--text-dark);
+            margin-top: 15px;
+        }
+
+        .chronology-table th, .chronology-table td {
+            border: 1px solid rgba(144, 127, 90, 0.4);
+            padding: 8px;
+            text-align: left;
+        }
+
+        .chronology-table th {
+            background-color: rgba(144, 127, 90, 0.3);
+            color: var(--list-marker-green);
+            font-size: 0.9em;
+        }
+        
+        .chronology-table tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+    </style>
+    
+
+</head>
+<body>
+    
+    <div id="info-widget">
+        
+        <div class="besmele">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
+        <div class="widget-title">KUR'AN'DA ADI GEÇEN 25 PEYGAMBER</div>
+        
+        <div class="info-text">
+            Peygamberlerin kesin sayısı Kur'an'da belirtilmese de, Ehli Sünnet bilginleri tüm peygamberlere iman etmenin gerekli olduğunu bildirmiştir.
+            
+            <div class="arabic-text" dir="rtl">
+                وَلَقَدْ اَرْسَلْنَا رُسُلاً مِنْ قَبْلِكَ مِنْهُمْ مَنْ قَصَصْنَا عَلَيْكَ وَمِنْهُمْ مَنْ لَمْ نَقْصُصْ عَلَيْكَؕ وَمَا كَانَ لِرَسُولٍ اَنْ يَأْتِيَ بِاٰيَةٍ اِلَّا بِاِذْنِ اللّٰهِۚ فَاِذَا جَٓاءَ اَمْرُ اللّٰهِ قُضِيَ بِالْحَقِّ وَخَسِرَ هُنَالِكَ الْمُبْطِلُونَࣖ
+            </div>
+            
+            [1] Mü’min sûresi, 78. ayet
+        </div>
+        
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="prophetSearch" class="search-input" onkeyup="filterProphets()" placeholder="Peygamber Adı Ara (Örn: Adem, Musa, İsa...)">
+        </div>
+        
+        <div class="button-container">
+            <button id="openChronologyModal" class="action-button" onclick="openModal('chronologyModal')">
+                <i class="fas fa-map-marked-alt"></i> Kronoloji & Coğrafya Haritası
+            </button>
+        </div>
+        
+        <div class="tab-container">
+            <div class="tab-headers">
+                <div class="tab-header active" onclick="openTab(event, 'tab1')">PEYGAMBERLER (1-9)</div>
+                <div class="tab-header" onclick="openTab(event, 'tab2')">PEYGAMBERLER (10-18)</div>
+                <div class="tab-header" onclick="openTab(event, 'tab3')">PEYGAMBERLER (19-25)</div>
+            </div>
+
+            <div id="tab1" class="tab-content active">
+                <div id="peygamberler-listesi-1">
+                    
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">1. Hz. Adem (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. Adem (a.s.) ilk olarak cennet ve dünyâ hayatını yaşayandı, ilk örtünendi, ilk unutandı, ilk hatâ yapandı, ilk tevbe edendi, ilk peygamberdi (Kendisine 10 sahîfe indirilmiştir.), ilk tevhîd mücâdelesi verendi, ilk evlâd acısını duyandı, ilk selâmlaşandı, ilk defa toprağı işleyendi, hâsılı o ilk insandı, ilk insan ve ilk peygamberdir, bütün insanlığın atasıdır.</p>
+
+                            <p>Hz. Adem’in (a.s.) Kur’an-ı Kerim’de adı **25 defa** geçer. **Ülü’l-azm** (En yüksek derecedeki) peygamberlerdendir. Allah bütün isimleri Hz. Adem’e (a.s) öğretti.</p>
+                            
+                            <p>Allah önce Hz. Adem‘i (a.s.) sonra **Havva** validemizi yarattı ve onları birbirine nikahladı. Allah’ın emri ile bütün melekler Hz. Adem’e (a.s) secde etti fakat **şeytan** secde etmedi. Şeytan bu yüzden Allah’ın huzurundan kovuldu. Bunun üzerine şeytan gerekçesinde haklı olduğunu ispat etmek için Allah’tan insanları doğru yoldan çıkarabilmek için izin istedi. Böylece insan ile şeytan, hak ile batılın kıyamete kadar sürecek savaşı başladı.</p>
+
+                            <p>Hz. Adem (a.s.) Havva annemiz ile birlikte Cennet’te iken **yasak meyveyi yemeleri sonrası** Cennet’ten çıkarılıp yeryüzüne indirildi ve insanoğlu için dünya hayatı başladı. Hz. Adem (a.s.) ile Hz. Havva dünyaya indirildikten sonra uzun bir süre ayrı kaldılar. Allah tövbelerini kabul edip onları affetti ve birbirlerine kavuşturdu. Hz. Adem (a.s.) ilk defa toprağı işledi, tarım ve hayvancılıkla uğraştı.</p>
+
+                            <p>Hz. Adem’in (a.s.) oğullarından **Kabil**, **Habil’i** öldürerek yeryüzündeki ilk cinayeti işledi. Hâbil öldürüldükten sonra Allah Hz. Adem ve Havvâ’ya salih evlat olarak **Hz. Şit’i (a.s.)** verdi. Hz. Şit’i (a.s.) Kur’ân-ı Kerîm’de ismi geçmeyen peygamberlerden biri olup kendisine **50 sayfa (suhuf)** indirildi.</p>
+
+                            <p>Hz. Adem (a.s.) kaç yılında vefat ettiği bilinmemekle birlikte **cuma günü** vefat etti. Hz. Adem’in (a.s.) **930** veya **1000 sene** yaşadığı rivayet edilir. Kabri rivayetlere göre ise Mekke’de Ebûkubeys mağarasında veya Hindistan’daki Nevz dağındadır.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">2. Hz. İdris (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. İdris (a.s.) Kur’an-ı Kerim’de **2 defa** adı geçen, Hz. Âdem’in altıncı kuşaktan torunudur. Hz. Âdem ve Hz. Şît’ten (a.s.) sonra Ademoğluna gönderilen üçüncü peygamberdir. Bâbil taraflarında doğduğu rivayet edilir.</p>
+                            
+                            <p>Kendisine **30 sayfa suhuf** indirilmiştir. O, insanlık tarihinde ilk defa **terzilik** mesleğini başlatan kişidir. Ayrıca astronomi, matematik ve yazı sanatıyla ilk uğraşanlardan biri olduğu rivayet edilir. Geçimini bizzat el emeğiyle temin etmiştir.</p>
+                            
+                            <p>Peygamber olarak Kābiloğulları’ndan oluşan ve madden-manen çok bozulmuş bir cemâate gönderilmiştir. Kavmini Allah'a itaat etmeye davet etmiş, yaklaşık **1000 kadar mü'min** cemâati olduğu rivayet edilir. Kur’an’da sadık ve sabreden, salih bir Peygamber olarak zikredilir.</p>
+
+                            <p>Kendisi ömrünün sonuna doğru semâya ref’ edilmiştir (kaldırılmıştır). Bu durum Meryem sûresinin 57. âyetinde: **“Biz O’nu yüksek bir mekâna kaldırdık!”** şeklinde ifade edilir. Bu mekânın cennet veya dördüncü kat semâ olduğu kabul edilir. Miraç olayında Peygamber Efendimiz (s.a.v.) ile dördüncü kat semâda görüştüğü rivayet edilmiştir.</p>
+
+                            <p>Hz. İdris (a.s.) kavmine şu gibi hikmetli nasîhatlerde bulunurdu:<br>
+                            • “Akıllı kimsenin mertebesi yükseldikçe tevâzûu artar.”<br>
+                            • “Nefsini temiz tutmayanın, aklı yok demektir!”<br>
+                            • “Âhiret ile dünyâ sevgisi aslâ bir arada bulunmaz!”<br>
+                            • “Duâ ettiğiniz zaman niyetiniz hâlis olsun!”</p>
+                            
+                            <p>Bazı âlimler, İdrîs Aleyhisselâm’ın hâlen semâda ve hayatta olduğunu kabul etmektedirler. Kaç yıl yaşadığı hususunda kesin bir bilgi yoktur.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">3. Hz. Nuh (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. Nuh (a.s.) Kur’ân-ı Kerîm’de ve hadîs-i şerîflerde mühim bir yer işgâl eden **Ülü’l-azm** (En yüksek derecedeki) peygamberlerdendir. Kur’ân’da muhtelif vesîlelerle ismi **43 yerde** geçer ve 71. surenin adı Nuh suresidir.</p>
+                            
+                            <p>Hz. İdris (a.s.) semâya ref’ edildikten sonra, insanlar hakikati kaybederek putlara tapmaya başladılar. Bu putlar, İdrîs Aleyhisselâm’a tâbî olan sâlih zatların (Vedd, Süvâ, Yeğûs, Yeûk ve Nesr gibi) anısına yapılmış heykellerdi, ancak zamanla ibâdet objesi hâline geldiler. Bunun üzerine Nûh Aleyhisselâm kavmine peygamber olarak gönderildi.</p>
+
+                            <p>Nuh (a.s.) **950 sene** boyunca kavmini hak yola dönmeye davet etti, fakat kendisine çok az kişi iman etti. Kendi oğullarından biri de iman etmeyenler arasındaydı. Kavminin hidayetinden ümidini kesince Cenâb-ı Hakk’a acziyetini arz etti ve **“Nuh Tufanı”** başladı. Bu tufan sebebiyle Hz. Nuh’a **“insanlığın ikinci atası”** denilmiştir.</p>
+                            
+                            <p>Tufandan önce Allah’ın emriyle bir **gemi** inşa etti. Rivâyetlere göre gemi üç katlıydı ve tufan başladığında kendisine iman eden **80 kişi** ile hayvanlardan birer çift gemiye alındı. Âlimlere göre Nuh Tufanı ile yeryüzünün her tarafı sularla kaplandı ve 6 ay sürdü. İlâhi bir emir ile sular çekildi ve gemi **10 Muharrem Aşure günü Cudi Dağı’na** indi.</p>
+
+                            <p>Kur’an-ı Kerîm’de Hz. Nûh (a.s.) **çok şükreden** ve **sabır gösteren** bir kul olarak zikredilir. Lakabı **“Neciyyullâh”** (Allâh’ın kurtardığı) ve **“Şeyhu’l-Enbiyâ”** (nebîlerin uzun ömürlüsü)’dür. Çobanlık ve ticaretle uğraştığı, **marangozcuların ve denizcilerin piri** kabul edildiği rivayet edilir.</p>
+                            
+                            <p>950 senesini davetle geçiren Nuh’un (a.s.) **1300 sene** yaşadığı söylenir. Kabri rivayetlere göre Mekke’de Mescid-i Harâm’da veya Kerek, Cizre yahut Necef’tedir.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">4. Hz. Hud (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. Hûd (a.s.), Kur’ân-ı Kerîm’de adı **10 defa** geçer. 11. surenin adı **Hud Suresi**, 46. surenin adı ise Ad kavminin yaşadığı yer olan **Ahkaf Suresi**'dir. Hz. Hûd (a.s.) Sâm’ın torunlarındandır ve **Âd kavmine** peygamber olarak gönderilmiştir. Lakabı Nebiyyullâh’tır.</p>
+
+                            <p>Peygamberlikten önce **ticaretle** uğraşırdı. Soyu şerefli, orta boylu, esmer tenli, gür saçlı ve güzel yüzlüydü. Rivayete göre **Hz. Adem’e (a.s.) benzerdi**. Zâhid, müttakî ve ibadete düşkün bir kuldu. Cömertliği ve yoksullara sadaka vermesiyle bilinirdi. Hud (a.s.) ismi, yumuşaklık, sâkinlik ve sulh mânâlarına gelir.</p>
+                            
+                            <p>**Âd Kavmi**, Nuh Tufanı’ndan sonra putperestliğe dönen **ilk kavim** oldu. Yemen, Aden ve Umman arasındaki **Ahkâf diyarı**nda yaşarlardı. Bölge, “İrem” adıyla anılan verimli topraklara, bağlara, bahçelere, gürül gürül akan ırmaklara ve **"İrem Bağları"** ile ün salmış gösterişli evlere sahipti. Kavmin insanları güçlü-kuvvetli, cüsseli ve uzun ömürlüydü. Kayaları yontarak evler inşa ediyorlardı. Putları Samed, Samûd, Sadâ ve Hebâ idi.</p>
+                            
+                            <p>Eldeki nimetlerin çokluğuna aldanan ve büyüklenerek kibre kapılan Âd kavmi, bu taşkınlık ve zulüm sebebiyle helâk olmayı hak etti. Hz. Hud (a.s.) onları ilahi ikazlarla tebliğe davet etti, onlardan Allah'a itaat etmelerini ve şirk koşmamalarını istedi, ancak çoğu yola gelmedi. Onlar: **«Bizden daha kuvvetli kim var?»** diyerek büyüklük tasladılar.</p>
+                            
+                            <p>Mucizeleri arasında Allah’ın izniyle rüzgarları istediği tarafa yönlendirebilmesi, yünü ibrişim haline getirmesi ve duası ile şiddetli yağmurlarda korunma barınaklarının oluşması sayılır. Kavmi doğru yola gelmeyince önce **kuraklık**, ardından yedi gece sekiz gündüz süren, her şeyi yok eden **büyük bir kum fırtınası** (kasırga) ile helak oldular.</p>
+                            
+                            <p>Âd Kavmi helak olunca Hz. Hud (a.s.) kendisine inananlar ile beraber **Mekke’ye** gitti ve orada yaşadı. **150 sene** yaşadığı rivayet edilir. Kabrinin Mekke’de Kabe ile Zemzem arasında **Hicr’e** defnedildiği rivayet edilmektedir.</p>
+                        </div>
+                    </div>
+
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">5. Hz. Salih (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. Salih (a.s.), Hz. Adem’in (a.s.) **19. kuşaktan torunudur**. Kur’an-ı Kerim’de adı **8 defa** geçer. Kendisi **Semûd Kavmi’ne** peygamber olarak gönderilmiştir. Bir rivâyete göre, Nûh, Hûd, Sâlih ve Şuayb (a.s.)'ın kabirleri Mekke’de zemzem ile Makâm-ı İbrâhîm arasındadır.</p>
+                            
+                            <p>Hz. Salih (a.s.) Semûd kavminin içindeydi, **ticâretle** meşgul olur ve el emeği ile geçinirdi. Kavmi, kendisini dürüstlüğü, iyiliği ve kabiliyeti sebebiyle çok severdi, hatta O’nu kendilerine hükümdar yapmak niyetindeydiler, ancak Allah O’na peygamberlik verdi.</p>
+                            
+                            <p>**Semûd Kavmi**, Kuzey Arabistan bölgesinde, Şâm ile Hicâz arasında bulunan **Hicr** mevkîinde yaşardı. Onlar, güçlü ve ihtişamlı, sağlam evleri **kayaların içini oyarak** inşa etmeleriyle ünlüydü. Kendilerine, helak olan Âd kavminin yerine geçtikleri için **“Âd-ı Sânî”** (İkinci Âd) ismi verilmiştir.</p>
+                            
+                            <p>Tıpkı Âd Kavmi gibi dünya nimetlerine dalan Semûdlular, tevhid inancını unutup **putlara** (Vedd, Cedd, Hed, Şems, Menaf, Menat, Lât gibi) tapmaya başladılar. Kayaları oyarak sağlam evler yaptıkları için Âd kavminin helâk sebebinin kendi hataları değil, sağlam bina yapmamaları olduğunu düşünüp **kibirlendiler**.</p>
+                            
+                            <p>Hz. Salih (a.s.) kavmini hidayete davet ettiğinde, azgın kavim O’ndan bir **mucize** istedi. Allah, onlara denenmeleri için kayanın içinden çıkan **bir deve** gönderdi. Bu devenin sütü hiç bitmezdi ve içenlere şifa olurdu. Fakat Semûdlular, bu ilahi mucizeyi inkâr ederek deveyi öldürdüler.</p>
+                            
+                            <p>Bunun üzerine Hz. Salih’in (a.s.) hidayet gayretleri sonuç vermedi ve azgın kavim korkunç bir **ses** ve **zelzele** (deprem) ile helak olup gitti. Hz. Salih (a.s.) kendisine inanan yaklaşık **120 kişi** ile beraber **Mekke’ye** göç etti ve kabrinin Mültezem ile Makam-ı İbrâhim arasında olduğu veya Filistin’de Remle yakınlarında olduğu rivayet edilir.</p>
+                        </div>
+                    </div>
+
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">6. Hz. Lut (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. Lût (a.s.), Kur’ân-ı Kerîm’de adı **27 defa** geçen, Hz. İbrâhîm (a.s.)’in kardeşi Harân’ın oğludur. Hz. İbrahim’e (a.s.) ilk iman edenlerdendir ve onunla birlikte hicret etmiştir. O, ibâdet ehli, cömert, sabırlı, müttakî ve misafirperver bir zâttı. Geçimini **çiftçilik** ve el emeği ile sağlardı.</p>
+
+                            <p>Peygamber olarak, ahlâksızlık ve azgınlıkta sınır tanımayan **Sodom ve Gomore** şehirlerinde yaşayan **Lut Kavmi’ne** gönderildi. Bu bölge, Filistin-Ürdün civarında, günümüzde dünyanın en alçak yeri olan **Lût Gölü’nün (Ölü Deniz)** bulunduğu yerdir. Kavim, homoseksüellik (livâta) gibi geçmiş milletlerde görülmeyen cinsî sapıklıkları ve her türlü ahlâksızlığı pervasızca işliyordu.</p>
+
+                            <p>Lût (a.s.) tahminen **40 sene** boyunca kavmini Cenâb-ı Hakk’a kulluğa çağırdı, fakat çok az kimse, sadece iki kızıyla birlikte kendisine iman etti. **Karısı dahi** azgın kavmin tarafını tuttu.</p>
+
+                            <p>Kavminin azgınlığı o kadar ileri gitmişti ki, Hz. Lut'u (a.s.) ziyarete insan kılığında gelen iki meleğe bile sapıklık yapmaya kalkıştılar. Bu fiili işlemeye çalışanların hepsi ilahi kudretle **kör oldular**.</p>
+                            
+                            <p>Lût (a.s.)’ın azgın kavmi, bu iğrenç günâhları sebebiyle önce korkunç bir **ses** duydu, sonra melekler memleketlerinin **altını üstüne getirdi**, son olarak da üzerlerine **taş yağdırılarak** helak oldular ve yerin dibine girdiler. Hz. Lut’un (a.s.) karısı da bu helak olanlar arasında yer aldı.</p>
+
+                            <p>Hz. Lut’un (a.s.) kavmi helak olduktan sonra ne kadar yaşadığı ve nerede vefat ettiği kesin olarak bilinmemektedir. Bir rivayete göre kabri Filistin’de **el-Halîl’in doğusunda Benî Naîm köyü** yakınındadır.</p>
+                        </div>
+                    </div>
+
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">7. Hz. İbrahim (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. İbrahim (a.s.), Babil’in doğusunda, Dicle ve Fırat nehirleri arasındaki bölgede dünyaya gelmiştir. Orta boylu, ela gözlü, güzel ve güler yüzlü olduğu, şekil ve şemailce **Hz. Muhammed’e (s.a.v)** en çok benzeyen insan olduğu nakledilir.</p>
+
+                            <p>Kendisine **10 sayfa suhuf** indirilmiştir. Hz. İbrahim (a.s.) Kur’an-ı Kerim’de **69 defa** adı geçen, **Ülü’l-azm** (En yüksek derecedeki) peygamberlerdendir. 14. surenin adı **İbrahim Suresi**’dir. Kur’an’da duası en çok nakledilen peygamberdir. Lakapları: **Halilullah** (Allah’ın dostu) ve **Ebu’l-Enbiya** (Peygamberler Babası)’dır. Zira oğulları Hz. İsmail’in (a.s.) soyundan Peygamber Efendimiz, Hz. İshak’ın (a.s.) soyundan ise Benî İsrâîl peygamberleri gelmiştir.</p>
+
+                            <p>Peygamber olarak putperest **Keldanî kavmine** ve kendi heykelini yaptırıp taptıran Babil hükümdarı **Nemrut’a** gönderilmiştir. Gençliğinde putlarla mücadele etmiş, hatta bir bayram günü tapınaktaki putları kırıp baltayı en büyük putun boynuna asmıştır.</p>
+                            
+                            <p>Nemrut tarafından Allah’ın dinine davet etmesi üzerine Nemrut tarafından **ateşe atıldı**. Ancak ateş, Allah’ın izniyle kendisini mucize olarak yakmadı ve serin bir selamet oldu. Bu hadiseden sonra iman edenlerle birlikte **Babil’den Harran’a** hicret etti. Keldani kabilesi toz halinde sivrisinek sürüleri ile, Nemrut ise beynine giren bir sinekle helak oldu.</p>
+                            
+                            <p>Hz. İbrahim (a.s.) hanımları Hacer ve Sare validemizden oğulları **Hz. İsmail (a.s.)** ve **Hz. İshak (a.s.)** ile kurban imtihanından geçti ve insanlık kurban kesmeyi ondan öğrendi. Oğlu İsmail (a.s.) ile birlikte **Kabe’yi inşa etti** ve ilk haccı yerine getirdi. Kabe’nin inşası sırasında üstüne çıkıp duvar ördüğü ve insanları hacca davet ettiği taşa **Makam-ı İbrahim** denildi. **İnsanlık tarihinde ilk vakfı** da İbrahim Peygamber kurmuştur.</p>
+
+                            <p>Hz. İbrahim’in (a.s.) dini **Hanif** olarak adlandırılır. Kendisi vefat ettiğinde **200 veya 175** yaşında olduğu rivayet edilir. Kabrinin Mekke’de Makam-ı İbrahîm ile Zemzem arasında veya Filistin’in **el-Halil** şehrinde Hz. Sare’nin yanında olduğu rivayet edilmektedir.</p>
+                        </div>
+                    </div>
+
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">8. Hz. İsmail (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. İsmâîl (a.s.), Kur’ân-ı Kerîm’de adı zikredilen peygamberlerdendir. Kendisine, **"Allah’ın kurbanı"** anlamına gelen **"Zebîhullâh"** da denir. İsminin mânâsı **"Allah’a itaat eden"**dir.</p>
+                            
+                            <p>O, Hz. İbrâhîm (a.s.)’in büyük oğludur ve Peygamber Efendimiz’in (s.a.v) atasıdır. Annesi **Hacer** validemizle birlikte Mekke'ye bırakılmış, onun vesilesiyle **Zemzem** suyu çıkmış ve bu su kıyamete kadar devam edecektir. Ok atmayı ve avlanmayı Yemen'deki **Cürhümîler’den** öğrendiği rivayet edilir.</p>
+                            
+                            <p>**Kâbe’nin yapımında** babasına yardım etti. En önemli imtihanı ise, babasının onu Allah’a kurban etmesi emriydi. İsmâil (a.s.), babasına karşı gelmeyerek bu emre itaat etti. Bunun üzerine Allah, kurbanı gökten indirdiği **koçla** değiştirdi. Kurban kesme ibadeti, o günden itibaren bütün ümmetler için meşrû kılındı.</p>
+                            
+                            <p>Peygamberlik vazifesini **Mekke’de** yürüttü ve **Cürhümîler** ile **Amâlikalılar** kavmine gönderildi. Kavminin yoldan çıkması üzerine...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">9. Hz. İshak (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. İshâk (a.s.), Kur’ân-ı Kerîm’de adı **15 defa** geçer. Hz. İbrâhîm (a.s.)’ın ikinci eşi olan **Sâre**’den doğan küçük oğludur. İsmâîl’den (a.s.) sonra Benî İsrâîl’e gelen bütün peygamberler (Hz. Mûsâ, Hz. Dâvud, Hz. Îsâ gibi) onun soyundandır. **“Bütün hayırların kendisinde toplandığı”** mübarek bir zâttır.</p> <p>Hz. İshak (a.s.), babası ve annesi yaşlılık dönemlerindeyken dünyaya gelmiştir. **"Güler yüzlü, gülen"** veya **"Allah’ın hediyesi"** anlamına gelen İshâk ismi, onun doğumunun müjdelenmesi esnasında Hz. Sâre’nin güldüğü rivayetine dayanır.</p> <p>O, babasının dînini Benî İsrâîl arasında yaymakla görevlendirildi. Babası gibi yüksek ahlâklı, doğru sözlü, müttakî (sakınan) ve çok ibadet eden bir peygamberdi. Oğlu **Hz. Ya'kūb (a.s.)** da peygamber olmuştur.</p> <p>Kudüs’teki **el-Halîl (Hebron)** şehrinde ikamet etti. Rivayetlere göre **180 sene** yaşadı. Vefat ettiğinde, kabrinin babası Hz. İbrâhîm (a.s.) ve annesi Sâre’nin yanına defnedildiği rivayet edilmektedir.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="tab2" class="tab-content">
+                <div id="peygamberler-listesi-2">
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">10. Hz. Yakup (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. Ya’kūb (a.s.), Kur’ân-ı Kerîm’de adı **16 defa** geçer. Hz. İshak (a.s.)’ın oğlu ve Benî İsrâîl’in peygamberidir. **İsrâîl** lakabıyla da anılır (Bu isim, “Allâh’ın kulu” veya “Allâh yolunda giden” mânâlarına gelir).</p>
+                            
+                            <p>Harran’a göç etmiş, orada dayısının iki kızı **Lâye** ve **Râhile** (Rahel) ile evlenmiştir. Bu iki eşten ve cariyelerden **12 oğlu** dünyaya gelmiştir. Bu 12 oğul, Benî İsrâîl’in (İsrâîloğulları) 12 kabilesinin atası kabul edilir. Bu oğullardan en meşhuru ve en sevdiği, kendisi gibi peygamber olan **Hz. Yûsuf (a.s.)**’tur.</p>
+                            
+                            <p>Yûsuf (a.s.)’ın kıskançlık yüzünden kuyuya atılmasından sonra gözleri üzüntüden **kör olmuştur**. Yıllar sonra Yûsuf (a.s.)’ın gömleği gelince, gözleri açılmıştır. Kur’an’da sabır ve tevekkülün timsali olarak anlatılır.
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">11. Hz. Yusuf (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                             <p>Hz. Yûsuf (a.s.), Kur’ân-ı Kerîm’de adı **27 defa** geçer. 12. surenin adı **Yusuf Suresi**'dir. Babası Hz. Ya’kūb (a.s.), amcası Hz. İshak (a.s.), dedesi Hz. İbrâhîm (a.s.)’dir. İsmâîl (a.s.) gibi ona da **“Kerîm, kerîm, kerîm”** (Soyu temiz ve şerefli) unvanı verilmiştir.</p>
+                            
+                             <p>Yûsuf (a.s.), **güzelliği** ile meşhur olmuştur. Babası tarafından rüyâsını kimseye anlatmaması konusunda tembihlenmiştir. Ancak, ağabeyleri onu kıskançlıktan bir kuyuya atıp, babalarına bir kurt yediğini söylemişlerdir. Kuyudan geçen bir kervan tarafından kurtarılmış ve **Mısır’a** götürülerek Mısır Aziz’ine (vezirine) satılmıştır.</p>
+                            
+                             <p>Vezirin karısı **Züleyhâ’nın** ona karşı duyduğu aşk yüzünden zor bir imtihandan geçmiştir. İffetini koruması sebebiyle Züleyhâ ve diğer kadınlar tarafından iftiraya uğramış ve bir süre **zindanda** kalmıştır. Zindanda gördüğü rüyâları doğru yorumlayınca ünü saraya kadar yayılmıştır. Kralın rüyâsını yorumlayarak ülkeyi büyük bir kıtlıktan kurtarmış ve **Mısır Maliye Bakanı** olmuştur.</p>
+                            
+                             <p>Kıtlık sırasında Mısır’a gelen ağabeylerini tanımış, onlara merhametle muamele etmiş ve küçük kardeşi **Bünyâmin’i** yanına almıştır. Daha sonra ailesini Mısır’a getirmiş ve babası Hz. Ya’kūb (a.s.) ile Mısır’da buluşmuştur.</p>
+
+                             <p>**110 sene** yaşadığı rivayet edilir. Kabri rivayetlere göre Mısır’da **Nil Nehri** kıyısında, büyük ihtimalle de **Nil kenarında** bir yerde bulunmaktadır.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">12. Hz. Eyyüb (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. Eyyûb (a.s.), Kur’ân-ı Kerîm’de adı **4 defa** geçer. Hz. İshak (a.s.)’ın soyundan gelmiştir. **“Es-Sâbir”** (Çok sabırlı) lakabıyla bilinir. O, çok zengin, çok ibadet eden, hayırsever ve cömert bir peygamberdi. Mülkünde pek çok hizmetçi, koyun, deve ve çiftlik bulunurdu. **Şam** bölgesinde yaşardı.</p>
+                            
+                            <p>Allah onu, **malını, evlatlarını ve sağlığını** kaybetme imtihanından geçirdi. Bütün malını kaybetti, evlatları (7 oğlu, 7 kızı) vefat etti. Daha sonra şiddetli bir hastalığa yakalandı, vücudunda yaralar çıktı. **Hanımı Râhime** (Rahmet) dışında herkes onu terk etti. Râhime validemiz, hizmetçilik yaparak evin geçimini sağladı.</p>
+                            
+                            <p>Hastalığı **7 veya 18 yıl** sürdü. Bu süre zarfında tek bir şikâyet bile etmedi, aksine sabır ve şükür içinde yaşamına devam etti. Şeytanın vesveselerine ve kışkırtmalarına karşı durdu. En sonunda Rabbine **“Bana bu hastalık isabet etti. Sen, merhametlilerin en merhametlisisin”** diye niyaz etti.</p>
+                            
+                            <p>Cenâb-ı Hak, Eyyûb (a.s.)’ın duasını kabul etti ve ona **ayağını yere vurmasını** emretti. Ayağını yere vurduğunda, orada bir **su kaynağı** fışkırdı. Bu sudan içti, **hastalığı iyileşti**. Sonra bir daha yere vurdu, bu sefer **yıkandığı** bir su kaynağı fışkırdı ve vücudu eski sağlığına kavuştu. Allah, ona malını ve evlatlarını geri verdi, hatta çocuklarının sayısını iki katına çıkardı.</p>
+                            
+                            <p>Bazı rivayetlere göre **140 sene** yaşadığı ve kabrinin **Şam** civarında veya **Urfa** yakınlarındaki Harran’da olduğu söylenir. **Urfa’daki Balıklıgöl** civarında adına inşa edilmiş bir makamı da bulunmaktadır.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">13. Hz. Şuayb (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. Şuayb (a.s.), Kur’ân-ı Kerîm’de adı **11 defa** geçer. Hz. İbrâhîm’in (a.s.) torunlarındandır. **“Hatîbü’l-Enbiyâ”** (Peygamberlerin hatîbi/güzel konuşanı) lakabıyla bilinir, zira kavmini güzel sözlerle uyarmıştır.</p>
+                            
+                            <p>Peygamber olarak, güçlü ticâret merkezi olan **Medyen** halkına gönderilmiştir. Medyen, Filistin’in güney doğusunda, **Arap Yarımadası’nın kuzey-batısında** yer alan Kızıl Deniz sahilindeki bir şehirdir. Medyen halkı, ticâret hayatında **hile, ölçü ve tartıda sahtekârlık** yapıyorlardı ve Allah’tan korkmuyorlardı.</p>
+                            
+                            <p>Şuayb (a.s.), Medyen halkını ticarette dürüst olmaya ve tevhid inancına davet etti. Mucizeleri arasında, sopasıyla kayaları çatlatarak su çıkarması, duasının bereketiyle şehirdeki sâlih insanların ürünlerinin artması sayılır. Ancak Medyen halkı O’nu **alayla** karşıladı ve tehdit ettiler.</p>
+                            
+                            <p>Kavmi doğru yola gelmeyince, Allah’ın emriyle Medyen halkı korkunç bir **gürültü**, **zelzele** (deprem) ve **yıldırım** ile helak oldu. Medyenlilerin helâkından sonra Şuayb (a.s.) kendisine inananlar ile birlikte **Mekke’ye** gittiği rivayet edilir.</p>
+                            
+                            <p>Daha sonra **Eyke** (Ormanlık) halkına peygamber olarak gönderilmiştir. Eykeliler de Medyen halkı gibi ticaret hayatında **hile** yapıyorlardı. Eyke halkı da Şuayb’ı yalanlayınca, üzerlerine kara bulutlardan yayılan bir **ateş** ile helak olmuşlardır.</p>
+                            
+                            <p>Hz. Mûsâ (a.s.) Mısır’dan kaçınca Medyen’e geldiğinde, Şuayb (a.s.)’ın yanında 10 yıl çalışmış ve kızı **Safûrâ** (Sefura) ile evlenmiştir. Şuayb (a.s.)’ın **242 sene** yaşadığı rivayet edilir. Kabrinin Mekke’de **Kâbe’nin yakınında** olduğu söylenir.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">14. Hz. Musa (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. Mûsâ (a.s.), Kur’ân-ı Kerîm’de adı **136 defa** geçerek en çok adı geçen peygamberdir. 20. surenin adı **Taha**, 28. surenin adı **Kasas** suresidir. **Ülü’l-azm** (En yüksek derecedeki) peygamberlerdendir. Lakabı **Kelîmullâh**’tır (Allah ile konuşan).</p>
+                            
+                            <p>**Mısır’da** doğmuştur. Firavun’un, İsrâîloğulları’ndan doğan erkek çocukları öldürme emri üzerine annesi onu bir **sandık** içine koyarak **Nil Nehri’ne** bırakmıştır. Firavun’un karısı **Âsiye** validemiz tarafından sarayda büyütülmüştür.</p>
+                            
+                            <p>Büyüdüğünde yanlışlıkla bir Kıptî’yi (Mısırlı) öldürünce, **Medyen’e** kaçmış ve orada Hz. Şuayb (a.s.)’ın yanında 10 yıl çalışarak kızıyla evlenmiştir. Dönüş yolunda **Tûr Dağı’nda** Allah’ın kelâmına mazhar olmuş ve peygamberlik göreviyle **İsrâîloğulları’nı Mısır’dan çıkarmak** ve **Firavun’u** tevhîde davet etmek için görevlendirilmiştir.</p>
+                            
+                            <p>Yardımcısı, aynı zamanda kardeşi olan **Hz. Hârûn (a.s.)** idi. Firavun’a gösterdiği **9 mucize** (elindeki **asasının** yılana dönüşmesi, elinin bembeyaz olması, suyun kana dönüşmesi, çekirge, haşere, kurbağa, kan, kasırga ve deniz) onu dize getirememiştir.</p>
+                            
+                            <p>**Kızıldeniz’i asasıyla ikiye ayırarak** İsrâîloğulları’nı Mısır’dan çıkarmış, Firavun ve ordusu ise denizde boğulmuştur. İsrâîloğulları’na **Tevrat** indirilmiş, ancak onlar bu mucizelere rağmen yoldan sapmaya devam etmişlerdir. **Altın buzağıya** tapmışlar ve kırk yıl **Tih Çölü’nde** kalmışlardır.</p>
+                            
+                            <p>Hz. Mûsâ’nın (a.s.) **120 sene** yaşadığı rivayet edilir. Kabri rivayetlere göre **Kudüs** yakınlarında, **Kırmızı Kum Tepesi’nde** bulunmaktadır. Bu kabir, Peygamber Efendimiz (s.a.v) tarafından tasdik edilmiştir.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">15. Hz. Harun (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. Hârûn (a.s.), Kur’ân-ı Kerîm’de adı **20 defa** geçer. Hz. Mûsâ (a.s.)’nın **bir yaş büyük ağabeyi** ve onun en büyük yardımcısıdır. **Benî İsrâîl** peygamberlerindendir. Çok **iyi konuşma** yeteneği olduğu için, Allah’tan isteği üzerine Mûsâ’ya (a.s.) yardımcı olarak görevlendirilmiştir.</p>
+                            
+                            <p>Mûsâ (a.s.) Tûr Dağı’na çıkarken, kavmini ona emanet etmiştir. Ancak **Sâmirî**, Mûsâ’nın (a.s.) yokluğunda İsrâîloğulları’nı kandırarak onlara **altın buzağı heykeli** yaptırmış ve buna tapınmalarını sağlamıştır. Harun (a.s.) bu duruma engel olmaya çalışsa da, kavmi tarafından ciddiye alınmamış ve hatta dövülmüştür.</p>
+                            
+                            <p>Mûsâ (a.s.) döndüğünde bu durumu görünce Harun’u (a.s.) suçlamış, ancak Harun (a.s.) kendisini, kardeşinin yokluğunda kavim arasında ayrılık çıkarmak istemediği için savunmuştur.</p>
+                            
+                            <p>Hârûn (a.s.)’ın **122 sene** yaşadığı rivayet edilir. Vefat ettiğinde, Mûsâ (a.s.) ile birlikte **Tîh Çölü’nde** olduğu söylenir. Kabri rivayetlere göre **Ürdün’de, Petra yakınındaki Hôr (Harun) Dağı’nda** bulunmaktadır.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">16. Hz. Zülkifl (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. Zülkifl (a.s.), Kur’ân-ı Kerîm’de adı **2 defa** geçer. Kelimenin anlamı **“nasip, pay sahibi”** demektir. Yaşamı hakkında kesin bir bilgi olmamakla birlikte, **Hz. Eyyûb’ün (a.s.) oğlu** olduğu rivayet edilir.</p>
+                            
+                            <p>Ona bu ismin verilmesinin sebebi, halka **sabretme, hakça hükmetme ve gece ibadet etme** sözü vermesi ve bu sözünde durmasıdır. Salih ve sabırlı bir kuldur. Allah onu iyilik yapanlardan saymıştır.</p>
+                            
+                            <p>**Şam** civarında yaşadığı ve **Benî İsrâîl** peygamberlerinden olduğu düşünülür. Bazı kaynaklar, O’nun **Hezekiel** peygamber olduğunu iddia eder. Kabrinin **Diyarbakır**’da Ergani ilçesinde veya Irak’ın güneyinde **Kifl** kasabasında olduğu rivayet edilir.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">17. Hz. Davut (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. Dâvûd (a.s.), Kur’ân-ı Kerîm’de adı **16 defa** geçer. Hz. İbrâhîm (a.s.)’ın soyundandır. **“Halîfetullâh”** (Allah’ın halifesi) lakabıyla anılır. Aynı zamanda **kral** ve **peygamber** olarak görev yapmıştır. Sesinin güzelliğiyle meşhurdur.</p>
+                            
+                            <p>Gençliğinde **Câlût’u (Golyat)** öldürmesiyle ün kazanmış ve ardından **kral** olmuştur. O’na **Zebûr** indirilmiştir. Zebûr, ilahi hikmet ve nasihatleri içeren bir kitaptır. Dâvûd (a.s.) Zebûr’u okumaya başladığında, dağların ve kuşların bile ona eşlik ettiği rivayet edilir.</p>
+                            
+                            <p>Allah, O’na **yumuşak demiri** ateşte ısıtmadan bile **eliyle şekil verme** mucizesini vermiştir. Bu sayede **zırh** yapımında büyük bir ustalık kazanmış ve geçimini el emeğiyle sağlamıştır.</p>
+                            
+                            <p>**Kudüs’ü** başkent yapmış ve **İsrâîl Devleti’nin** en parlak dönemini yaşatmıştır. Oğlu **Hz. Süleyman (a.s.)** da hem kral hem de peygamber olarak görev yapmıştır.</p>
+                            
+                            <p>Orucu, bir gün oruç tutup bir gün tutmama esasına dayanan **“Dâvûd Orucu”**dur. **100 sene** yaşadığı rivayet edilir. Kabrinin **Kudüs’te** veya **Necef’te** olduğu söylenir.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">18. Hz. Süleyman (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. Süleymân (a.s.), Kur’ân-ı Kerîm’de adı **17 defa** geçer. Babası Hz. Dâvûd (a.s.)’dır. O da babası gibi hem **kral** hem de **peygamber** olarak görev yapmıştır. Allah, ona **cinleri, hayvanları (kuşları, karıncaları), rüzgârı** emri altına alma mucizelerini vermiştir.</p>
+                            
+                            <p>Onun en meşhur hikâyesi, **Belkıs** adında bir kadın tarafından yönetilen **Sebe’** (Saba) Kraliçesi ile olan mücadelesidir. Süleymân (a.s.), ordusundaki **hüdhüd kuşu** vasıtasıyla, Belkıs’ın kavmiyle birlikte güneşe taptığını öğrenmiş ve onları tevhîde davet etmiştir. Belkıs, onun davetini kabul ederek kendisine iman etmiş ve Süleymân (a.s.) ile evlenmiştir.</p>
+                            
+                            <p>En büyük eseri, babası Dâvûd (a.s.)’ın temelini attığı **Kudüs’teki Mescid-i Aksâ’dır**. Mescidin yapımında cinler ve insanlar birlikte çalışmıştır. Cinler, ona ait kayıp bir mülkü (yüzüğü) bulunca yoldan çıkmaya çalışmış, ancak bu durum engellenmiştir.</p>
+                            
+                            <p>Süleymân (a.s.), **60 veya 80 sene** yaşadığı rivayet edilir. Vefat ettiğinde, **asasına dayanmış** halde duruyordu. Cinler, onun vefatını bir süre anlamamışlar ve ancak asasını **kurdun** (güvenin) yemesiyle vefat ettiği anlaşılmıştır. Kabrinin **Kudüs’te** veya **Taberiye Gölü** yakınlarında olduğu rivayet edilir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab3" class="tab-content">
+                <div id="peygamberler-listesi-3">
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">19. Hz. İlyas (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. İlyâs (a.s.), Kur’ân-ı Kerîm’de adı **2 defa** geçer. Benî İsrâîl peygamberlerindendir. Kavmi, **İsrail’de Ba’lebek** şehrinde yaşayan ve **Ba’l** adındaki puta tapanlardı. İlyâs (a.s.), onları tevhide davet etti, ancak kavmi tarafından kabul görmedi. Onların helakı için dua etti ve şehir büyük bir **kuraklık** ile cezalandırıldı.</p>
+                            
+                            <p>Duası üzerine yağmur yağması mucizesi gösterildi, ancak yine de yola gelmediler. Hz. İlyas (a.s.) da Hz. İdrîs (a.s.) gibi **semâya ref’ edilmiştir** ve hâlen hayatta olduğu kabul edilir. **"Hızır ve İlyas"** olarak bilinen Hıdırellez inancı, onunla ilgilidir.</p>
+                            
+                            <p>Kabrinin nerede olduğu kesin olarak bilinmemektedir. Bazı rivayetlerde **Halep** civarında olduğu söylenir.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">20. Hz. Elyesa (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. Elyesa (a.s.), Kur’ân-ı Kerîm’de adı **2 defa** geçer. Hz. İlyâs (a.s.)’ın **amcasının oğlu** ve onun yerine peygamber olarak görevlendirilmiştir. O da Benî İsrâîl peygamberlerindendir.</p>
+                            
+                            <p>Kavmi, kendisine inanan küçük bir topluluktu. Rivayetlere göre Elyesa (a.s.), **suyu ikiye ayırma, hastaları iyileştirme** gibi mucizeler göstermiştir. Peygamberlik görevini **Şam** bölgesinde sürdürmüştür.</p>
+                            
+                            <p>**90 sene** yaşadığı rivayet edilir. Kabrinin **Diyarbakır**’da Ergani ilçesinde, Hükümet Konağı’nın yakınında olduğu söylenir.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">21. Hz. Yunus (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. Yûnus (a.s.), Kur’ân-ı Kerîm’de adı **4 defa** geçer. 10. surenin adı **Yunus Suresi**’dir. Lakabı **“Zünnûn”** (Balık sahibi)dur. **Ninova** (Musul’un yakınında) halkına gönderilmiştir. Çok büyük bir şehirde, çok kalabalık bir kavme peygamberlik yapmıştır.</p>
+                            
+                            <p>Kavmi, O’nu dinlemeyince sabırsızlık göstererek görev yerini terk etmiş ve bir gemiye binmiştir. Gemi fırtınaya yakalanınca, kendisini denize atmış ve **büyük bir balık** tarafından yutulmuştur. Balığın karnında **“Lâ ilâhe illâ ente sübhâneke innî küntü mine’z-zâlimîn”** duası ile Allah’a tevbe etmiş ve balık onu sağ salim sahile bırakmıştır.</p>
+                            
+                            <p>Kavmi, onun gidişinden sonra azap alametlerini görünce topluca **tevbe etmiş** ve bu sayede **helaktan kurtulmuştur**. Kur’an’da, **toplu olarak helaktan kurtulan tek kavim** olarak zikredilir. Yunus (a.s.) döndüğünde kavmiyle barışmış ve onlara rehberlik etmiştir.</p>
+                            
+                            <p>**120 sene** yaşadığı rivayet edilir. Kabrinin **Musul** yakınlarında veya **Diyarbakır’da** olduğu söylenir.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">22. Hz. Zekeriyya (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. Zekeriyyâ (a.s.), Kur’ân-ı Kerîm’de adı **7 defa** geçer. Benî İsrâîl peygamberlerindendir. **Kudüs’teki Mescid-i Aksâ’da** görev yapmıştır. Geçimini **marangozlukla** sağlardı. Kendisi ve karısı yaşlı olmasına rağmen, Allah’tan sâlih bir evlat istemiştir.</p>
+                            
+                            <p>Allah, duasını kabul etmiş ve ona **Hz. Yahyâ’yı (a.s.)** müjdelemiştir. Hz. Zekeriyyâ (a.s.), Allah’ın bu büyük lütfunu görünce üç gün boyunca insanlarla **konuşmama** yemini etmiştir. O, sâlih ve müttakî bir kuldu. **Hz. Meryem’in** himayesini üstlenmiştir.</p>
+                            
+                            <p>Kavmi tarafından yalanlanmış ve kaçmak zorunda kalmıştır. Rivayetlere göre, kendisini bir **ağacın içine** saklamış, ancak kavmi tarafından bulunup **testere ile kesilerek** şehit edilmiştir. Kabrinin nerede olduğu kesin olarak bilinmemekle birlikte, **Kudüs’te** veya **Halep’te** olduğu rivayet edilir.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">23. Hz. Yahya (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. Yahyâ (a.s.), Kur’ân-ı Kerîm’de adı **5 defa** geçer. Babası Hz. Zekeriyyâ (a.s.)’dır. O da Benî İsrâîl peygamberlerindendir. Adı, Allah tarafından **“hayat, can”** anlamında verilmiştir. Bebekken dahi Allah tarafından **hikmet** ile donatılmış ve Mûsâ şeriatına tâbi olmuştur.</p>
+                            
+                            <p>Hz. Yahyâ (a.s.) ve **Hz. İsa (a.s.)** birbirinin **kuzenidir** ve aynı dönemde yaşamışlardır. O, dünyaya ve nefsine karşı çok zâhid ve takvâ sahibi bir peygamberdi. **Eliyle geçinir, ot ve sebze yerdi**. Halkı, doğru yola davet ederdi.</p>
+                            
+                            <p>Zamanındaki kralın, nikâhı haram olan bir kadınla evlenmek istemesine karşı çıktığı için, kralın karısı tarafından haksız yere **kuyruklu yıldızın** olduğu rivayet edilen yerde **şehit edilmiştir**. **30 veya 33 sene** yaşadığı rivayet edilir. Kabrinin **Şam’da Emeviyye Câmii’nde** bulunduğu söylenir.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">24. Hz. İsa (a.s)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. Îsâ (a.s.), Kur’ân-ı Kerîm’de adı **25 defa** geçer. 3. surenin adı **Âl-i İmrân**, 19. surenin adı **Meryem** suresidir. **Ülü’l-azm** (En yüksek derecedeki) peygamberlerdendir. Lakabı **Rûhullah** (Allah’ın rûhu) ve **Kelimetullah** (Allah’ın kelimesi)tır. **Benî İsrâîl’in son peygamberidir**.</p>
+                            
+                            <p>Babası olmadan, sadece annesi **Hz. Meryem** tarafından Allah’ın izniyle dünyaya gelmiştir. Beşikteyken **konuşma** mucizesini göstermiştir. O’na **İncil** indirilmiştir. İncil, **sevgi, merhamet ve ahlâk** esaslarını içeren bir kitaptır.</p>
+                            
+                            <p>Mucizeleri: **Körleri iyileştirme, alaca hastalarını sağaltma, ölüleri diriltme** ve **çamurdan kuş yapıp canlandırma** gibi mucizeler göstermiştir. Havarîler (öğrencileri) onun dînini yaymışlardır. O, **fakir** bir yaşam sürmüş, geçimini **çobanlık** ve el emeği ile sağlamıştır.</p>
+                            
+                            <p>Kavmi, O’nu dinlemeyip **çarmıha germek** isteyince, Allah, O’nu **semâya ref’ etmiş** (yükseltmiş) ve onun yerine benzeyen başka birini çarmıha gerdirmiştir. Hz. Îsâ (a.s.), kıyametten önce yeryüzüne **geri inecek** ve Hz. Mehdî ile birlikte deccâlle mücadele edecektir. Semâdan indikten sonra **40 sene** yaşayacağı rivayet edilir. Kabri rivayetlere göre **Şam’da Emeviyye Câmii’nde** bulunmaktadır.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible-item">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="peygamber-isimleri">25. Hz. Muhammed (s.a.v)</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Hz. Muhammed (s.a.v), Kur’ân-ı Kerîm’de adı **4 defa** geçer. Son peygamber ve bütün insanlığın peygamberidir. **Ülü’l-azm** (En yüksek derecedeki) peygamberlerdendir. Lakapları: **Habîbullâh** (Allah’ın sevgilisi), **Resûlullah** (Allah’ın elçisi) ve **Hâtemü’l-Enbiyâ** (Peygamberlerin sonuncusu)dır.</p>
+
+                            <p>**Mekke’de** doğmuş, **Medine’ye** hicret etmiştir. En büyük mucizesi, **Kur’an-ı Kerim**’dir. Diğer mucizeleri: **Ayı ikiye ayırma (Şakk-ı Kamer)**, parmaklarından **su akıtma**, **Miraç** mucizesi (göklere yükselme) gibi. O, bütün peygamberlerin dînini tamamlamış, son ve kâmil dîn olan **İslâm’ı** getirmiştir.</p>
+                            
+                            <p>Peygamber Efendimiz (s.a.v), **63 yaşında** Medine’de vefat etmiş ve **Mescid-i Nebevî’de** (Hücre-i Saadet) defnedilmiştir.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible-item salih-sahsilar">
+                        <div class="collapsible-header" onclick="toggleAccordion(this)">
+                            <span class="salih-isimleri">EK: Kur'an'da Adı Geçen Salih Şahıslar</span>
+                        </div>
+                        <div class="collapsible-content salih-content">
+                            <p>Kur’an-ı Kerim’de adı geçen, ancak peygamber olup olmadığı kesin olmayan, **salih kullar ve sâdık yardımcılar** şunlardır:</p>
+                            <ul>
+                                <li><strong>Hz. Üzeyir (a.s)</strong>: Bir rivayete göre peygamberdir. Kudüs’ün harap olmasından sonra, unutulan Tevrat’ı tekrar yazdığı rivayet edilir.</li>
+                                <li><strong>Hz. Lokman (a.s)</strong>: Kendisine hikmet verilen sâlih bir kuldur. Oğlu için verdiği öğütler, Kur’an’da bir sureye (Lokman Suresi) adını vermiştir.</li>
+                                <li><strong>Hz. Zülkarneyn</strong>: Kur’an’da adı geçen, doğuya ve batıya seferler yapan, sâlih bir hükümdardır. Bazı alimlere göre peygamber değildir. Ye’cûc ve Me’cûc kavminin yolunu kapatan seddi inşa etmiştir.</li>
+                                <li><strong>Hz. Hızır (a.s)</strong>: Kur’an’da “Katımızdan kendisine bir rahmet verdiğimiz ve ledünnî ilim öğrettiğimiz” sâlih bir kul olarak anılır. Hz. Mûsâ (a.s.)’nın yanında ilim öğrendiği rivayet edilir.</li>
+                                <li><strong>Hz. Talut</strong>: İsrailoğulları’nın kralıdır. Hz. Dâvûd (a.s.)’ın komutanıdır.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="explanation-text">
+            *Peygamber hayatları ve yaşamları çok uzun olduğundan dolayı önemli bölümleri özetlenerek eklenmiştir.
+        </div>
+		
+        <div class="explanation-text">
+            Kaynak: <a href="https://www.islamveihsan.com/kuran-i-kerimde-adi-gecen-25-peygamber.html" style="color: var(--text-muted); text-decoration: none;" target="_blank">İslam ve İhsan</a>
+        </div>
+        
+        <div class="powered-by">
+            Powered by Dost Yurdu Radyo
+        </div>
+
+    </div>
+    
+    <div id="chronologyModal" class="modal">
+      <div class="modal-content">
+        <span class="close-button" onclick="closeModal('chronologyModal')">&times;</span>
+        <h2 class="modal-title"><i class="fas fa-history"></i> Peygamberler Kronolojisi ve Bölgeleri</h2>
+        
+        <p class="modal-info">Kur'an'da adı geçen peygamberlerin tahmini zaman aralıkları ve tebliğ bölgeleri.</p>
+        
+        <table class="chronology-table">
+          <thead>
+            <tr>
+              <th>Peygamber</th>
+              <th>Tahmini Zaman Aralığı</th>
+              <th>Tebliğ Bölgesi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Hz. Adem (a.s)</td>
+              <td>İlk İnsan (Yaklaşık MÖ 4000+)</td>
+              <td>Mekke/Hindistan/Dünya</td>
+            </tr>
+            <tr>
+              <td>Hz. Nuh (a.s)</td>
+              <td>MÖ 3000'ler</td>
+              <td>Irak (Kûfe)</td>
+            </tr>
+            <tr>
+            <tr>
+              <td>Hz. İdris (a.s)</td>
+              <td>MÖ 3000'ler</td>
+              <td>Bâbil, Mısır</td>
+            </tr>
+            <tr>
+              <td>Hz. Hud (a.s)</td>
+              <td>MÖ 2400-2000</td>
+              <td>Ahkâf (Yemen, Umman)</td>
+            </tr>
+            <tr>
+              <td>Hz. Salih (a.s)</td>
+              <td>MÖ 2200-1800</td>
+              <td>Hicr (Kuzey Arabistan)</td>
+            </tr>
+            <tr>
+              <td>Hz. İbrahim (a.s)</td>
+              <td>MÖ 2000-1800</td>
+              <td>Babil, Filistin, Mekke</td>
+            </tr>
+            <tr>
+              <td>Hz. Lut (a.s)</td>
+              <td>MÖ 2000-1800</td>
+              <td>Sodom ve Gomore (Lût Gölü)</td>
+            </tr>
+            <tr>
+              <td>Hz. İsmail (a.s)</td>
+              <td>MÖ 2000-1800</td>
+              <td>Mekke ve Civarı</td>
+            </tr>
+            <tr>
+              <td>Hz. İshak (a.s)</td>
+              <td>MÖ 1900'ler</td>
+              <td>Kenan Diyarı (Filistin)</td>
+            </tr>
+            <tr>
+              <td>Hz. Yakup (a.s)</td>
+              <td>MÖ 1800'ler</td>
+              <td>Kenan Diyarı (Filistin)</td>
+            </tr>
+            <tr>
+              <td>Hz. Yusuf (a.s)</td>
+              <td>MÖ 1700'ler</td>
+              <td>Mısır</td>
+            </tr>
+            <tr>
+              <td>Hz. Eyyüb (a.s)</td>
+              <td>MÖ 1600'ler</td>
+              <td>Şam (Suriye)</td>
+            </tr>
+            <tr>
+              <td>Hz. Şuayb (a.s)</td>
+              <td>MÖ 1500'ler</td>
+              <td>Medyen ve Eyke</td>
+            </tr>
+            <tr>
+              <td>Hz. Musa (a.s)</td>
+              <td>MÖ 1400-1300</td>
+              <td>Mısır ve Sina Yarımadası</td>
+            </tr>
+            <tr>
+              <td>Hz. Harun (a.s)</td>
+              <td>MÖ 1400-1300</td>
+              <td>Mısır ve Sina Yarımadası</td>
+            </tr>
+            <tr>
+              <td>Hz. Davut (a.s)</td>
+              <td>MÖ 1000'ler</td>
+              <td>Kudüs ve İsrail Krallığı</td>
+            </tr>
+            <tr>
+              <td>Hz. Süleyman (a.s)</td>
+              <td>MÖ 970-931</td>
+              <td>Kudüs ve Geniş Krallık</td>
+            </tr>
+            <tr>
+              <td>Hz. İlyas (a.s)</td>
+              <td>MÖ 900'ler</td>
+              <td>Ba'lebek (İsrail)</td>
+            </tr>
+            <tr>
+              <td>Hz. Elyesa (a.s)</td>
+              <td>MÖ 850'ler</td>
+              <td>Şam ve Civarı</td>
+            </tr>
+            <tr>
+              <td>Hz. Yunus (a.s)</td>
+              <td>MÖ 800'ler</td>
+              <td>Ninova (Musul, Irak)</td>
+            </tr>
+            <tr>
+              <td>Hz. Zekeriyya (a.s)</td>
+              <td>MÖ 1. yy / MS 1. yy</td>
+              <td>Kudüs ve Civarı</td>
+            </tr>
+            <tr>
+              <td>Hz. Yahya (a.s)</td>
+              <td>MÖ 1. yy / MS 1. yy</td>
+              <td>Kudüs ve Civarı</td>
+            </tr>
+            <tr>
+              <td>Hz. İsa (a.s)</td>
+              <td>MÖ 4 - MS 30'lar</td>
+              <td>Kudüs ve Civarı</td>
+            </tr>
+            <tr>
+              <td>Hz. Muhammed (s.a.v)</td>
+              <td>MS 571 - 632</td>
+              <td>Mekke ve Medine</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <p class="modal-note">* Tarihler, genel İslami kronolojiye ve tahmini arkeolojik verilere dayanmaktadır ve kesinlik ifade etmez.</p>
+        
+      </div>
+    </div>
+    
+    
+    <script>
+        
+        // 1. ARAMA FONKSİYONU
+        function filterProphets() {
+            const input = document.getElementById('prophetSearch');
+            const filter = input.value.toUpperCase();
+            
+            // Tüm sekmelerdeki içerikleri seç
+            const lists = document.querySelectorAll('#peygamberler-listesi-1, #peygamberler-listesi-2, #peygamberler-listesi-3');
+            let isFound = false;
+
+            lists.forEach(list => {
+                const items = list.getElementsByClassName('collapsible-item');
+                
+                for (let i = 0; i < items.length; i++) {
+                    const header = items[i].querySelector('.collapsible-header');
+                    const textValue = header.textContent || header.innerText;
+                    
+                    if (textValue.toUpperCase().indexOf(filter) > -1) {
+                        items[i].style.display = ""; // Göster
+                        isFound = true;
+                    } else {
+                        items[i].style.display = "none"; // Gizle
+                    }
+                }
+            });
+
+            // Eğer arama kutusu boşsa, tüm listeyi ve sekmeleri varsayılan duruma getir
+            if (filter.length === 0) {
+                 setDefaultTab();
+                 lists.forEach(list => {
+                    const items = list.getElementsByClassName('collapsible-item');
+                    for (let i = 0; i < items.length; i++) {
+                        items[i].style.display = "";
+                    }
+                 });
+            } else {
+                 // Arama yapıldığında, bulunan ögenin sekmesini aktif yap
+                 if (isFound) {
+                     // Hangi sekmede bulunduğunu bul ve o sekmeyi aç
+                     for (let i = 0; i < lists.length; i++) {
+                         if (lists[i].querySelector('.collapsible-item[style*=""]')) {
+                             const tabId = lists[i].parentElement.id; // tab1, tab2, tab3
+                             
+                             // Tüm sekmeleri kapat
+                             document.querySelectorAll('.tab-header, .tab-content').forEach(el => {
+                                 el.classList.remove('active');
+                                 if (el.classList.contains('tab-content')) {
+                                     el.style.display = 'none';
+                                 }
+                             });
+                             
+                             // İlgili sekmeyi aç
+                             const tabContent = document.getElementById(tabId);
+                             const tabHeader = document.querySelector(`.tab-header[onclick*='${tabId}']`);
+                             
+                             if (tabContent) {
+                                 tabContent.classList.add('active');
+                                 tabContent.style.display = 'block';
+                             }
+                             if (tabHeader) {
+                                 tabHeader.classList.add('active');
+                             }
+                             break;
+                         }
+                     }
+                 } else {
+                      // Sonuç bulunamazsa aktif sekmeyi koru
+                 }
+            }
+        }
+        
+        // 2. SEKME (TAB) FONKSİYONU
+        function openTab(evt, tabName) {
+            let i, tabcontent, tabheaders;
+            
+            // Tüm sekme içeriklerini gizle ve 'active' sınıfını kaldır
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            
+            // Tüm sekme başlıklarından 'active' sınıfını kaldır
+            tabheaders = document.getElementsByClassName("tab-header");
+            for (i = 0; i < tabheaders.length; i++) {
+                tabheaders[i].classList.remove("active");
+            }
+            
+            // Aktif sekmeyi göster ve başlığa 'active' sınıfını ekle
+            document.getElementById(tabName).style.display = "block";
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+            
+            // Arama kutusunu temizle
+            document.getElementById('prophetSearch').value = "";
+            // Gizlenen tüm akordiyonları geri göster
+            document.querySelectorAll('.collapsible-item').forEach(item => {
+                item.style.display = "";
+            });
+            
+            // Tüm akordiyonları kapat
+            document.querySelectorAll('.collapsible-header.active').forEach(header => {
+                header.classList.remove('active');
+                header.nextElementSibling.style.display = 'none';
+            });
+        }
+        
+        // 3. AKORDİYON (COLLAPSIBLE) FONKSİYONU
+        function toggleAccordion(element) {
+            element.classList.toggle("active");
+            let content = element.nextElementSibling;
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        }
+        
+        // DÜZELTME İÇİN YENİ BAŞLANGIÇ FONKSİYONU
+        function setDefaultTab() {
+            // Varsayılan olarak aktif olacak sekmenin ID'si (tab1)
+            const defaultTabId = 'tab1';
+            
+            // Tüm sekmelerdeki 'active' durumunu temizle
+            document.querySelectorAll('.tab-header, .tab-content').forEach(el => {
+                el.classList.remove('active');
+                if (el.classList.contains('tab-content')) {
+                    el.style.display = 'none';
+                }
+            });
+            
+            // Varsayılan sekme başlığını ve içeriğini aktif yap
+            const defaultTabContent = document.getElementById(defaultTabId);
+            const defaultTabHeader = document.querySelector(`.tab-header[onclick*='${defaultTabId}']`);
+
+            if (defaultTabContent) {
+                defaultTabContent.classList.add('active');
+                defaultTabContent.style.display = 'block'; 
+            }
+            if (defaultTabHeader) {
+                defaultTabHeader.classList.add('active');
+            }
+            
+            // Tüm akordiyonları kapat
+             document.querySelectorAll('.collapsible-header.active').forEach(header => {
+                header.classList.remove('active');
+                header.nextElementSibling.style.display = 'none';
+            });
+        }
+
+
+        // Sayfa yüklendiğinde setDefaultTab fonksiyonunu çalıştır
+        document.addEventListener("DOMContentLoaded", setDefaultTab);
+        
+        
+        // 4. MODAL (AÇILIR PENCERE) FONKSİYONLARI
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = "block";
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+
+        // Kullanıcı modalın dışına tıklarsa kapat
+        window.onclick = function(event) {
+            const modal = document.getElementById('chronologyModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+        
+    </script>
+    
+</body>
+</html>
