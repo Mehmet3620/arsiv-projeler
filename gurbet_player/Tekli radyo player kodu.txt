@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Allaturkaa Profesyonel Player</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jplayer/2.9.2/jplayer/jquery.jplayer.min.js"></script>
+
+<style>
+    .player-container { width: 700px !important; height: 100px; position: relative; font-family: 'Roboto', sans-serif; }
+    .player.c7 { background-color: #0d47a1; width: 700px; height: 100px; border-radius: 8px; position: relative;
+                 background-image: url("https://radioplayer.link/iframe/assets/img/oldskin/sprite.png");
+                 background-repeat: no-repeat; background-position: center -26px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+
+    .jp-play { background: url("https://radioplayer.link/iframe/assets/img/oldskin/sprite.png") no-repeat -1px -210px; width: 72px; height: 72px; cursor: pointer; position: absolute; left: 15px; top: 15px; }
+    .jp-pause { background: url("https://radioplayer.link/iframe/assets/img/oldskin/sprite.png") no-repeat -165px -210px; width: 72px; height: 72px; cursor: pointer; position: absolute; left: 15px; top: 15px; display: none; }
+
+    .volume-area { position: absolute; left: 110px; right: 230px; top: 32px; }
+    .jp-volume-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; cursor: pointer; }
+    .jp-volume-bar-value.b7 { background-color: #64b5f6; height: 100%; border-radius: 4px; position: relative; }
+    .vol-circle { position: absolute; top: -7px; right: -11px; width: 23px; height: 23px; background: url("https://radioplayer.link/iframe/assets/img/oldskin/sprite.png") no-repeat -160px 0; }
+
+    .playlist-area { float: right; width: 210px; height: 75px; background: url("https://radioplayer.link/iframe/assets/img/oldskin/sprite.png") no-repeat 0 -340px; text-align: center; margin: 5px 5px 0 0; padding-top: 10px; color:#fff; }
+    .playlist-area span { display: block; font-size: 8.5pt; margin-bottom: 12px; }
+    .powered { position: absolute; right: 40px; bottom: 6px; font-size: 7.5pt; color: rgba(255,255,255,0.5); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div id="jp_container_7" class="player-container">
+    <div class="player c7">
+        <div class="playback"><div class="jp-play"></div><div class="jp-pause"></div></div>
+        <div class="volume-area">
+            <div class="jp-volume-bar"><div class="jp-volume-bar-value b7"><div class="vol-circle"></div></div></div>
+            <div style="color:#fff; font-size:10pt; text-align:center; margin-top:15px;">Yayındaki: Allaturkaa Radyo</div>
+        </div>
+        <div class="playlist-area">
+            <span>Favori oynatıcınızda dinleyin</span>
+            <a href="https://eu4.fastcast4u.com/proxy/allaturka?mp=/1.m3u" target="_blank"><img src="https://radioplayer.link/iframe/assets/img/player-winamp-icon.svg" width="26" style="margin:0 5px;"></a>
+            <a href="https://eu4.fastcast4u.com/proxy/allaturka?mp=/1.asx" target="_blank"><img src="https://radioplayer.link/iframe/assets/img/player-wmp-icon.svg" width="26" style="margin:0 5px;"></a>
+            <a href="https://eu4.fastcast4u.com/proxy/allaturka?mp=/1.qtl" target="_blank"><img src="https://radioplayer.link/iframe/assets/img/player-quicktime-icon.svg" width="26" style="margin:0 5px;"></a>
+            <a href="https://eu4.fastcast4u.com/proxy/allaturka?mp=/1.pls" target="_blank"><img src="https://radioplayer.link/iframe/assets/img/player-vlc-icon.svg" width="26" style="margin:0 5px;"></a>
+        </div>
+        <a href="https://allaturkaa.de" class="powered" target="_blank">Powered by Seyyah</a>
+    </div>
+    <div id="jplayer_7"></div>
+</div>
+
+
+<script>
+    $(document).ready(function(){
+        $("#jplayer_7").jPlayer({
+            ready: function () { $(this).jPlayer("setMedia", { mp3: "https://eu4.fastcast4u.com/proxy/allaturka?mp=/1" }); },
+            cssSelectorAncestor: "#jp_container_7", supplied: "mp3", useStateClassSkin: true, volume: 0.8
+        });
+    });
+</script>
+
+</body>
+</html>
+
+
+https://www.magicstreams.services/en/html5-player.php
+
+
+
+
+
+
+
+
+Onlu Paketten Tekli Player Nasıl Ayıklanır?
+<p style="margin-bottom: 10px;">Onlu jPlayer paketindeki her bir renk seçeneği belirli bir <b>ID ve Class</b> numarasına bağlıdır.</p> <p style="margin-bottom: 10px;">Eğer sadece <b>Mavi Player (Kod 7)</b> tasarımını kullanmak istiyorsanız şu adımları izlemelisiniz:</p>
+
+<p>&nbsp;</p> <p>&nbsp;</p>
+
+<p style="margin-bottom: 10px;"><b>1. Doğru Renk Sınıflarını Bulun:</b> Dosyadaki CSS kısmında her rengin bir kodu vardır; örneğin Mavi için kullanılan ana zemin sınıfı <b>.c7</b>, ses barı rengi ise <b>.b7</b> olarak tanımlanmıştır.</p> <p style="margin-bottom: 10px;">Tekli kullanımda sadece bu sınıfları <b>CSS dosyanıza</b> kopyalamanız yeterlidir.</p>
+
+<p>&nbsp;</p> <p>&nbsp;</p>
+
+<p style="margin-bottom: 10px;"><b>2. ID Yapısını Tekilleştirin:</b> Dosyada bir döngü içerisinde oluşturulan player yapılarını tekilleştirmek için <b>jp_container_7 ve jplayer_7</b> gibi benzersiz kimlikleri seçmelisiniz.</p> <p style="margin-bottom: 10px;">Bu ID'ler, tarayıcının hangi butonun hangi <b>player'ı yöneteceğini</b> anlamasını sağlar.</p>
+
+<p>&nbsp;</p> <p>&nbsp;</p>
+
+<p style="margin-bottom: 10px;"><b>3. Sprite Koordinatlarına Sadık Kalın:</b> Player üzerindeki Play/Pause butonlarının doğru görünmesi için <b>background-position</b> değerleri hayati önem taşır.</p> <p style="margin-bottom: 10px;">Mavi player için Play butonu <b>-1px -210px</b>, Pause butonu ise <b>-165px -210px</b> koordinatlarındadır; bu değerleri değiştirmeden kopyalamak butonların kaymasını engeller.</p>
+
+<p>&nbsp;</p> <p>&nbsp;</p>
+
+<p style="margin-bottom: 10px;"><b>4. Script Kısmını Sabitleyin:</b> JavaScript kodunda <b>setMedia</b> satırına kendi radyo linkinizi doğrudan yazarak player'ın sadece o adresten beslenmesini sağlayabilirsiniz.</p> <p style="margin-bottom: 10px;">Ayrıca <b>cssSelectorAncestor</b> kısmının seçtiğiniz ID ile eşleştiğinden emin olun.</p>
+
+<p>&nbsp;</p> <p>&nbsp;</p>
+
+<p style="margin-bottom: 10px;">Bu basit mantığı kavradığınızda, onlu paketteki hangi rengi isterseniz onu <b>saniyeler içinde çekip</b> tek başına kullanmaya başlayabilirsiniz.</p> <p style="margin-bottom: 10px;">Böylece hem kod kalabalığından kurtulur hem de sayfanıza en uygun <b>renk seçeneğini</b> profesyonelce yerleştirmiş olursunuz.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
