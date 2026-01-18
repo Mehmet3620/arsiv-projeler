@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İslami Radyolar Widget'ı</title> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+	<style>
+    #at-islami-widget { 
+        width: 400px; background: #0f0f0f; border: 3px solid #ff6600; 
+        border-radius: 20px; overflow: hidden; font-family: 'Segoe UI', sans-serif; 
+        margin: 20px auto; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .at-banner { width: 100%; border-bottom: 3px solid #ff6600; display: block; }
+    .at-nav { background: #1a1a1a; }
+    .at-nav-row { display: flex; border-bottom: 1px solid #333; }
+    .at-nav-btn { flex: 1; padding: 12px 5px; text-align: center; cursor: pointer; font-size: 10px; font-weight: bold; color: #666; transition: 0.3s; }
+    .at-nav-btn.active { color: #ff6600; background: #222; border-bottom: 3px solid #ff6600; }
+    .at-nav-btn:hover { background: #252525; color: #bbb; }
+    
+    /* KAYDIRMA ÇUBUĞU VE KUTU DÜZENLEMESİ */
+    .at-content { 
+        height: 450px; overflow-y: auto; padding: 15px; 
+        scrollbar-width: thin; scrollbar-color: #ff6600 #0a0a0a;
+    }
+    .at-content::-webkit-scrollbar { width: 6px; }
+    .at-content::-webkit-scrollbar-track { background: #0a0a0a; border-radius: 10px; }
+    .at-content::-webkit-scrollbar-thumb { background: #ff6600; border-radius: 10px; }
+    .at-content::-webkit-scrollbar-thumb:hover { background: #e65c00; }
+
+    .detay-metin { font-size: 13px; line-height: 1.6; color: #bbb; background: #1a1a1a; padding: 10px; border-radius: 8px; border-left: 3px solid #ff6600; }
+    .radyo-kart { background: #181818; padding: 12px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #2a2a2a; }
+    .radyo-ust { display: flex; align-items: center; justify-content: space-between; }
+    .radyo-logo { width: 50px; height: 50px; border-radius: 10px; border: 1px solid #444; object-fit: cover; }
+    .radyo-ad { font-size: 14px; font-weight: bold; flex: 1; margin: 0 10px; }
+    .play-btn { background: linear-gradient(135deg, #ff8800, #ff4400); color: #fff; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 10px; font-weight: bold; }
+    .toggle-btn { width: 100%; background: #222; color: #888; border: none; padding: 6px; margin-top: 10px; font-size: 10px; cursor: pointer; border-radius: 6px; font-weight: bold; transition: 0.3s; }
+    .toggle-btn:hover { background: #ff6600; color: #fff; }
+    .radyo-detay { display: none; color: #aaa; font-size: 11px; line-height: 1.6; padding-top: 10px; border-top: 1px dashed #333; margin-top: 10px; }
+    .p-footer { background: #000; padding: 12px; border-top: 3px solid #ff6600; }
+    .p-info { font-size: 11px; color: #ff6600; text-align: center; margin-bottom: 8px; font-weight: bold; }
+    #r-audio { width: 100%; height: 30px; filter: invert(1); }
+    .powered { text-align: center; font-size: 9px; color: #444; margin-top: 8px; font-weight: bold; }
+</style>
+
+</head>
+
+<body>
+<div id="at-islami-widget">
+    <img src="https://blogger.googleusercontent.com/img/a/AVvXsEg6yAYdYJEG9GOmQvrSvncn8iOA0nUjEibIPahe0551Yg9-RYx4rObck79dwSAvTFuP1DJ-Ki0DJFAo99gclyv3cnxXUbSNeP2QmkA3YEfccX4UXVVt4P9DWtoFRd4o1bFQ7BqaqdATUFPxLC-UWHTHkTt2mBoZWRyoVE_-6uRYIzg_-RtMURNGFaR9Xw=s1170" class="at-banner">
+
+    <div class="at-nav">
+        <div class="at-nav-row main-row">
+            <div class="at-nav-btn active" onclick="tabSec(event, 'ana-giris')">ANA BÖLÜM</div>
+            <div class="at-nav-btn" onclick="tabSec(event, 'dost-yurdu')">DOST YURDU</div>
+        </div>
+        <div class="at-nav-row group-row">
+            <div class="at-nav-btn" onclick="tabSec(event, 'grup-1')">GRUP 1</div>
+            <div class="at-nav-btn" onclick="tabSec(event, 'grup-2')">GRUP 2</div>
+            <div class="at-nav-btn" onclick="tabSec(event, 'grup-3')">GRUP 3</div>
+            <div class="at-nav-btn" onclick="tabSec(event, 'grup-4')">GRUP 4</div>
+            <div class="at-nav-btn" onclick="tabSec(event, 'grup-5')">GRUP 5</div>
+        </div>
+    </div>
+
+    <div class="at-content" id="scroll-area">
+        <div id="ana-giris" class="tab-panel" style="display: block;">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhrtaYCaLVK95YMvYGYF7cqaA6UpbNw13tt0cNk9Bp-aEAQjdzW682GoUnKa9SIem71_HpfH5hBuzVYfMliGHx8qTIhHO1nUCL0vY2pThbnNKkqNTY038DO8p8QtP9LqXxzmf8qao2kvlpT7Jsf-C7nCV_4QfnsGyZKJNwmesGRlx7bfmNTOA5jtuye6A/s320/unnameds.jpg" style="width:100%; border-radius:10px; margin-bottom:15px;">
+            <div class="detay-metin">
+    İslami yayın radyoları türünde tematik canlı yayın yapan karasal ve ulusal frekanslı istasyonlar, amaç bakımından insanlarımızın manevi boşluğunu doldurmak adına kurulmuştur. İslam’ın daha doğru anlaşılmasını sağlamak için hizmet eden bu radyo kanallarında Kur’an-ı Kerim dinletileri, tecvid dersleri, ilahiler ve dini söyleşiler yer almaktadır.
+    <p></p><p></p>
+    Manevi boşluğunuzu gidermek, dinimizi daha yakından tanımak isteyen dinleyicilerimiz için kurulmuş bu İslami yayın radyoları aradığınızı bulabileceksiniz. Söyleşiler ve dini sohbetlerle birlikte kalbinizi biraz olsun yumuşatabileceksiniz.
+    <p></p><p></p>
+    Dinin hükmettiği gibi yaşamaya çalışmak, bir Müslüman’ın dini sorumlulukları arasında yerini almaktadır. Sonuçta bir dine mensup olan kişi, ahlaksal olarak gelişimini de dinden almaktadır. Dini sorumluluklarımıza daha yakından bakacak olursak; insanlara iyi davranmak, insanların haklarına saldırmamak, diğer dinlere karşı hoşgörülü davranarak; insanları dinleri, ırkları, mezhepleri ile ayırmamak, namaz ve dua ile yardım dilemek sorumluluklarımız arasındadır.
+    <p></p><p></p>
+    Yetime yardım eli uzatmak, kul hakkından kaçınmak, Allah’ın yarattığı insan vücuduna zararlı olduğunu bildiğimiz maddelerden (alkol, sigara vb.) uzak durmak ve Allah’ın yeryüzüne insanlar için indirdiği Kur’an-ı Kerim’e sahip çıkmak temel görevlerimizdir.
+    <p></p><p></p>
+    Bir Müslümanın yapmakla hükümlü olduğu sorumlulukları yerine getirirken elbette daha doğru ve dine uygun yapması gerekmektedir. Çünkü dinen yaptığımız sorumlulukların asıl amacı insan sağlığı ve psikolojisini korumak, aile ve toplum düzenine sahip çıkmaktır.
+    <p></p><p></p>
+    Bizim doğru sandığımız bazı şeyler aslında yanlış çıkabilir. İslam’da hurafe dediğimiz şeylere araştırmadan, doğrusu bulunmadan inanılmaya devam edilirse zamanla insanı dinden uzaklaştırmaya ve daha kötüsü şirke kadar götürebilir.
+    <p></p><p></p>
+    Dini canlı yayın yapan radyo istasyonlarının da asıl amacı, Müslümanların yapmakta hükümlü olduğu sorumlulukları daha anlaşılır ve güzel bir dille ortaya sunarak hurafeleri kırmayı amaçlamaktır.
+	<p></p><p></p>
+	Dost Yurdu Radyo
+</div>
+        </div>
+
+        <div id="dost-yurdu" class="tab-panel" style="display: none;">
+            <div class="radyo-kart" style="border-color:#ff6600;">
+                <div class="radyo-ust">
+                    <img src="https://lh3.googleusercontent.com/blogger_img_proxy/AEn0k_vloc_2C19CDC6U7CRQxG33cbjrk-wYU3vP3sj023r05Xhad-dGF5_TAsH4octlNrYJuXD_f45D1YPuZgiv85Tdf4BLuaUodo0Ndlpd5CC-fRgMMMlbNCoEyQ=s0-d" class="radyo-logo">
+                    <div class="radyo-ad">Dost Yurdu Radyo</div>
+                    <button class="play-btn" onclick="oynat('Dost Yurdu', 'https://eu1.fastcast4u.com/proxy/qpnslltp?mp=/1')">OYNAT</button>
+                </div>
+                <div class="radyo-detay" style="display:block;">
+            Dost Yurdu Radyo, dua, ilim ve ibadetlerin, manevi paylaşımına odaklanmış bir platformdur. Amacımız, inanan bireylerin ruhsal ihtiyaçlarına yanıt vermek, topluluk oluşturarak karşılıklı destek sağlamak ve manevi bilgileri zenginleştirmektir.
+            <p></p><p></p>
+            Bloğumuz, her yaştan ve her kesimden bireyin katılabileceği bir alan sunarak, dua etmenin ve ibadetlerin manevi gücünü paylaşmayı hedefler. Okuyucularımız ve dinleyicilerimiz, deneyimlerini, bilgilerini ve dualarını birbirleriyle paylaşıp, bu sayede manevi bağlarını güçlendirme fırsatı bulurlar.
+            <p></p><p></p>
+            Dost Yurdu Radyo olarak, kaliteli içerik ve samimi bir topluluk oluşturmayı hedefliyoruz. İbadetlerin, hayatın zorlukların üstesinden gelmede nasıl bir ışık olabileceğini keşfetmek için sizleri aramıza bekliyoruz.
+            <p></p><p></p>
+            Burada, manevi büyüme ve destek için bir araya gelen bireyler olarak, hep birlikte daha güçlü bir topluluk oluşturabiliriz. Bloğumuzda; İslam, kültür, sanat, bilim, tarih, film, sağlık, yemek, aile ve çocuk eğitimi gibi pek çok farklı alanda faydalı vakit geçirebilirsiniz.
+            <p></p><p></p>
+            Dost Yurdu Radyo, herhangi bir grup, cemaat ya da siyasi görüşe tabi olmamakla birlikte, toplumun tüm kesimlerine de eşit mesafede bulunan, kaliteli içerik üreterek toplumun gelişimine katkıda bulunmayı kendisine hedef edinmiş bir sosyal ağdır.
+            <p></p><p></p>
+            Yayınlanan içerikler kesinlikle siyaset, ırkçılık ve cinsellik gibi ayrıştırıcı unsurlar barındırmamaktadır. Dost Yurdu Radyo, kâr amacı gütmeyen ve tüm işlerini gönüllülük esası ile gerçekleştiren bir aile platformudur.
+			<p></p><p></p>
+			Web: dostyurdu.blogspot.com
+        </div>
+            </div>
+        </div>
+
+<div id="grup-1" class="tab-panel" style="display:none;">
+
+<div class="radyo-kart">
+    <div class="radyo-ust">
+        <img src="https://akradyo.net/assets/img/logo.svg" class="radyo-logo" style="background: #f4f4f4; padding: 5px;">
+        <div class="radyo-ad">Akra FM</div>
+        <button class="play-btn" onclick="oynat('Akra FM', 'https://cdn3.akradyo.net/akracanli2/_definst_/livestream_aac/playlist.m3u8')">OYNAT</button>
+    </div>
+	<button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+    <div class="radyo-detay">
+        “ AKRA, 1993 yılında yayın hayatına başlayan Türkiye'nin ilk özel radyolarından biridir. Türkiye genelindeki 201 aktif vericisiyle ülkemizin en geniş yayın alanına sahip radyosudur. 
+        <p></p><p></p>
+        Akra; haber, sağlık, kültür, edebiyat, eğitim ve sohbet gibi hayatı kapsayan her alanda zengin bir program yelpazesi sunmaktadır. Bugüne kadar birçok ödüle layık görülmüştür. ” <p></p>(Kaynak Site: https://akradyo.net)			
+    </div>
+</div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNXzht4VYBciW5HwfgDTsSB45TjDqzY2H7o5nO7ebjnkHCR6B23jBzi1DCgrrmH3dCYi-lPswxheEI6HQzQruqzwhQUI8BUKSH3oTBZ_Vzgbup-N9diHzYEkhZq0drFMpYr9d67NieMPPjTr1zO0dl1TAFPy3ABPGsR9meg8ZQpialG_lSOwaUeTNqqA/s16000/arkadas-fm.jpg" class="radyo-logo">
+            <div class="radyo-ad">Arkadaş FM (90.2)</div>
+            <button class="play-btn" onclick="oynat('Arkadaş FM', 'https://radyo.yayindakiler.com:4134/stream?/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Isparta'da kulaktan kalbe manevi yolculuğun frekansı 90.2 Arkadaş FM radyosuna aittir. Şehrin hakkı haykıran istasyonunu hemen canlı dinle. Isparta’da dini ve ahlaki içeriklerle dinleyiciye ulaşan en önemli stüdyolardan biri olan Arkadaş FM,
+            <p></p><p></p>
+            şehrin manevi özelliklerini temsil eder. Radyonun zengin yayın içeriğinde ilahiler, dini sohbetler ve toplumun her kesimine hitap eden kültürel programlar yer almaktadır. ” <p></p>(Kaynak Site: https://www.arkadasradyo.com.tr)
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgzTErt-n92UBEuBXyqfdP0r9iq1d3oWDuT16dhMODTfJGejiBAtiYdLcFnsmnXU6yoSE4vLyQ45eEpTWgvDJrI9IZqIdwD75XKBZSPMWq-fYRitl1by4KFwEXEJmcwiVYwRt3m3MlFkmYHnzy8mA9JUcHnvCVoDyAZ9KdrutT8Ho6GViSf48StPu84SQ/s1600/baris-radyo.jpg" class="radyo-logo">
+            <div class="radyo-ad">Barış Radyo (104.8)</div>
+            <button class="play-btn" onclick="oynat('Barış Radyo', 'https://yayin2.canliyayin.org:9350/stream?/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Adana'da düşünen insanın sesi mottosuyla 104.8 Barış Radyo aradığınız kardeşlik ise doğru yerdesiniz diyor. Çünkü dünya artık Barış istiyor. Çukurova’nın bereketli topraklarında 104,8 frekansından yayılan ses dalgalarıyla Barış Radyo,
+            <p></p><p></p>
+            şehrin kalbine ve gönüllere dokunuyor. İslami değerleri temel alan yayın akışıyla Adana halkının en çok tercih ettiği tematik radyoların başında gelmektedir. ” <p></p>(Kaynak Site: http://www.barisradyo.com.tr)
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiuXiBxYCo4QQNSUZdhmBeRT-tKdAr0jj8YpBft7b44I20i6TKC2vX1SGJ4TohQGl_CmU1Bv2Bj9vr4xzUy6W3vLTqOXB3-FzcoixgUZvI3mocMiEtRCwUfl4Ni7tiCS5PtrmVstNkfljTLSo4Gdexzv60Ueg3lySXJ93AVT2EF-oh56vSzGpZkN6bOkQ/s1600/bayram-fm.jpg" class="radyo-logo">
+            <div class="radyo-ad">Bayram FM</div>
+            <button class="play-btn" onclick="oynat('Bayram FM', 'https://sslyayin.netyayin.net/3442/stream/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Dini canlı radyo yayını sunan Bayram FM dinleyicilerine en güzel sohbetler, ilahiler ve vaazler hazırlıyor. Bayram FM frekansını canlı dinle. Bayram FM kurulduğu yıldan bu yana ehli sünnet çerçevesinde yayınlarını sürdürmekte,
+            <p></p><p></p>
+            internet üzerinden manevi değerleri dünyanın dört bir yanına ulaştırmaktadır. Kaliteli ve seviyeli dini yayıncılığın dijital platformdaki güçlü sesidir. ” <p></p>(Kaynak Site: https://www.bayramfm.com.tr)
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjM6KgoSHNRUk0n0whRC7XxzaLpQZ98p1nv9yREQdYS2_Ni-7nLAlA1Xsa81meNp5Q740EGdrz9nN4osPfDeY5wcHFKQoDzj0WpbEORlD4qznLGhy92MAtoW_v1oIrtqLThyphenhyphen3anwI6EP38DGKV0VXDbbQcel8CnzvF3-7B-Niq2dqklFE22Gy8-k19dvw/s1600/berat-fm.jpg" class="radyo-logo">
+            <div class="radyo-ad">Berat FM (87.8)</div>
+            <button class="play-btn" onclick="oynat('Berat FM', 'https://sslyayin.netyayin.net/3442/stream/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Hakikati anlatan dini radyo 87.8 Berat FM canlı yayınını ailenizle, huzurla ve güvenle dinleyin. Ehl-i Sünnet îtikâdına uygun içerikler sunan radyo,
+            <p></p><p></p>
+            İstanbul’un Berat FM’i olarak dinleyenlerine dinimizin güzelliğini anlatırken musikiye, haber ve sohbet programlarına da geniş yer vermektedir. ” <p></p>(Kaynak Site: https://www.beratradyo.com)
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgFMmqzp3k_96WQwvuIX1VC-_bkw3gsi3xcKz1RByzS6LIE5Pe4lEs8sj30AF1pVOhkRvIGWDdNAmchp9l_z0udmMWl5QkqrJ7J71mfIA59_cLhZbsTY02HXLDQ_VG50lglQlXhRjWts8tFrTUVoNr8ATFr5LvPtcI0LV9z-0KZP7rJ9C7Iu141tNB9TA/s1600/bizim-iller-radyo.jpg" class="radyo-logo">
+            <div class="radyo-ad">Bizim İller (97.3)</div>
+            <button class="play-btn" onclick="oynat('Bizim İller', 'https://radyo.yayindakiler.com:4078/stream?/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ İslami içerikleriyle gönül sesiniz Denizli 97.3 Bizim İller Radyo frekansını dinleyerek 24 saat aradığınız huzuru burada bulabilirsiniz. Denizli'de İslam’ı anlatan ilk özel radyo olma unvanına sahip olan radyo,
+            <p></p><p></p>
+            30 yılı aşkın tecrübesiyle Ege bölgesinde dini yayıncılığın öncüsü olmaya devam etmektedir. Kur'an tilavetleri ve ilmi sohbetler radyonun bel kemiğidir. ” <p></p>(Kaynak Site: http://bizimiller.com.tr)
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh_sEC2heXfLiDXFH2ENfDxy7Q1ePAfuIVO_XFbYXwzM5gJGZ3QIUlTtO3EKppYc6DZBVs146VaL6ZVi3iquyafInxS9tP6fX_B-iiqFSwyAyDjk_EuJ7NYPeMzPi2d83M4iRGi8U1FKSC3UgyqheaxOakCDaQXXH9aMbZZqJmrkCHiW3u3lCj6jqJVDA/s1600/bizim-radyo-istanbul.jpg" class="radyo-logo">
+            <div class="radyo-ad">Bizim Radyo (104.4)</div>
+            <button class="play-btn" onclick="oynat('Bizim Radyo', 'https://ip132.ozelip.com:7017/stream?')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Hayat Frekansınız sloganı ile 24 saat kesintisiz yayın yapan Bizim Radyo, İstanbul Güneşli merkezli olarak İslami yayınlar yapmaktadır. Radyo; kültür, müzik, aktüalite,
+            <p></p><p></p>
+            aile, dini sohbetler ve tarih konularında eğitici ve öğretici yayınlar sunarak İstanbul'un en çok dinlenen manevi istasyonlarından biri olmuştur. ” <p></p>(Kaynak Site: http://www.bizimradyo.fm)
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgycvMVu9N9oksBOVwJsx3thR6xR-rLh23pvKeDsJOvB6V8kOUtosjxKZm3QMUuDb2-lZRx88srOHgk3ql1oUDOdwCRwnvn2ceBvnKklwHgeoP-X4Z4NiHiLw4fPgywNIVG80363jaEITUKhgxR_LW7AqQuuphkvXa8tjp2cs1DDXeR2OJc0xB1ev_oaA/s1600/cagri-fm-corum.jpg" class="radyo-logo">
+            <div class="radyo-ad">Çorum Çağrı (93.9)</div>
+            <button class="play-btn" onclick="oynat('Çorum Çağrı', 'https://sssx.radyosfer.com/9398/stream?/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Çorum'da hakkın ve hakikatin sesi olan 93.9 Çağrı FM, bölgenin en köklü İslami yayın kuruluşlarından biridir. Geniş yayın ağı ve kaliteli programlarıyla,
+            <p></p><p></p>
+            Çorum halkının manevi dünyasına hitap eden radyo, hem frekans hem de internet üzerinden kesintisiz manevi huzur sunmaktadır. ” <p></p>(Kaynak Site: http://www.corumcagrifm.com)
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh44qsKdWm0kcz7rhQ-GEFgCCnUiQvqDMlgL9TZhhmJMikZi82aOtbHEuSsJyiROuJM1NKgM9MT8udoSNDGeATBPBEF8U5ZEm5puhict-XdOSVoB4fIb_QA1I0XIpkL9lNwNEf92a6O6LlfDT2JxOVCUyVpYeM9EEmQvITt6OvRJdIaiKfqawkxJws0Jg/s1600/davet-radyo.jpg" class="radyo-logo">
+            <div class="radyo-ad">Davet Radyo (90.4)</div>
+            <button class="play-btn" onclick="oynat('Davet Radyo', 'https://stream.radiojar.com/ggu0fd6qu2wtv?')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Şanlıurfa'dan tüm dünyaya İslami davetin sesini duyuran Davet Radyo, 90.4 frekansından ilkeli yayıncılık yapmaktadır. Kur'an meali, tefsir dersleri ve ilahilerle,
+            <p></p><p></p>
+            dolu zengin içerikli yayın akışıyla Şanlıurfa'nın sevilen sesidir. Bölgesel bir güç olarak Peygamberler şehri Şanlıurfa'nın maneviyatını yansıtır. ” <p></p>(Kaynak Site: http://www.davetradyo.com)
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgNVPQ6UG83llOxKOpKashD_AZctuvZQSyX__tRL7PnfXbY6S_UE_ZJiGSAv3XGs-JjPqOxqL2uqFj8OPEQjm-BnZMnREJpg6mhyg-16QQBmocye5OrrJ8DmLrMjUChcmNVgZQo75RXStsZ-hSQ1d0S9p2943L7_qxVFlLXdvWL8WB5qxDiKM9wfqlIRQ/s1600/Diyanet%20Kur%E2%80%99an%20Radyosu.jpg" class="radyo-logo">
+            <div class="radyo-ad">Diyanet Kur’an Radyosu</div>
+            <button class="play-btn" onclick="oynat('Diyanet Kur’an Radyosu', 'https://eustr76.mediatriple.net/videoonlylive/mtikoimxnztxlive/broadcast_5e3c14192aa92.smil/playlist.m3u8')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Diyanet İşleri Başkanlığı bünyesinde 24 saat kesintisiz Kur'an-ı Kerim tilaveti ve açıklamalı meali sunan resmi radyodur. En seçkin hafızların sesinden kıraatler ve,
+            <p></p><p></p>
+            ayetlerin anlam dünyasına dair kısa bilgilerle Kur'an'ın rehberliğini evlerinize taşır. Sahih bilgi ve kaliteli ses altyapısıyla en güvenilir kaynaktır. ” <p></p>(Kaynak Site: https://radyo.diyanet.gov.tr)
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgWWHhpd4bzD-Gq0X2sbeA0eqidyVEwCPuCjPmFZO2ycxG5qbIciq5Nv8MgmSO3IImny_x4TlKt2wXJ_txlIwEhUTjivIZJpU7tfUdLw0XQi3w3u_Z1wx_b8qMLINpJkUfJLv27AaNsmhaGtGx2UPXDhZ0BXq9zsqMkpXhTFAA-2pzy2e8Jf_6FCqjVVA/s1600/Diyanet-Radyo.jpg" class="radyo-logo">
+            <div class="radyo-ad">Diyanet Radyo</div>
+            <button class="play-btn" onclick="oynat('Diyanet Radyo', 'https://eustr76.mediatriple.net/videoonlylive/mtikoimxnztxlive/broadcast_5e3c1171d7d2a.smil/playlist.m3u8')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ İslam’ın sahih bilgisini, doğru kaynaklardan topluma ulaştıran Diyanet Radyo, kuşatıcı bir yayın anlayışı sergiler. Dini, milli ve ahlaki değerlerimizi önceleyen programlarıyla,
+            <p></p><p></p>
+            Türkiye genelinde geniş bir yayın ağına sahip resmi ve kurumsal bir sesdir. Aileden çocuk eğitimine kadar her konuda rehberlik sunmaktadır. ” <p></p>(Kaynak Site: https://radyo.diyanet.gov.tr)
+        </div>
+    </div>
+
+</div>
+
+<div id="grup-2" class="tab-panel" style="display:none;">
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi_T3ht-WwIUgQRGjbiprj0D1fVC5hECRS26orBwdRtiN7oE9ENBcBTj6gNi_xnM5AjiPTF9JCSIEyiv-5sci1uZi9cl8dnUUYi5SuoTHivveqiKwSnRmSrrq85TwbmKUvhqli1FpYvuAvRphZxcG-Rdq-cLVqHwJ5K52ZbOrr9QeY-if8TnPPwehLntQ/s1600/dolunay-fm.jpg" class="radyo-logo">
+            <div class="radyo-ad">Dolunay FM (108.0)</div>
+            <button class="play-btn" onclick="oynat('Dolunay FM', 'https://yayin2.canliyayin.org:10955/;stream/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ İstanbul’un en eski ve köklü İslami radyolarından biri olan Dolunay FM, 108.0 frekansından huzur veren yayınlarına devam ediyor. Tasavvuf sohbetleri ve ilahilerle,
+            <p></p><p></p>
+            gönül dünyanıza hitap eden radyo, yılların verdiği tecrübeyle manevi bir rehber niteliğindedir. ” <p></p>(Kaynak Site: http://www.dolunayfm.net)
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgzuLNhhfqedqaF7-llrXL_VpZelt_7SnukxNfBDbPSiciIuclZ-FTdIP6oU4CfUN78r-XhhghJ382jW8hai6HnnNfXLvgu8NPte619-ynOoj7PNW6fjcxsDNKk5Jni2pTHRnKQM-GeHScx5phYGi3AROsQ4v1IMIrngAQjik5am-FCuhjq2HXSOdO-gg/s1600/dost-fm-1.jpg" class="radyo-logo">
+            <div class="radyo-ad">Dost FM (89.2)</div>
+            <button class="play-btn" onclick="oynat('Dost FM', 'https://radyodinle1.turkhosted.com/yayin?uri=yayin.dostfm.com:8920/&tkn=RhyyZt1Gtx_KUn43wOcLOA&tms=1767001794')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Ankara merkezli yayın yapan Dost FM, 'Kur'an ve Sünnet Çizgisinde' sloganıyla Türkiye'nin birçok noktasında dinleyicisiyle buluşmaktadır. Aile bağlarını güçlendiren,
+            <p></p><p></p>
+            eğitici ve öğretici programlarıyla toplumun her kesimine hitap eden, kaliteden ödün vermeyen bir yayın anlayışına sahiptir. ” <p></p>(Kaynak Site: http://www.dostfm.com)
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiY1TnGw9KhjG1LujIWuMW5SLx9GGzvBqQbQmTOE395qOumF3-4YYcd9U21IwnltVN8KPDo_DHmTCWLJbFS_SAO0Yi7qA7ZNT7Azpd55yM2V86wcozblkeuWs37_vIY6W1ciJG4OXbMPr7bXcDS9_D32gHRJ398NKRvFwqoo5U68oNoLqhYHPGMFtTIjA/s1600/enderun-fm.jpg" class="radyo-logo">
+            <div class="radyo-ad">Enderun FM (103.7)</div>
+            <button class="play-btn" onclick="oynat('Enderun FM', 'https://yayin2.canliyayin.org:10996/;')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Konya'nın manevi havasını yansıtan Enderun FM, ilmi sohbetler ve seçkin ilahilerle 103.7 frekansından hizmet vermektedir. Şehrin kültürel ve,
+            <p></p><p></p>
+            dini değerlerini koruyan yayın çizgisiyle Konya halkının vazgeçilmez duraklarından biridir. ” <p></p>(Kaynak Site: http://www.enderunfm.com)
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhcKUVHgSIptZRPocQgPHriAwNg1qDpcKy5swzwhksYZRGq_GAU79N1xXoh8syg-V5h-S9u7tMIqOKtn4tMx74rUwjj20YXDC80wGd1UDPmILoCfPwPKkpC1edIpWiFcdbcRyZiOdA3TKusCRaBVSogtcg9ZfAdFDxrlCHYcSE8r_YWA7I8FzVpAOLEuw/s1600/erkam-radyo.jpg" class="radyo-logo">
+            <div class="radyo-ad">Erkam Radyo</div>
+            <button class="play-btn" onclick="oynat('Erkam Radyo', 'https://api-tv5.yayin.com.tr:8002/mp3?/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Gönül dünyamıza ışık tutan Erkam Radyo, seçkin hocaların sohbetleri ve Kur'an tilavetleriyle geniş bir kitleye hitap eder. Hikmetli sözler ve,
+            <p></p><p></p>
+            insanı tefekküre sevk eden içerikleriyle dijital ve karasal mecralarda kesintisiz yayın sunmaktadır. ” <p></p>(Kaynak Site: http://www.erkamradyo.com)
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiWbBCBs07qtbqd4kQhhiH4K0hIkFrXk31QtBOHRrkkud-TXXkXhab5ic0nQT_yruGqw_WeqZ-GwKjkixhE9S9OSDpkE1tWIETPjdF7k7dM-QDd8ddW3m8ozA9W2XLJhZX4BJeSTK_eejWtW685x_pObxFVW4ax4pTONv1TuTenKTl1LejX1KOmOFSGxA/s1600/furkan-radyo-dinle.jpg" class="radyo-logo">
+            <div class="radyo-ad">Furkan Radyo</div>
+            <button class="play-btn" onclick="oynat('Furkan Radyo', 'https://radyo.yayindakiler.com:6191/stream?/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Hak ile batılı ayıran ölçü sloganıyla yola çıkan Furkan Radyo, İslam’ın temel esaslarını sade ve anlaşılır bir dille anlatır. Güncel olaylara,
+            <p></p><p></p>
+            İslami bir bakış açısı getiren programlarıyla dikkat çeken istasyon, internet üzerinden tüm dünyaya ulaşmaktadır. ” <p></p>(Kaynak Site: http://www.furkanradyo.com)
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiNcpGsBnoHZRGqqMrbFYgvne0wl6ZWfSZPoeL4PQik7HiN9_Kgfq5QkBigN4kJNCvAKAkosSWOHkL77wqEvhSsYN3-wUQ4fxamIXSDYy52ufMFHVmbYJl0KR8K-4ZrN0p-LjxYt_fTJZViKek0Vi70cGyOKzIlx_1kLSS6kwLuNKOzw803VL61FmgGKA/s1600/gonca-fm.jpg" class="radyo-logo">
+            <div class="radyo-ad">Gonca FM (105.4) YAYIN YOK</div>
+            <button class="play-btn" onclick="oynat('Gonca FM', 'https://yayin.goncafm.com:9988/;')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Sevgi ve kardeşlik goncalarının açtığı radyo olan Gonca FM, Bursa ve çevresinde manevi bir rüzgar estirmektedir. Gençlere yönelik,
+            <p></p><p></p>
+            ahlaki programları ve huzur veren musiki içerikleriyle 105.4 frekansında sizleri bekliyor. ” <p></p>(Kaynak Site: http://www.goncafm.com) YAYIN YOK
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhKGoaJPN2d434SNGJW_D9JQvjop6zdl7ViYpHs5Tm-h0sdL51lOnVn-CFju4AatzZ0IeFgnVSrH3fTEXFOWyJusrb2z5bwtkCf_wHYaERCz16Kzfdo5weICLfjEmpvH3fKQc_5zePDbWAYdC2_dsa8tR6Oz-8P_23-7j5TO89JUHqedbx8k66Z5mS08w/s1600/hak-radyo.jpg" class="radyo-logo">
+            <div class="radyo-ad">Hak Radyo (101.9) YAYIN YOK</div>
+            <button class="play-btn" onclick="oynat('Hak Radyo', 'https://yayin1.canliyayin.org:8110/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Mersin ve Çukurova bölgesinin sevilen sesi Hak Radyo, 101.9 frekansından İslam'ın hakikatlerini haykırıyor. Toplumsal bilinci,
+            <p></p><p></p>
+            artıran vaazları ve gönül teline dokunan ezgileriyle bölgenin en çok dinlenen manevi radyolarındandır. ” <p></p>(Kaynak Site: http://www.hakradyo.com.tr) YAYIN YOK
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjJXeZrrq8xi16kMJcciw_-yM2Co9UqvcMp8aPlw7NFd3FYMqKPxKEi16YlFNOSg_M98mOQ-PJJvPH7em-vJvoUDUrVPG8l0Y6sMj5qB2wGkxBVMq42LXLCUkkY_0Xsy2jFdwWWNX_MbePI0XvboIbb0EOlUXKR2oipl36OOdaWn-UCECPbGWqBVyzmdA/s1600/hedef-radyo.jpg" class="radyo-logo">
+            <div class="radyo-ad">Radyo Hedef (91.8)</div>
+            <button class="play-btn" onclick="oynat('Radyo Hedef', 'https://stream.rcast.net/200299')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Ankara'nın yerel radyosu olan Radyo Hedef, 91.8 frekansında İslami ve kültürel yayınlarını sürdürmektedir. Doğru hedefe,
+            <p></p><p></p>
+            doğru bilgilerle ulaşmayı amaçlayan radyo, bilgilendirici kuşak programlarıyla Ankara halkına hizmet etmektedir. ” <p></p>(Kaynak Site: http://www.hedefradyo.com)
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhS6QQ1BMMJjCt0kHIYFgV0SLQAuratMZRpxDwICoPt9T0A_RoVDBOvnuMOvhshUvnU_GksoQGfvTPW-3YBfhNIzLlYp59_YtsokUCLCJqGTmrFIcgfswiAe2GyAqd9vw0dMZ1AF4EHf5mhoNXDkvrIPPzG3g8YisDY3XZ9OdbygCoXTOe-dggWN0tXcw/s1600/isra-fm.jpg" class="radyo-logo">
+            <div class="radyo-ad">Konya İsra FM (93.5)</div>
+            <button class="play-btn" onclick="oynat('Konya İsra FM', 'https://yayin2.canliyayin.org:8210/stream?/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Konya'da manevi yükselişin adresi olan İsra FM, 93.5 frekansından ehli sünnet çizgisinde yayınlar sunar. Kaliteli,
+            <p></p><p></p>
+            teknik altyapısı ve dopdolu yayın akışıyla Konya'nın manevi mimarlarına ses olmaktadır. ” <p></p>(Kaynak Site: http://www.israfm.com.tr)
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj1CblTBEkG3onUxvrxGdEUJLXXMHbAmfMj-zPS4mcgF1v_hQAB4xWpm_kr2dcTcHHhK-tKoEkZ0u7IWbbJJjcUsR8E6pnnwexBK0ubBEbBq31OwDSft8kti5Y6pbXw_wiDk-Q-H1ZdCB43884ynZRv1ejwmRINIk0qFCp_0Tnw58Ww2mZ60ndYgNV7ew/s1600/lalegul-fm.jpg" class="radyo-logo">
+            <div class="radyo-ad">Lalegül FM (88.4)</div>
+            <button class="play-btn" onclick="oynat('Lalegül FM', 'https://icecast.netmedya.net/lalegulfm')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Türkiye'nin en çok takip edilen tematik radyolarından biri olan Lalegül FM, 88.4 frekansından dini ve milli değerleri önceler. Fıkıh,
+            <p></p><p></p>
+            akaid ve tefsir dersleriyle dinleyicilerini aydınlatan radyo, İstanbul merkezli olup tüm Türkiye'ye hitap eder. ” <p></p>(Kaynak Site: http://www.lalegulfm.com.tr)
+        </div>
+    </div>
+
+</div>
+
+<div id="grup-3" class="tab-panel" style="display: none;">
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiGtimYrr5TwvlXFre4cfMT-v1fpT5T-N0mlkM8C8G_CjOXP8TzYHu7cEtfxCZMRFRCke-x2_DBp8Y3q6YhV4D9nwNjrbLdRc5ww-SbKRbAwFLkxOMOfinVA1hCYIaHIaSqphMkepgq45zNml_NOfmcj-Qyp25Biy6z07r0ZUkik1mRSmeb4kFrdenRjA/s1600/mesaj-fm.jpg" class="radyo-logo">
+            <div class="radyo-ad">Mesaj FM (100.5)</div>
+            <button class="play-btn" onclick="oynat('Mesaj FM', 'https://yayin1.canlitv.fun:8010/stream?/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ İstanbul semalarından 100.5 frekansı ile 'İnsanlığa Hayırlı Bir Mesaj' sloganıyla yayın yapan Mesaj FM, ehli sünnet çizgisini koruyan köklü bir istasyondur.
+            <p></p><p></p>
+            İlmi sohbetlerden Kur'an tilavetlerine, çocuk programlarından haber bültenlerine kadar zengin içeriğiyle İstanbul'un manevi nabzını tutmaktadır. ” 
+            <p></p>Kaynak Site: www.mesajfm.com.tr
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgrHGxBUyWusvfCjgN7f6SwNwIMEpyaBzXTTdVNEJktinknGTFXQ0RUTPS-genWV0ntSbJ5GnrGvhfj9owmtAzVTP-f2-rZ58jEmSOXU-_pktJhByTVU28c2YddBRKtJ8FWBocOgVDmpQlGUl4pFXkXAaamtdZNWTE-VeKpc2I7ZSdjw9PXl6SCnSyEyQ/s1600/nur-radyo.jpg" class="radyo-logo">
+            <div class="radyo-ad">Nur Radyo YAYIN YOK</div>
+            <button class="play-btn" onclick="oynat('Nur Radyo', 'https://yayin.nurradyo.org:8000/;')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Hakka davet ve doğru bilgi düsturuyla yayın yapan Nur Radyo, Kur'an ve Sünnet ışığında hazırladığı programlarla gönüllere nur saçmayı amaçlamaktadır.
+            <p></p><p></p>
+            Günün her saatinde ulaşabileceğiniz kıymetli hocalarımızın sohbetleri ve huzur veren ilahilerle manevi dünyanızı zenginleştirmek için yayındayız. ” 
+            <p></p>Kaynak Site: www.nurradyo.org YAYIN YOK
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh2WmBvEO_8pptwL9ShcbkdhxKTUZO5KYQEu-5IcmMwy2PY35M8oHShCKZv1mAnkQSrpTnS1NSs1Az7-5Z6cCzI2mahLY-hMYUP1eOzJnVTAzv3ixtkj7a_7fHb2YYtB9r-RYqLEZKidexJk9iD-F_CRE9rO6w7yhhKREz1UWOa0UX46U-QO3j1r5Oq0g/s1600/ozel-fm.jpg" class="radyo-logo">
+            <div class="radyo-ad">Özel FM (103.2) YAYIN YOK</div>
+            <button class="play-btn" onclick="oynat('Özel FM', 'https://ozelfm.80.yayin.com.tr/;stream/1')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ İstanbul'un ilk özel dini radyolarından biri olan Özel FM, 'Manevi Dünyanıza Açılan Pencere' sloganıyla 103.2 frekansından seslenmektedir.
+            <p></p><p></p>
+            İlkeli yayıncılık anlayışı ve kaliteli program kadrosuyla, toplumsal ahlaka ve dini değerlere uygun içerikleri yıllardır kesintisiz sunmaktadır. ” 
+            <p></p>Kaynak Site: www.ozelfm.net YAYIN YOK 
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj4esKElqXwOOpp1LURBmih0iXKITZ_ul8oXxPwsiw72CqbmT-7oJjM-1MPwSHZqR9Q1t0HOEUnPZpzVSa1Xq8Xp1_6s1sEGTJqmCGBcf_w1Fn22cSHqDswFw0ddNKwwGaW9xL09HeHEvH-7trLTOq4FVRbjS6aZQRzAW6GAH9rpSoip9_FNMpc8eVt9w/s1600/pal-mina.jpg" class="radyo-logo">
+            <div class="radyo-ad">Pal Mina YAYIN YOK</div>
+            <button class="play-btn" onclick="oynat('Pal Mina', 'https://shoutcast.palmedya.com.tr/mina/stream')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Pal Medya bünyesinde yayın yapan Pal Mina, tasavvuf musikisinin en seçkin örneklerini ve huzur veren ezgileri dinleyicileriyle buluşturuyor.
+            <p></p><p></p>
+            Dijital platformlarda yüksek ses kalitesiyle yayın yapan radyo, günün stresinden uzaklaşıp manevi bir mola vermek isteyenlerin ilk tercihidir. ” 
+            <p></p>Kaynak Site: www.palmina.com.tr YAYIN YOK
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg00O8XOackH_i1N0PA6pcy50-j-JRVRYUuRgKln4PahwlO9AFfrhbwW-P1XkRj-ypJKPT23WiT2p51e2HCxIFwZMbm3xFh9q2pP3fxIBAm7vXkYONGI6yuNyLAEqFU9eeESivnc4ZNs6IVM2SIGVCvppVOfzxqG1VwOVqquxlZ4Lp_Usu-7W5AkPqA0A/s1600/Radyo%20En.jpg" class="radyo-logo">
+            <div class="radyo-ad">Konya Radyo En (89.5)</div>
+            <button class="play-btn" onclick="oynat('Konya Radyo En', 'https://yayin2.canliyayin.org:7222/stream?/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Konya'nın en sevilen dini istasyonlarından biri olan Radyo En, 89.5 frekansından 'Gönüllerin En Güzeli' diyerek yayın yapmaktadır.
+            <p></p><p></p>
+            Dopdolu yayın akışı, eğitici çocuk programları ve Konya'nın yerel manevi kültürünü yansıtan içerikleriyle şehrin önemli bir sesidir. ” 
+            <p></p>Kaynak Site: www.radyoen.com.tr
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEUUcMZ6euxX1-swcLOTcPxGPC1GX-UTcDnvOEMQmlW96y0A0UNWKC5-xYevKUevU60W2dljZ2d9pir-AqnfdcxRgEauL9X2IAsj4NxdBCpQ2jsB2OingO75j03e-REAJwOXQZENMTXx9XnjBBC0ynznOAJHUlNm-p-Mhxb7pqfUb_Gc98gZvb2JnWxQ/s1600/radyo-7-kuran-arapca.jpg" class="radyo-logo">
+            <div class="radyo-ad">Radyo 7 - Arapça & Meal</div>
+            <button class="play-btn" onclick="oynat('Radyo 7 - Arapça & Meal', 'https://ssl4.radyotvonline.com/radyohome/kuranarapca.stream_aac/playlist.m3u8')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Radyo 7 bünyesinde hizmet veren bu özel kanal, Kur'an-ı Kerim ayetlerini önce orijinal Arapça kıraatiyle ardından anlaşılır Türkçe mealiyle sunar.
+            <p></p><p></p>
+            Kur'an-ı Kerim'i anlamak ve ruhuna vakıf olmak isteyen dinleyiciler için 24 saat kesintisiz ve reklamsız bir ilahi ziyafet sunmaktadır. ” 
+            <p></p>Kaynak Site: www.radyo7.com
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjxpavHGgP0vQaiyrl02S4T8e7BNWdhVQF2fy_kcMFCznMn_osBhUTF72yai50DgJZV60eq8t0ReqeyT6jtfxN_QSf3vyO8DYoqYd0j5ATN63-r4ZQ-lUahtuswMiZMtrkmkbnyb91RqO1D8fVr_43Wt5L2zYhK-H8Pdjw2x7NU3sVQzCm9S7qS47Iokw/s1600/radyo-7-kuran-meali.jpg" class="radyo-logo">
+            <div class="radyo-ad">Radyo 7 Kuran Meali</div>
+            <button class="play-btn" onclick="oynat('Radyo 7 Kuran Meali', 'https://ssl4.radyotvonline.com/radyohome/kuranmeal.stream_aac/playlist.m3u8')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Sadece Kur'an-ı Kerim'in Türkçe açıklamalarına ve meallerine odaklanan bu kanal, kutsal kitabımızın mesajını doğrudan anlamak isteyenler içindir.
+            <p></p><p></p>
+            Akıcı bir dille hazırlanan mealler, ayetlerin iniş amaçlarını ve temel mesajlarını sade bir şekilde dinleyiciye aktarmaktadır. ” 
+            <p></p>Kaynak Site: www.radyo7.com
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgjmTDQr9akTm2YCv_Nyb9jNnXDqXVI2DN4tZ4jkVCLwm2AOZJnTy3NiTTCfa8Uot_uG2vLKO3B_xkzrCB7ySvCTrbP2fqF4BA45S2p6f4EObW6fD8G-YhzijJ_uEU2LPxRk7i2BMnscHFaZn7kKjBgGa-IldF7aUvrG155ZWJo4w6XhTUlRf-a54YBHw/s1600/radyo-7-tasavvuf.jpg" class="radyo-logo">
+            <div class="radyo-ad">Radyo 7 Tasavvuf</div>
+            <button class="play-btn" onclick="oynat('Radyo 7 Tasavvuf', 'https://moondigitaledge2.radyotvonline.net/radyo7tasavvuf/playlist.m3u8')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Gönül dünyasını imar eden ney taksimleri, klasik tasavvuf eserleri ve seçkin ilahilerin yer aldığı Radyo 7 Tasavvuf kanalı 7/24 huzur yayar.
+            <p></p><p></p>
+            Sadece müzik değil, aralarda yer alan hikmetli sözler ve menkıbelerle dinleyiciyi manevi bir yolculuğa çıkaran özel bir tematik kanaldır. ” 
+            <p></p>Kaynak Site: www.radyo7.com
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjyVLpo3VmkluDFlkko-QwgyBYAiY7Mrv2IsFUnHdiQRsxi3xzAYLwIgAHGX40Myfbqd4VPKZC8lNR9IUoBcu6IOQWO0O4_sDa5F6SeQGAxAP6_xASfnCbtLXLOdtlveNfUcojbMPou0SROlN5_X24qlTkTjTY_IjGv21ideXOIfBaY5XdtA5TNbT0-eg/s1600/radyo-denge.jpg" class="radyo-logo">
+            <div class="radyo-ad">Radyo Denge (92.1)</div>
+            <button class="play-btn" onclick="oynat('Radyo Denge', 'https://radyodinle1.turkhosted.com/yayin?uri=yayin1.canliyayin.org:8278/&tkn=fgMgmlFmVcp9llVPgUdqlg&tms=1766987337')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Diyarbakır ve bölge genelinde 92.1 frekansından yayın yapan Radyo Denge, 'Huzurun Frekansı' sloganıyla toplumun her kesimini kucaklamaktadır.
+            <p></p><p></p>
+            Dini programların yanı sıra kültürel ve toplumsal meselelere de yer veren radyo, dengeli ve ilkeli yayın çizgisiyle bölgenin güçlü sesidir. ” 
+            <p></p>Kaynak Site: www.radyodenge.com.tr
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhKUmUR2sC7JHvtY4_SLkvhUGy81-9q-nHlC3WJBrPp4r4iwxr5AZld-9Rg7EBM0kbUSneb5qaKR2eDnPnCZzxis-qQ7ocD8d6WibkACB2Ck4RE9UmEa2FlUGRoIOZ66y4jjIEyQS1-w_cUHfe6Z8QFTZB5kRZLwaq4Fg8I3jRFDytljxGErwx3wU5gww/s1600/radyo-dilara.jpg" class="radyo-logo">
+            <div class="radyo-ad">Radyo Dilara (97.0)</div>
+            <button class="play-btn" onclick="oynat('Radyo Dilara', 'https://sssx.radyosfer.com/radyodilara/stream?/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Mersin'in manevi sesi Radyo Dilara, 97.0 frekansından yürüttüğü yayınlarında İslam'ın güzelliklerini ve kardeşlik mesajlarını ön plana çıkarmaktadır.
+            <p></p><p></p>
+            Halkın yoğun ilgisiyle karşılaşan samimi sohbetleri ve gün boyu süren huzur verici yayın akışıyla Mersin'in vazgeçilmez bir değeridir. ” 
+            <p></p>Kaynak Site: www.radyodilara.com
+        </div>
+    </div>
+
+</div>
+
+<div id="grup-4" class="tab-panel" style="display: none;">
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgEpnKICm1D3yzWpX5n2bJ0jy-JI-7C0tCWBhZ_R9Lu1d-MxP_9JY6rSFZjMBZZXM4eaxg4vlsi67f3mQ1BNJXihITAySD9PkJzW6gBq89owdiWdBngf2_p48J49t_FW2bkREBt2bRU2QM_ImpxyH4BTog2TnjQQMtoY-XttWx0U30YvMvXFus_ir9HxQ/s1600/radyo-feza-dinle.jpg" class="radyo-logo">
+            <div class="radyo-ad">Radyo Feza</div>
+            <button class="play-btn" onclick="oynat('Radyo Feza', 'https://yayin.radyofeza.com/8002/stream?/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Samsun ve çevresinde 97.4 frekansından manevi bir soluk sunan Radyo Feza, milli değerlere bağlı yayın çizgisiyle tanınır.
+            <p></p><p></p>
+            Gönüllere hitap eden ezgileri ve eğitici sohbet programlarıyla Karadeniz'in huzur veren seslerinden biri olmayı başarmıştır. ”
+            <p></p>Kaynak Site: www.radyofeza.com
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEii2pKnONLLI8FDOGzO9P17GKMv4h_626GETqB_TlFkvY500KH7NJoBTf9y-wTqZPHXkx-MM2JDcr2940bRMG6Xpsm4wwl_NzOfsL46WdS58QQ3qNZFh0xf2cxFOHOWT5EQxpeRBGDDRgSxo0tu5DDJiKQt8eRXfUwdeuCf9HXcecCLHV1LNMCcDs_0-w/s1600/radyo-fitrat.jpg" class="radyo-logo">
+            <div class="radyo-ad">Radyo Fıtrat</div>
+            <button class="play-btn" onclick="oynat('Radyo Fıtrat', 'https://radyofitrat.radyotvonline.net/radyofitrat?/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ İnsanın yaratılış gayesine uygun bir yaşam sürmesi için rehberlik eden Radyo Fıtrat, sahih dini bilgiyi esas alır.
+            <p></p><p></p>
+            Modern çağın getirdiği yozlaşmaya karşı fıtri olanı ve ahlaki değerleri savunan programlarıyla dinleyicilerini tefekküre davet eder. ”
+            <p></p>Kaynak Site: www.radyofitrat.com
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjLG2FlzoLgKwQwn85DRYUOBHEnh7eYfa1qh6fo-HTXv0Qvx1eiZLb39e514DxcOeJ6b526Drrv0izHJGt-J5OlXJ213S7vfKtJxzgP-FfN4SIECRt8KIQPA8tyC3bb3Bg-kvjb-Rk0LrDi_rAeF_WAXw_LlZQ_MaxnzT1O01nWYyneYTKwjDugaKDnvA/s1600/radyo-furkan.jpg" class="radyo-logo">
+            <div class="radyo-ad">Radyo Furkan YAYIN YOK</div>
+            <button class="play-btn" onclick="oynat('Radyo Furkan', 'https://radyodinle1.turkhosted.com/yayin?uri=shoutcast.radyogrup.com:1070/&tkn=mrL9Ffw5ivN9LOD4Bf11zw&tms=1767021313')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ 'Hak ile batılı ayıran' anlamına gelen Furkan isminden mülhem, doğru inancı ve doğru yaşamı anlatan bir radyodur.
+            <p></p><p></p>
+            Kur'an ve Sünnet merkezli yayınlarıyla dinleyicilerinin manevi hayatına ışık tutmayı ve toplumu bilgilendirmeyi amaçlamaktadır. ”
+            <p></p>Kaynak Site: www.radyofurkan.com YAYIN YOK
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhQOkYk7ggmQ_oJzuqXZWyr8_q56IDEk8mmJMJ4GFY7GuEQ-fwT8PgLkX4mStDoCMsLI7a7FqmKhzsITT28IF6wxILRzlmmGVMl21NukS7ebLoKLEVzMjHbXA1agSjM0YFufMcNqpfKmMVPtPqJ36ahqgAB4rzx4HTtfUzqyqDdXSpuaxwDaZg4AAuwgA/s1600/radyo-genclik.jpg" class="radyo-logo">
+            <div class="radyo-ad">Radyo Gençlik</div>
+            <button class="play-btn" onclick="oynat('Radyo Gençlik', 'https://canli.radyogenclik.com:9000/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Konya'dan 107.0 frekansıyla gençliğin enerjisini maneviyatla birleştiren Radyo Gençlik, dinamik bir yayın akışına sahiptir.
+            <p></p><p></p>
+            Milli ve manevi şuur kazanmış bir gençlik yetişmesine katkı sağlayan, bilgi dolu ve keyifli radyo kuşağı programları sunar. ”
+            <p></p>Kaynak Site: www.radyogenclik.com.tr
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhc4dWnkHyG126qYv8bqYIZbLiOUHV080j1gtRFsovuMLEJSEdomfkrKtP5CNVuZYMW-Mm7LF3c8JDKsYYgyYXPs3TSnxv7rZVsi95bVVci7Q87czAosAZ5P8-T4ZkSQjvoY7TG3ffhYy5DkOuYB9CKDnYlaUHZ0pWXqy23Vn88J7k-6NHcHhjx5c-8mw/s1600/radyo-gul.jpg" class="radyo-logo">
+            <div class="radyo-ad">Kocaeli Radyo Gül</div>
+            <button class="play-btn" onclick="oynat('Kocaeli Radyo Gül', 'https://yayin2.canliyayin.org:10989/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Kocaeli'de 101.3 frekansıyla gönüllere gül kokusu yayan istasyon, aile odaklı ve öğretici yayınlarıyla dikkat çeker.
+            <p></p><p></p>
+            Şehrin yerel kültürünü İslam'ın evrensel mesajlarıyla harmanlayarak, bölge halkı için güvenilir bir manevi rehber olmuştur. ”
+            <p></p>Kaynak Site: www.radyogul.com.tr
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjtcEDvHRp0CUbhAvjNbelFsCT1vZB7ME4czgYswgifsq5529z78r0amKOSDyyCFmreQApU7M09z2JGffqfzTCVz6L94DDN7_plodsK73YT_XwmewaWSKHvSHASHBemH0kvUNTg7xwRREHtb5UdrzSVcyC2ukw7pYciZDydekkE3XUAKztm7yhYfo7k7Q/s1600/radyo-hayat.jpg" class="radyo-logo">
+            <div class="radyo-ad">Radyo Hayat</div>
+            <button class="play-btn" onclick="oynat('Radyo Hayat', 'https://wowza1.radyotvonline.com/shoutcast/radyohayat.stream/playlist.m3u8')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Hatay'da 94.5 frekansından yayın yapan Radyo Hayat, bölgenin kadim hoşgörü kültürünü ve İslami değerlerini ekrana taşır.
+            <p></p><p></p>
+            Herkesin kendinden bir parça bulabileceği, hayata dair umut ve huzur veren söyleşileriyle Hataylıların vazgeçilmezidir. ”
+            <p></p>Kaynak Site: www.radyohayat.com
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEizhJ6BvQc92ymYR7doY6Wwp9j1HOsa0AcWx2agitlTwRqBQT2OpcKmHFOQbgsliKHqZCxeV7aeTwqi3iPWUrIER6hPEzS9gtrftgLmrY83bIGL84k0RMzkP078kaCAF4f7fnsvlQa4_WkdHUMS2PHaccI4uiKfYpWT-GyFpa0_uoLzVrCHEEfr_vnRlg/s1600/radyo-huzur.jpg" class="radyo-logo">
+            <div class="radyo-ad">Radyo Huzur YAYIN YOK</div>
+            <button class="play-btn" onclick="oynat('Radyo Huzur', 'https://sssx.radyosfer.com/malatyaradyohuzur/stream?/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Sivas'ın 105.2 frekansından huzura açılan kapısı olan radyo, dini musiki ve vakur sohbetleriyle ön plana çıkar.
+            <p></p><p></p>
+            Şehrin manevi dokusuna uygun hazırlanan programlarıyla, dinleyicilerine gün içinde sakin ve huzurlu bir dinleme deneyimi vaat eder. ”
+            <p></p>Kaynak Site: www.radyohuzur.com  YAYIN YOK
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgsCGxx5aWDRLy_Q6eIrv-BHZzHUWHyKvYL3ml6kdmC5qg-iNSIoiUUb7k6QsjUksr5bw2qc1-hrC0d49ay4lhXedGFHFhkFF_-eUcnqQKk11L0z4EEWuj-qOXLA6PnnT6A9s3Epqfg8rMzNB8OaIziQ6MM9sndSjfk6NcaCZ76g2f0kTaR90uvw5szgA/s1600/radyo-moral-fm.jpg" class="radyo-logo">
+            <div class="radyo-ad">Moral Fm</div>
+            <button class="play-btn" onclick="oynat('Moral Fm', 'https://stream-51.zeno.fm/0cfiqwdkobavv?zs=RptTdDEHQ2Wej62cArILjQ/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Türkiye'nin ilk manevi temalı radyolarından biri olan Moral FM, profesyonel yayıncılıkla değerleri birleştirir.
+            <p></p><p></p>
+            Aile, psikoloji ve İslam kültürü üzerine uzman görüşlerine yer veren programlarıyla milyonların gönlünde yer edinmiştir. ”
+            <p></p>Kaynak Site: www.moralfm.com.tr
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjvwWi2-5zjSuLvrun80EVIdzppYw099G34IZ0eTbSIr4vryJy9vS0RZ5z39ZbkKJwTZrYimcopWdrJJQtuD5wseqz3NQ5RCqUjjd4ITUGTtJgmNdy4bCvdAYvLK3qmPQQxdw0Pf5FXfS1ZWmD2rm9I8Fs9sindItggEMV3HH50lck89SwgWvIYsLtKbg/s1600/radyo-nida.jpg" class="radyo-logo">
+            <div class="radyo-ad">Radyo Nida</div>
+            <button class="play-btn" onclick="oynat('Radyo Nida', 'https://anadolu.liderhost.com.tr/8106/stream?/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Malatya'dan 92.2 frekansıyla yükselen bu nida, Hakk'ın ve hakikatin sesi olma misyonunu üstlenmiştir.
+            <p></p><p></p>
+            Kültürel derinliği olan dini sohbetleri ve Malatya'nın yerel maneviyatını yansıtan içerikleriyle bölgesel bir güçtür. ”
+            <p></p>Kaynak Site: www.radyonida.com
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhbV1zkGqJOzB0h4ojtsxsgxG6cY24YZ1IxFQYqxbJ9KnKt_7JN7rNw3Z6hnl_Sr2-bRMuzzcGNUI0XI5Un3JyihFmB47toEmELed4ftRBSaT1sRyJjcp_yFqrvzGgsmcoIz5zVSynX812izAPjpTK61fTTnXifVZURz0zMecRxknRaxwXrHN-MihRmTQ/s1600/radyo-nur-fm-malatya.jpg" class="radyo-logo">
+            <div class="radyo-ad">Nur FM</div>
+            <button class="play-btn" onclick="oynat('Nur FM', 'https://sssx.radyosfer.com/nurradyo/stream?/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Gönülleri Kur'an ve iman nuruyla aydınlatma gayesiyle yayın yapan Nur FM, kesintisiz bir manevi iklim sunar.
+            <p></p><p></p>
+            Her anı dolu dolu geçen yayın akışıyla, kalplere huzur ve zihinlere doğru bilgi taşımayı kendine dert edinmiştir. ”
+            <p></p>Kaynak Site: www.nurfm.com.tr
+        </div>
+    </div>
+
+</div>
+
+<div id="grup-5" class="tab-panel" style="display: none;">
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjJWZ6dVigAMbBt-3pz_xm9vwhP68kFupu4nPlSNuEpUKU2XJoxkroya8s0gbfg9tqtKbFdadYM7_MYfoGDwFJktuY7rMG17rbqrWbM2OKnEUs4HL1m8UNC0gBsCHKZ7mEUZBqHOsLMgh7ZS6dWLCViUK5s4NurBP0KN0oo6Dar-_nUcoJQcRzvWrTxgQ/s1600/radyo-urfa.jpg" class="radyo-logo">
+            <div class="radyo-ad">Radyo Urfa</div>
+            <button class="play-btn" onclick="oynat('Radyo Urfa', 'https://radyourfa.ozelip.com/8038/stream/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Peygamberler şehri Şanlıurfa'dan 92.1 frekansıyla seslenen radyo, şehrin manevi havasını tüm dünyaya taşır.
+            <p></p><p></p>
+            Yerel kültürü İslami değerlerle harmanlayan yayın akışı, Şanlıurfalıların gönlünde taht kurmuş bir sesleniş sunar. ”
+            <p></p>Kaynak Site: www.radyourfa.com
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiOS8nVSTaY9LxpkHRzSb7Qt5eLOvesoxBlWNrXGf9U3Qw71tKcFqmIQjCBkzwEr5goRVL6PhCK2Z5bKUSLr1TyXmCFK0LVPvs9YK5-PrntYrzLKHtsEctVGsSWLNf-4rv6fanQAipJX5SfWO5AGVgQO1t2mzQHklmGykIL1gUaklZ0AKYNQIWohyphenhyphenaPIw/s1600/rahmet-fm.jpg" class="radyo-logo">
+            <div class="radyo-ad">Rahmet Fm YAYIN YOK</div>
+            <button class="play-btn" onclick="oynat('Rahmet Fm', 'https://yayin.rahmetfm.com:9860/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Rahmet damlaları gibi gönüllere dokunan bu istasyon, doğru inanç ve güzel ahlakı merkeze alan yayınlar yapar.
+            <p></p><p></p>
+            Huzur veren ilahiler ve hayata rehberlik eden dini söyleşileriyle 24 saat kesintisiz rahmet iklimi vaat eder. ”
+            <p></p>Kaynak Site: www.rahmetfm.com.tr YAYIN YOK
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhGhUCn-2JTdpVP-uSGUkoZIqhQ3I0FF0ACNHBqcnibzKwUjmJjMtNtwOVTg72qddJX720DN098wQ0q1UFNZ0B3_xx8LXUm-uq9mHGgj-UyH7zsXDJE6qXh4UybcqPAsfHhIje8UM8ASJXRZmrGBUsvB8ET_10hYAAcO1S75X3YBQf-4ijnRhOu_rM2HQ/s1600/ribat-fm.jpg" class="radyo-logo">
+            <div class="radyo-ad">Ribat FM</div>
+            <button class="play-btn" onclick="oynat('Ribat FM', 'https://radyodinle1.turkhosted.com/yayin?uri=yayin1.canliyayin.org:7010/&tkn=zegMma9JNVTlzsc8y3dh2A&tms=1767000456')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Konya merkezli Ribat FM, ilim ve hikmet yolunda bir kale gibi yayıncılık hayatını sürdüren köklü bir kuruluştur.
+            <p></p><p></p>
+            Ehl-i sünnet çizgisinden taviz vermeyen, toplumun manevi direncini artıran öğretici programlarıyla bilinir. ”
+            <p></p>Kaynak Site: www.ribatfm.com.tr
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhQluBi_4Q9VXSBELIVzVYyCgoZBtEg_wk9pB3bMNT-JDPu2Qey11XSnt6E1umZB-IdQL5tFRajCztBzoMxIhlKESTdyOVZLpRYnEaGg0-NuX7L6IMlve2Ynk_cPfl4dYGo-dvdfYpmnwKQN449R8YMc021hUSM5P1kpAUqQ-sc21IF20fZsWzjJqBXbQ/s1600/risalet-radyo.jpg" class="radyo-logo">
+            <div class="radyo-ad">Risalet</div>
+            <button class="play-btn" onclick="oynat('Risalet', 'https://eustr73.mediatriple.net/videoonlylive/mtikoimxnztxlive/broadcast_5e3c1520b2626.smil/playlist.m3u8')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Peygamber Efendimiz'in (SAV) risalet mesajını günümüze taşıyan radyo, sünnet-i seniyye ışığında yayınlar hazırlar.
+            <p></p><p></p>
+            Hadis dersleri ve siyer anlatımlarıyla dinleyicilerini asr-ı saadet iklimine götüren manevi bir köprüdür. ”
+            <p></p>Kaynak Site: www.risalet.com
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjtJtqbUXmQ18yNFehuX1CoiYrxAvvcEJKQF6IrSh_-ZjMO8xxv-N9PPF_6Hu_QYX41n-ZReI4FmpBJs2oINok8GP-HdywNJ1u-B3gxwpVq4i4FAY7qpQYymCa68fk0croIeazpNLb4f7fsXczxMcgZuaA6i-WiACbva8pUjZkpW0LTMFNb_cIrLTb2zw/s1600/safak-radyo.jpg" class="radyo-logo">
+            <div class="radyo-ad">Şafak Radyo Kayseri</div>
+            <button class="play-btn" onclick="oynat('Şafak Radyo Kayseri', 'https://yayin2.canliyayin.org:10970/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Kayseri'de günün ilk ışıklarıyla (şafakla) başlayan bu manevi yolculuk, şehrin inanç dünyasına rehberlik eder.
+            <p></p><p></p>
+            Kayseri'nin köklü geleneklerini ve dini değerlerini modern radyo yayıncılığıyla buluşturan samimi bir sestir. ”
+            <p></p>Kaynak Site: www.safakradyo.com
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgPQfoFyk-mM-ppdfCROC5lJNjwylPHnD0F5-jdExh9qmU_pHGt91Jk5rZTNNIfA1qtXFTWD-l-3cGuGrUFyInPcwnJURL95cgq__hZlR7APHyhksY68hV7TYAYndNzwFyv_kmDfDIJJFn-DL36NnSX7LQ-GzweonIzadxWoRG3B7s0h3RBjy5nND4EJA/s1600/semerkand-radyo.jpg" class="radyo-logo">
+            <div class="radyo-ad">Semerkand Radyo YAYIN YOK</div>
+            <button class="play-btn" onclick="oynat('Semerkand Radyo', 'https://mtisvwurbfcyslive.mediatriple.net/mtisvwurbfcyslive/broadcast_58e23cb112296.smil/Playlist.m3u8')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Kalbe açılan bir pencere olan Semerkand Radyo, tasavvuf neşesini ve güzel ahlakı en duru haliyle dinleyiciye sunar.
+            <p></p><p></p>
+            Edebiyat, tarih ve maneviyatın iç içe geçtiği programlarıyla aile boyu güvenle dinlenecek bir mecradır. ”
+            <p></p>Kaynak Site: www.semerkandradyo.com YAYIN YOK
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEirihI3NtM3BlzDXjs0VL3M3rwzp7IN53VeiqAKZp138vVIl2GvhBCJT6iKRBBfhpeuK17UTxzxfvjJPg2rfvS2po5j5YIjyWgaTyfB3na3DyDf7U4VUoiJGIVb3eBI7WAsk7vn3cfTch5NnlX8kcbmxYylN27CMd63AtBe_OVZcjlscFpup5F7pCDbGQ/s1600/seyr-fm.jpg" class="radyo-logo">
+            <div class="radyo-ad">Seyr FM</div>
+            <button class="play-btn" onclick="oynat('Seyr FM', 'https://sslyayin.netyayin.net/8024/stream')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Hayatı tefekkürle seyretmek isteyenlerin adresi Seyr FM, İstanbul'dan hikmet dolu yayınlar gerçekleştirmektedir.
+            <p></p><p></p>
+            Kültürel zenginliği olan sohbetleri ve seçkin tasavvuf musikisi eserleriyle dinleyicisine kaliteli bir içerik sunar. ”
+            <p></p>Kaynak Site: www.seyrfm.com
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg0g4fwtplZWRiYtH9MCE21z5lVjRRmwZCHUlfs65TZWOCvQJfFOjAKObFqOUJoJVRxErq2S8TNNaJzr9kf58rIleSsqDbolhh1gfyezHKDP4mymsk7N0eygMVAbl7l5s49Qwb_bQBBcHFpQ1N13bC1NrCBbrBxCJ-WSVnYnr20CM27PsStUe04WhQydg/s1600/tgrtfm.jpg" class="radyo-logo">
+            <div class="radyo-ad">TGRT FM</div>
+            <button class="play-btn" onclick="oynat('TGRT FM', 'https://icecasttgrt.ihlasdigitalassets.com/tgrtfm?/;stream.mp3')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Türkiye'nin en köklü özel radyolarından biri olan TGRT FM, klasikleşmiş arkası yarınları ve huzur dersleriyle tanınır.
+            <p></p><p></p>
+            Haberden kültüre, dinden sanata geniş yelpazesiyle yıllardır evlerin değişmez misafiri olmayı sürdürmektedir. ”
+            <p></p>Kaynak Site: www.tgrtfm.com.tr
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi1Xs5Bz3AUxcDlAmtPEoa4m5RlSjsC_NHV5Wvjq2m3IWbfxyIB7jRjfVtYdFTTeN-XCJ6bdUrWKpdmwnFhqEZsC7zZBnIiGH0uUxQ-F0StX-M8VfFkrDb2D6afPW68k2w-QO1UeD1w7y6uPBNZ8NCLiHK0td6b4MD8DaABrWqasKMkc86HJgMQOFYP2g/s1600/tulu-radyo.jpg" class="radyo-logo">
+            <div class="radyo-ad">Radyo Tulu</div>
+            <button class="play-btn" onclick="oynat('Radyo Tulu', 'https://radyodinle1.turkhosted.com/yayin?uri=yayin2.canliyayin.org:8248/&tkn=CMNOkYInrzv4fcedEZAfxw&tms=1766995096)">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Manisa'dan yükselen bir şafak vakti aydınlığı olan Radyo Tulu, bölge halkına manevi rehberlik yapmaktadır.
+            <p></p><p></p>
+            Sakinleştirici yayın tarzı ve kalbe hitap eden ilahi seçkileriyle, her yaştan dinleyicinin huzur bulduğu bir sestir. ”
+            <p></p>Kaynak Site: www.radyotulu.com
+        </div>
+    </div>
+
+    <div class="radyo-kart">
+        <div class="radyo-ust">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiC1PuIdtYGorFrOoStL7eD8Whd_YihHGo10-9Bn4whguFrbaQ28XaIzKvFEXWdq6u6OeRGbVpkgjGbVdjmaieL8uaStKxgk8OVyy8MbKtegXbKgtB2rkoODAI1ewZFTiga0F4JqnLOUL8qj834MhihjLwXsmjJommpao62nyyatYJocm68WNE2akaeEw/s1600/umut-fm.jpg" class="radyo-logo">
+            <div class="radyo-ad">Umut FM</div>
+            <button class="play-btn" onclick="oynat('Umut FM', 'https://radyodinle1.turkhosted.com/yayin?uri=yayin1.canliyayin.org:8888/&tkn=EJWK5l2O1pa3DtVnSOr8Xw&tms=1767022499')">OYNAT</button>
+        </div>
+        <button class="toggle-btn" onclick="detayAc(this)">AÇIKLAMAYI GÖR</button>
+        <div class="radyo-detay">
+            “ Geleceğe ve ahirete umutla bakmak isteyenler için hazırlanan yayınlar, İslam'ın müjdeleyici yönünü ön plana çıkarır.
+            <p></p><p></p>
+            Güler yüzlü yayıncılık anlayışıyla birleştirilen dini içerikler, her gün yeni bir umutla uyanmanıza vesile olur. ”
+            <p></p>Kaynak Site: www.umutfm.com.tr
+        </div>
+    </div>
+
+</div>
+    </div>
+
+    <div id="p-bar" class="p-footer">
+        <div id="c-ad" class="p-info"></div>
+        <audio id="r-audio" controls><source id="r-source" src=""></audio>
+        <div class="powered">Powered by <span style="color:#ff6600;">Dost Yurdu</span></div>
+    </div>
+</div>
+
+<script>
+    function tabSec(evt, id) {
+        var i, x = document.getElementsByClassName("tab-panel"), b = document.getElementsByClassName("at-nav-btn");
+        for (i = 0; i < x.length; i++) x[i].style.display = "none";
+        for (i = 0; i < b.length; i++) b[i].classList.remove("active");
+        document.getElementById(id).style.display = "block";
+        evt.currentTarget.classList.add("active");
+    }
+    function detayAc(btn) {
+        var d = btn.nextElementSibling;
+        if (d.style.display === "block") { d.style.display = "none"; btn.innerText = "AÇIKLAMAYI GÖR"; }
+        else { d.style.display = "block"; btn.innerText = "KAPAT"; }
+    }
+    function oynat(ad, url) {
+        document.getElementById('p-bar').style.display = 'block';
+        document.getElementById('c-ad').innerText = "ŞİMDİ ÇALIYOR: " + ad;
+        var a = document.getElementById('r-audio'), s = document.getElementById('r-source');
+        s.src = url; a.load(); a.play();
+    }
+</script>
+
+</body>
+</html>
