@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radyo ALLATURKA - Sabit Playerlar ve Bilgilendirme</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    
+	<style>
+/* ------------------------------------------------------------------- */
+/* CSS: 1. ÜST PLAYER STİLİ (TURUNCU/YEŞİL - SABİT ÜST)                */
+/* ------------------------------------------------------------------- */
+
+.fixed-radio-bar_TOP {
+    font-family: Arial, sans-serif;
+    width: 100%;
+    height: 50px; 
+    background-color: #008080;
+    color: white;
+    
+    position: fixed; 
+    top: 0; 
+    left: 0;
+    z-index: 1000; 
+    
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0; 
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.radio-logo_TOP {
+    display: block;
+    height: 30px; 
+    width: auto;
+    margin-right: 15px;
+    flex-shrink: 0;
+    padding-left: 100px; 
+}
+
+.radio-station-name_TOP {
+    display: none; 
+}
+
+.marquee-area_TOP {
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    margin: 0 15px;
+    max-width: 40%; 
+    font-size: 1.1em;
+    font-weight: bold;
+}
+.marquee-text_TOP {
+    display: inline-block;
+    color: #FF8C00; 
+    padding-left: 100%; 
+    animation: marquee_TOP 15s linear infinite; 
+}
+
+@keyframes marquee_TOP {
+    0%   { transform: translate(0, 0); }
+    100% { transform: translate(-100%, 0); }
+}
+
+.right-controls_TOP {
+    display: flex;
+    align-items: center;
+    margin-left: auto; 
+    padding-right: 0; 
+}
+
+.volume-control-area_TOP {
+    display: flex;
+    align-items: center;
+    margin-right: 50px; 
+    flex-shrink: 0;
+}
+
+.volume-icon-bar_TOP i {
+    font-size: 1.2em;
+    color: white;
+    cursor: pointer;
+    margin: 0 3px; 
+}
+
+.volume-slider-bar_TOP {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 70px; 
+    height: 4px; 
+    border-radius: 2px; 
+    outline: none; 
+    margin: 0 5px; 
+    cursor: pointer; 
+    background: #006464; 
+    background-size: 100% 100%; 
+    background-repeat: no-repeat; 
+    --slider-fill-color: #FF8C00; 
+    display: block; 
+}
+
+.volume-slider-bar_TOP::-webkit-slider-thumb { 
+    -webkit-appearance: none; 
+    appearance: none; 
+    width: 14px; 
+    height: 14px; 
+    border-radius: 50%; 
+    background: white; 
+    cursor: pointer; 
+    border: 2px solid #FF8C00; 
+    margin-top: -5px; 
+}
+.volume-slider-bar_TOP::-moz-range-thumb { 
+    width: 14px; 
+    height: 14px; 
+    border-radius: 50%; 
+    background: white; 
+    cursor: pointer; 
+    border: 2px solid #FF8C00; 
+}
+
+.play-pause-btn-bar_TOP button {
+    height: 35px;
+    width: 70px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white;
+    transition: background-color 0.1s;
+    background-color: #FF8C00; 
+    box-shadow: inset 0 -3px 0 #CC7000; 
+    flex-shrink: 0;
+    margin-right: 20px; 
+}
+
+.play-pause-btn-bar_TOP i {
+    font-size: 1.1em;
+    color: white;
+}
+
+.social-icons_TOP {
+    margin-right: 100px; 
+    padding-left: 0;
+}
+.social-icons_TOP a {
+    color: #FF8C00; 
+    font-size: 1.4em; 
+    margin: 0 5px;
+    transition: color 0.1s;
+    text-decoration: none;
+}
+.social-icons_TOP a:hover {
+    color: #F0F0F0; 
+}
+
+/* ------------------------------------------------------------------- */
+/* CSS: 2. ALT PLAYER STİLİ (MAVİ/SİYAH LOGOLU - SABİT ALT)            */
+/* ------------------------------------------------------------------- */
+
+.fixed-radio-bar_BOTTOM {
+    font-family: Arial, sans-serif;
+    width: 100%;
+    height: 50px; 
+    background-color: #282c34; 
+    color: white;
+    
+    position: fixed; 
+    bottom: 0; 
+    top: auto; 
+    left: 0;
+    z-index: 1000; 
+    
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0; 
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5); 
+}
+
+.radio-logo_BOTTOM {
+    display: block;
+    height: 30px; 
+    width: auto;
+    margin-right: 15px;
+    flex-shrink: 0;
+    padding-left: 100px; 
+}
+
+.marquee-area_BOTTOM {
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    margin: 0 15px;
+    max-width: 40%; 
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.marquee-text_BOTTOM {
+    display: inline-block;
+    color: #61dafb; 
+    padding-left: 100%; 
+    animation: marquee_BOTTOM 15s linear infinite; 
+}
+
+@keyframes marquee_BOTTOM {
+    0%   { transform: translate(0, 0); }
+    100% { transform: translate(-100%, 0); }
+}
+
+.right-controls_BOTTOM {
+    display: flex;
+    align-items: center;
+    margin-left: auto; 
+    padding-right: 0; 
+}
+
+.volume-control-area_BOTTOM {
+    display: flex;
+    align-items: center;
+    margin-right: 50px; 
+    flex-shrink: 0;
+}
+
+.volume-icon-bar_BOTTOM i {
+    font-size: 1.2em;
+    color: white;
+    cursor: pointer;
+    margin: 0 3px; 
+}
+
+.volume-slider-bar_BOTTOM {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 70px; 
+    height: 4px; 
+    border-radius: 2px; 
+    outline: none; 
+    margin: 0 5px; 
+    cursor: pointer; 
+    background: #44475a; 
+    background-size: 100% 100%; 
+    background-repeat: no-repeat; 
+    --slider-fill-color: #61dafb; 
+    display: block; 
+}
+
+.volume-slider-bar_BOTTOM::-webkit-slider-thumb { 
+    border: 2px solid #61dafb; 
+}
+.volume-slider-bar_BOTTOM::-moz-range-thumb { 
+    border: 2px solid #61dafb; 
+}
+
+.play-pause-btn-bar_BOTTOM button {
+    height: 35px;
+    width: 70px;
+    background-color: #61dafb; 
+    box-shadow: inset 0 -3px 0 #3a97b0; 
+    color: #282c34; 
+    margin-right: 20px; 
+}
+.play-pause-btn-bar_BOTTOM i {
+    color: #282c34; 
+}
+
+.social-icons_BOTTOM {
+    margin-right: 100px; 
+    padding-left: 0;
+}
+.social-icons_BOTTOM a {
+    color: #61dafb; 
+    font-size: 1.4em; 
+    margin: 0 5px;
+    transition: color 0.1s;
+    text-decoration: none;
+}
+.social-icons_BOTTOM a:hover {
+    color: #F0F0F0; 
+}
+
+
+/* ------------------------------------------------------------------- */
+/* BİLGİLENDİRME ALANI YENİ STİLİ (SOLA YASLI)                         */
+/* ------------------------------------------------------------------- */
+.info-section {
+    max-width: 90%; /* Genişliği ayarla */
+    margin: 70px auto 70px 0px; /* Üst/Alt boşluk ve Sola Yaslama */
+    padding: 20px;
+    line-height: 1.6;
+    font-family: Arial, sans-serif;
+    color: #333;
+    /* Kutu efektleri kaldırıldı */
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    text-align: left; /* Metni sola yasla */
+}
+.info-section h2 {
+    color: #008080;
+    border-bottom: 2px solid #008080;
+    padding-bottom: 5px;
+    text-align: left;
+}
+.info-section h3 {
+    color: #282c34;
+    margin-top: 20px;
+    font-size: 1.1em;
+    text-align: left;
+}
+.info-section code {
+    background-color: #eee;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<audio id="radio-audio_TOP" crossorigin="anonymous">
+    <source src="https://eu4.fastcast4u.com/proxy/okyanus35?mp=/1" type="audio/mpeg">
+    Tarayıcınız ses etiketini desteklemiyor.
+</audio>
+
+<div class="fixed-radio-bar_TOP">
+    
+    <img src="https://allaturkaa.de/forum/wcf/images/allaturkaa/logo.png" alt="ALLATURKA Logo" class="radio-logo_TOP">
+
+    <div class="marquee-area_TOP">
+        <span class="marquee-text_TOP" id="marqueeText_TOP">
+            RADYO ALLATURKA - &nbsp;&nbsp;&nbsp;
+            <span class="cc_streaminfo" data-type="song" data-username="okyanus35">Yükleniyor...</span>
+        </span>
+    </div>
+    
+    <div class="right-controls_TOP">
+        
+        <div class="volume-control-area_TOP">
+            <div class="volume-icon-bar_TOP">
+                <i class="fa-solid fa-volume-off" id="muteIcon_TOP"></i>
+            </div>
+            <input type="range" min="0" max="100" value="75" class="volume-slider-bar_TOP" id="volumeSlider_TOP">
+            <div class="volume-icon-bar_TOP">
+                <i class="fa-solid fa-volume-high"></i>
+            </div>
+        </div>
+
+        <div class="play-pause-btn-bar_TOP">
+            <button id="playPauseBtn_TOP">
+                <i class="fa-solid fa-play"></i>
+            </button>
+        </div>
+
+        <div class="social-icons_TOP">
+            <a href="#" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#" target="_blank"><i class="fa-solid fa-envelope"></i></a>
+        </div>
+    </div>
+</div>
+
+---
+
+## 📢 Duyuru: Radyo Player Kodları Sayfanızda!
+
+<div class="info-section">
+    <p><strong>Değerli Forum Üyeleri ve Ziyaretçiler,</strong></p>
+    <p>Web sitenizde kullanabileceğiniz, sayfanızda sabit duracak iki farklı tasarıma sahip Radyo Player kodunu aşağıda bulabilirsiniz. Dilediğiniz tasarımı seçip, sitenize ekleyebilir ve basit düzenlemelerle tamamen kişiselleştirebilirsiniz. Unutmayın, iki Player da aynı anda sayfada bulunabilir ancak birine tıkladığınızda diğeri otomatik olarak duracaktır.</p>
+
+    <h3>1. Kodu Sayfanıza Nasıl Eklersiniz?</h3>
+    <p>Seçtiğiniz Player'ın tüm kod bloğunu (CSS, HTML ve JavaScript dahil) kopyalayıp, web sitenizdeki HTML içeriği ekleyebileceğiniz ana bölüme veya Player'ın görünmesini istediğiniz özel bir alana yapıştırmanız yeterlidir.</p>
+
+    <h3>2. Kişiselleştirme Ayarları (Geliştirilebilir Alanlar)</h3>
+    <p>Aşağıdaki satırları kod içerisinde bularak kolayca düzenleme yapabilirsiniz:</p>
+
+    <ul>
+        <li>
+            <strong>Yayın Linki Değiştirme:</strong> Player'ın sesi aldığı yayın adresini değiştirmek için, kod bloğunun başındaki <code>&lt;audio id="radio-audio..."&gt;</code> etiketi içindeki <strong><code>src</code></strong> adresini kendi yayın linkinizle değiştirin:
+            <br><code>&lt;source src="<mark>https://eu4.fastcast4u.com/proxy/okyanus35?mp=/1</mark>" type="audio/mpeg"&gt;</code>
+        </li>
+        <li>
+            <strong>Renkleri Değiştirme:</strong> Player'ların ana rengini ve vurgu rengini değiştirmek için CSS bölümündeki (<code>&lt;style&gt;</code> etiketleri arası) renk kodlarını (hex kodları: `#FFFFFF` formatında) bulun ve güncelleyin:
+            <ul>
+                <li><strong>Ana Bant Rengi:</strong> <code>background-color: #282c34;</code> (Alt Player) veya <code>#008080;</code> (Üst Player)</li>
+                <li><strong>Vurgu Rengi (Butonlar/Yazılar):</strong> <code>color: #61dafb;</code> (Alt Player) veya <code>#FF8C00;</code> (Üst Player)</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Sosyal Medya Linkleri:</strong> Sosyal medya butonlarının yönlendirdiği linkleri değiştirmek için, HTML yapısındaki <code>&lt;a href="#" target="_blank"&gt;</code> etiketleri içinde yer alan <strong><code>#</code></strong> işaretini kendi sosyal medya adreslerinizle değiştirin.
+        </li>
+        <li>
+            <strong>Logoyu Değiştirme:</strong> Kullanılan logo görselini değiştirmek için <code>&lt;img src="..." class="radio-logo..."&gt;</code> etiketindeki <strong><code>src</code></strong> adresini kendi logonuzun görsel adresi ile güncelleyin.
+        </li>
+    </ul>
+    
+    <h3>3. Ayrı Kod Blokları</h3>
+    <p>Geliştirilebilir bu Player'ların ayrı ayrı tam kod bloklarını aşağıda bulabilirsiniz. Dilediğinizi kopyalayıp kullanabilirsiniz:</p>
+
+    <p style="font-weight: bold; margin-bottom: 5px;">A. Üst Player (Turuncu/Yeşil Tema)</p>
+    <p style="font-weight: bold; margin-bottom: 5px;">B. Alt Player (Mavi/Siyah Tema)</p>
+    
+    <p>Radyo Keyifli Dinlemeler dileriz!</p>
+</div>
+
+---
+
+<audio id="radio-audio_BOTTOM" crossorigin="anonymous">
+    <source src="https://eu4.fastcast4u.com/proxy/okyanus35?mp=/1" type="audio/mpeg">
+    Tarayıcınız ses etiketini desteklemiyor.
+</audio>
+
+<div class="fixed-radio-bar_BOTTOM">
+    
+    <img src="https://allaturkaa.de/forum/wcf/images/allaturkaa/logo.png" alt="ALLATURKA Logo" class="radio-logo_BOTTOM">
+
+    <div class="marquee-area_BOTTOM">
+        <span class="marquee-text_BOTTOM" id="marqueeText_BOTTOM">
+            RADYO ALLATURKA - &nbsp;&nbsp;&nbsp;
+            <span class="cc_streaminfo" data-type="song" data-username="okyanus35">Yükleniyor...</span>
+        </span>
+    </div>
+    
+    <div class="right-controls_BOTTOM">
+        
+        <div class="volume-control-area_BOTTOM">
+            <div class="volume-icon-bar_BOTTOM">
+                <i class="fa-solid fa-volume-off" id="muteIcon_BOTTOM"></i>
+            </div>
+            <input type="range" min="0" max="100" value="75" class="volume-slider-bar_BOTTOM" id="volumeSlider_BOTTOM">
+            <div class="volume-icon-bar_BOTTOM">
+                <i class="fa-solid fa-volume-high"></i>
+            </div>
+        </div>
+
+
+        <div class="play-pause-btn-bar_BOTTOM">
+            <button id="playPauseBtn_BOTTOM">
+                <i class="fa-solid fa-play"></i>
+            </button>
+        </div>
+
+        <div class="social-icons_BOTTOM">
+            <a href="#" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#" target="_blank"><i class="fa-solid fa-envelope"></i></a>
+        </div>
+    </div>
+</div>
+
+<script src="https://eu4.fastcast4u.com/system/streaminfo.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // Ortak Fonksiyonu Tanımla
+        const setupRadioPlayer = (suffix, activeColor, trackColor) => {
+            const playPauseBtn = document.getElementById(`playPauseBtn${suffix}`);
+            const volumeSlider = document.getElementById(`volumeSlider${suffix}`);
+            const muteIcon = document.getElementById(`muteIcon${suffix}`);
+            const radioAudio = document.getElementById(`radio-audio${suffix}`); 
+            
+            if (!playPauseBtn || !radioAudio) return;
+
+            const iconPlay = '<i class="fa-solid fa-play"></i>';
+            const iconPause = '<i class="fa-solid fa-pause"></i>';
+            let isPlaying = false; 
+            const isWebkit = 'WebkitAppearance' in document.documentElement.style;
+
+            /* Oynat/Durdur İşlevi */
+            playPauseBtn.addEventListener('click', () => {
+                // Diğer Player'ı durdur (aynı anda iki radyo çalmasın)
+                const otherSuffix = suffix === '_TOP' ? '_BOTTOM' : '_TOP';
+                const otherAudio = document.getElementById(`radio-audio${otherSuffix}`);
+                const otherBtn = document.getElementById(`playPauseBtn${otherSuffix}`);
+
+                if (otherAudio && !otherAudio.paused) {
+                    otherAudio.pause();
+                    otherBtn.innerHTML = iconPlay;
+                }
+
+                if (!isPlaying) {
+                    radioAudio.play()
+                        .then(() => {
+                            isPlaying = true;
+                            playPauseBtn.innerHTML = iconPause;
+                        })
+                        .catch(error => {
+                            console.error("Çalma hatası:", error);
+                            alert(`Oynatma izni gerekiyor, lütfen tekrar deneyin. (${suffix})`);
+                            isPlaying = false;
+                            playPauseBtn.innerHTML = iconPlay;
+                        });
+                } else {
+                    radioAudio.pause();
+                    isPlaying = false;
+                    playPauseBtn.innerHTML = iconPlay;
+                }
+            });
+
+            /* SES ÇUBUĞU RENGİNİ GÜNCELLEME */
+            function updateVolumeSliderColor() {
+                const value = volumeSlider.value;
+                const currentColor = radioAudio.muted || value == 0 ? 'white' : activeColor;
+                
+                if (isWebkit) {
+                    const percentage = (value - volumeSlider.min) / (volumeSlider.max - volumeSlider.min);
+                    const fillPercentage = percentage * 100;
+                    
+                    const webkitBackgroundGradient = `linear-gradient(to right, ${currentColor} 0%, ${currentColor} ${fillPercentage}%, ${trackColor} ${fillPercentage}%, ${trackColor} 100%)`;
+                    
+                    volumeSlider.style.backgroundImage = webkitBackgroundGradient;
+                } 
+                
+                // Mute Simgesini Güncelle
+                if (radioAudio.muted || value == 0) {
+                    muteIcon.classList.remove('fa-volume-high', 'fa-volume-low');
+                    muteIcon.classList.add('fa-volume-off');
+                } else if (value < 50) {
+                    muteIcon.classList.remove('fa-volume-high', 'fa-volume-off');
+                    muteIcon.classList.add('fa-volume-low');
+                }
+                else {
+                    muteIcon.classList.remove('fa-volume-low', 'fa-volume-off');
+                    muteIcon.classList.add('fa-volume-high');
+                }
+            }
+            
+            /* Slider ve Mute işlevi */
+            volumeSlider.addEventListener('input', () => {
+                radioAudio.volume = volumeSlider.value / 100;
+                radioAudio.muted = volumeSlider.value == 0;
+                updateVolumeSliderColor();
+            });
+            
+            muteIcon.addEventListener('click', () => {
+                radioAudio.muted = !radioAudio.muted;
+                if (radioAudio.muted) {
+                    volumeSlider.value = 0; 
+                } else {
+                    volumeSlider.value = radioAudio.volume > 0 ? Math.round(radioAudio.volume * 100) : 75; 
+                }
+                updateVolumeSliderColor();
+            });
+            
+            radioAudio.addEventListener('volumechange', () => {
+                 if (!radioAudio.muted && radioAudio.volume > 0) {
+                    volumeSlider.value = Math.round(radioAudio.volume * 100);
+                }
+                updateVolumeSliderColor();
+            });
+
+            // Başlangıç Ayarları
+            radioAudio.volume = volumeSlider.value / 100;
+            updateVolumeSliderColor();
+        };
+
+        // 1. Üst Player'ı Başlat (Turuncu/Yeşil)
+        setupRadioPlayer('_TOP', '#FF8C00', '#006464');
+
+        // 2. Alt Player'ı Başlat (Mavi/Siyah)
+        setupRadioPlayer('_BOTTOM', '#61dafb', '#44475a');
+    });
+</script>
+
+<div style="height: 1200px; padding: 0 20px; color: #555;">
+    </div>
+	
+	</body>
+</html>
