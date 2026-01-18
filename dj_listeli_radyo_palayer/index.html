@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allaturka Radyo Widget - Versiyon 11.1 (Marquee Düzeltme)</title>
+    <style>
+        /* TEMA RENK DEĞİŞKENLERİ */
+        :root { 
+            --color-bg-dark: #1f2732; 
+            --color-accent-blue: #00bcd4; 
+            --color-accent-red: #ff4757;
+            --color-text-light: #f5f6fa; 
+            --color-text-dim: #a4b0be; 
+            --color-border: #3c3c54;
+            --color-today-bg: #2a3443;
+
+            /* 🎨 TEMA SETLERİ */
+            --theme-color-1: var(--color-accent-blue); /* Mavi */
+            --theme-color-2: #ff4757; /* Kırmızı */
+            --theme-color-3: #f5f6fa; /* Açık Gri/Süt Beyazı */
+            --theme-color-4: #8A2BE2; /* Mor (Açık Eflatun) */
+            
+            /* Başlangıçta kullanılan ana vurgu rengi */
+            --current-accent: var(--theme-color-1); 
+            --current-border: var(--color-accent-blue); 
+            --current-player-bg: var(--color-today-bg);
+        }
+        
+        body { font-family: 'Arial', sans-serif; background-color: #f4f7f9; padding: 20px; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; margin: 0; }
+        .allaturka-radio-widget {
+            width: 350px; margin: 20px auto; border-radius: 12px; overflow: hidden; background-color: var(--color-bg-dark);
+            color: var(--color-text-light); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); 
+            border: 2px solid var(--current-border); /* TEMAYA BAĞLI */
+            display: flex; flex-direction: column;
+        }
+
+        /* TEMA RENK BAĞLANTILARI */
+        .widget-top-bar span { color: var(--current-accent); }
+        .radio-player-section { background-color: var(--current-player-bg); }
+        .radio-player-section h3 { color: var(--current-accent); }
+        .dj-profile-toggle strong { color: var(--current-accent); }
+        .schedule-table th { color: var(--current-accent); }
+        .today-row { border-left: 5px solid var(--current-accent); }
+        .play-button { background-color: var(--current-accent); }
+        .volume-range::-webkit-slider-thumb { background: var(--current-accent); }
+
+        /* Koyu Gri Tema için özel arka plan (İstenen Gri tonu) */
+        .theme-dark-grey {
+             --current-accent: #f5f6fa !important; /* Yazı rengi beyaz/süt beyazı */
+             --current-player-bg: #2a2a2a !important; /* Koyu Gri */
+             --current-border: #f5f6fa !important;
+        }
+        /* Süt Beyazı Tema için özel arka plan */
+        .theme-white {
+             --current-accent: #00bcd4 !important; /* Yazı rengi mavi */
+             --current-player-bg: #f0f0f0 !important; /* Açık Beyaz */
+             --current-border: #00bcd4 !important;
+             color: #1f2732 !important; /* Ana metin rengini koyu yap */
+        }
+        /* Mor Eflatun Tema için özel renkler */
+        .theme-purple {
+             --current-accent: #DDA0DD !important; /* Daha açık Mor/Leylak */
+             --current-player-bg: #2a3443 !important; /* Arka planı koyu tut */
+             --current-border: #DDA0DD !important;
+        }
+
+
+        .widget-top-bar { 
+            background-color: #141829; padding: 10px 15px; display: flex; 
+            align-items: center; justify-content: space-between; border-bottom: 1px solid var(--color-border);
+            overflow: hidden; white-space: nowrap; 
+        }
+        .widget-top-bar img { height: 40px; object-fit: contain; }
+        .widget-top-bar span { 
+            font-size: 0.9em; font-weight: bold; white-space: nowrap; flex-shrink: 0; margin-left: 10px;
+        }
+
+        /* PLAYER BAŞLIK ALANI */
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .player-header h3 { 
+            margin: 0; 
+            text-align: left; 
+        }
+
+        /* TEMA BUTONLARI KAPSAYICISI */
+        .theme-switcher {
+            display: flex;
+            gap: 5px;
+        }
+        .theme-button {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid var(--color-border);
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .theme-button:hover {
+            transform: scale(1.15);
+        }
+
+        /* Buton Renkleri (CSS Değişkenleri ile uyumlu) */
+        #theme-btn-blue { background-color: var(--color-accent-blue); border-color: var(--color-accent-blue); }
+        #theme-btn-grey { background-color: #2a2a2a; border-color: #f5f6fa; } 
+        #theme-btn-purple { background-color: #8A2BE2; border-color: #DDA0DD; }
+
+        /* Player Kontrol ve Bilgi Alanları (Önceki stiller) */
+        .radio-player-section { 
+            padding: 10px 15px; border-bottom: 1px solid var(--color-border); 
+            text-align: center; 
+        }
+        
+        /* Diğer stiller aynıdır. */
+        
+        .custom-player-controls {
+            display: flex; align-items: center; justify-content: space-between; padding: 5px;
+            background-color: #141829; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+        .play-button {
+            border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2em; cursor: pointer; transition: background-color 0.2s;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-right: 10px;
+        }
+        .play-button i { color: var(--color-text-light); }
+        .play-button:hover { opacity: 0.9; }
+        .volume-container { display: flex; align-items: center; flex-grow: 1; margin-right: 5px; }
+        .volume-container i { color: var(--color-text-dim); margin-right: 8px; font-size: 1.1em; }
+        .volume-range {
+            -webkit-appearance: none; appearance: none; width: 100%; height: 6px; background: var(--color-border);
+            border-radius: 3px; cursor: pointer;
+        }
+        .volume-range::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .current-track-info { text-align: center; padding: 5px 0; }
+        .stream-artist-name {
+            font-weight: normal; font-size: 0.9em; color: var(--color-text-dim); margin-bottom: 3px !important;
+        }
+        .stream-song-title {
+            font-size: 1.2em; font-weight: bold; color: var(--current-accent); text-decoration: none; display: block;
+        }
+        .stream-listeners {
+            color: #2ed573; font-weight: bold; font-size: 0.8em; margin-top: 5px !important;
+        }
+        
+        .dj-marquee-section { background-color: #2a3443; padding: 8px 0; overflow: hidden; border-bottom: 1px solid var(--color-border); }
+        .dj-marquee { white-space: nowrap; box-sizing: border-box; animation: marquee 25s linear infinite; padding: 0 15px; }
+        .marquee-item { display: inline-flex; align-items: center; margin-right: 30px; font-weight: bold; color: var(--color-text-light); font-size: 0.9em; }
+        .marquee-item img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 1px solid var(--color-accent-red); margin-right: 8px; vertical-align: middle; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        .dj-detailed-list-section { padding: 10px 15px; border-bottom: 1px solid var(--color-border); }
+        .dj-profile-toggle { display: flex; align-items: center; padding: 8px 0; cursor: pointer; border-bottom: 1px dashed var(--color-border); transition: background-color 0.2s; }
+        .dj-profile-toggle:hover { background-color: #2a3443; }
+        .dj-profile-toggle:last-of-type { border-bottom: none; }
+        .dj-profile-toggle img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--current-accent); margin-right: 15px; }
+        .dj-profile-toggle strong { flex-grow: 1; }
+        .dj-profile-toggle i { color: var(--color-text-dim); margin-left: 10px; transition: transform 0.3s; }
+        .dj-description { font-size: 0.85em; color: var(--color-text-dim); padding: 0 0 0 65px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out; text-align: left; }
+        .dj-description.active { max-height: 100px; padding: 5px 0 10px 65px; }
+        
+        .schedule-section { padding: 10px 15px; border-bottom: 1px solid var(--color-border); }
+        .schedule-table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+        .schedule-table th, .schedule-table td { padding: 8px; border-bottom: 1px solid var(--color-border); text-align: left; }
+        .schedule-table th { background-color: #2a3443; font-weight: bold; width: 38%; }
+        .schedule-table tbody tr:last-child td { border-bottom: none; }
+        .widget-footer { background-color: #141829; padding: 10px 15px; text-align: right; font-size: 0.8em; color: var(--color-text-dim); border-top: 1px solid var(--color-border); }
+        .today-row { background-color: var(--color-today-bg); color: var(--color-accent-red); font-weight: bold; border-left: 5px solid var(--color-accent-red); }
+        .no-dj { color: var(--color-text-dim); }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<div class="allaturka-radio-widget" id="radio-widget">
+
+    <div class="widget-top-bar">
+        <img src="https://allaturkaa.de/forum/wcf/images/allaturkaa/logo.png" alt="Allaturka Radyo Logo">
+        <span>ALLATURKA RADYO</span>
+    </div>
+    
+    <div class="radio-player-section">
+        
+        <div class="player-header">
+            <h3>CANLI YAYIN</h3>
+            <div class="theme-switcher">
+                <div class="theme-button" id="theme-btn-blue" data-theme="blue"></div>
+                <div class="theme-button" id="theme-btn-grey" data-theme="grey"></div>
+                <div class="theme-button" id="theme-btn-purple" data-theme="purple"></div>
+            </div>
+        </div>
+        
+        <audio id="radio-player" autoplay="true" preload="metadata" class="hidden-audio" loop>
+            <source src="https://eu4.fastcast4u.com/proxy/allaturka?mp=/1" type="audio/mpeg">
+            Tarayıcınız bu ses oynatıcıyı desteklemiyor.
+        </audio>
+
+        <div class="custom-player-controls">
+            <button id="play-pause-btn" class="play-button">
+                <i class="fas fa-pause"></i> 
+            </button>
+            
+            <div class="volume-container">
+                <i class="fas fa-volume-up"></i>
+                <input type="range" id="volume-range" class="volume-range" min="0" max="1" step="0.01" value="1">
+            </div>
+        </div>
+
+        <div class="current-track-info">
+            <span class="stream-artist-name">Şu An Çalan</span>
+            <a class="stream-song-title cc_streaminfo" data-type="song" data-username="allaturka" href="#">Yükleniyor...</a>
+            <span class="stream-listeners cc_streaminfo" data-type="listeners" data-username="allaturka">0 dinleyici</span>
+            
+            <script src="https://eu4.fastcast4u.com/system/streaminfo.js"></script>
+        </div>
+
+    </div>
+    
+    <div class="dj-marquee-section">
+        <div class="dj-marquee" id="dj-marquee-content"></div>
+    </div>
+
+    <div class="dj-detailed-list-section">
+        <h3 style="color: var(--color-accent-blue); text-align: center; margin-bottom: 15px; margin-top: 5px;">Yayıncılarımız</h3>
+        <ul id="detailed-dj-list" style="list-style: none; padding: 0; margin: 0;"></ul>
+    </div>
+
+    <div class="schedule-section">
+        <h3 style="color: var(--color-accent-blue); text-align: center; margin-bottom: 15px; margin-top: 5px;">Haftalık Program</h3>
+        <table class="schedule-table">
+            <thead>
+                <tr>
+                    <th>Gün</th>
+                    <th>Yayıncı (Saat)</th>
+                </tr>
+            </thead>
+            <tbody id="schedule-table-body"></tbody>
+        </table>
+    </div>
+
+    <div class="widget-footer">
+        Powered by Allaturka
+    </div>
+
+</div>
+
+<script>
+    const radioWidget = document.getElementById('radio-widget');
+    const radioPlayer = document.getElementById('radio-player');
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    const volumeRange = document.getElementById('volume-range');
+    const themeButtons = document.querySelectorAll('.theme-button');
+
+    // --- TEMA İŞLEVİ ---
+    function applyTheme(themeName) {
+        radioWidget.classList.remove('theme-dark-grey', 'theme-white', 'theme-purple');
+
+        if (themeName === 'grey') {
+            radioWidget.classList.add('theme-dark-grey');
+            radioWidget.style.color = 'var(--color-text-light)';
+        } else if (themeName === 'purple') {
+            radioWidget.classList.add('theme-purple');
+            radioWidget.style.color = 'var(--color-text-light)';
+        } else if (themeName === 'blue') {
+            radioWidget.style.color = 'var(--color-text-light)';
+        }
+    }
+
+    // Buton dinleyicilerini ayarla
+    themeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const theme = button.getAttribute('data-theme');
+            applyTheme(theme);
+        });
+    });
+    
+    // --- PLAYER KONTROLLERİ ---
+    // (Aynı kaldı)
+    radioPlayer.volume = volumeRange.value;
+
+    playPauseBtn.addEventListener('click', () => {
+        if (radioPlayer.paused || radioPlayer.ended) {
+            radioPlayer.play().catch(error => { console.error("Oynatma hatası:", error); });
+            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        } else {
+            radioPlayer.pause();
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+        }
+    });
+
+    volumeRange.addEventListener('input', () => {
+        radioPlayer.volume = volumeRange.value;
+        const volumeIcon = playPauseBtn.nextElementSibling.querySelector('i');
+        
+        if (radioPlayer.volume === 0) {
+            volumeIcon.className = 'fas fa-volume-off';
+        } else if (radioPlayer.volume < 0.5) {
+            volumeIcon.className = 'fas fa-volume-down';
+        } else {
+            volumeIcon.className = 'fas fa-volume-up';
+        }
+    });
+
+    radioPlayer.addEventListener('pause', () => {
+        playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+    });
+    radioPlayer.addEventListener('play', () => {
+        playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    });
+
+
+    // --- VERİ TABANI ---
+    const DJ_LIST_DATA = [
+        { name: "DJ SES SULTANI", motto: "Duygusal Parçaların Adresi", avatar: "https://s1.directupload.eu/images/251208/xecfqsvf.jpg", isOnline: true, description: "Radyomuzun tecrübeli sesi DJ Ses Sultanı, arabesk ve fantezi müzik yayınıyla dinleyicilerini mest ediyor. Her akşam 21:00'da sizlerle." },
+        { name: "DJ GECE KUŞU", motto: "Geceye Özel Ritmler", avatar: "https://s1.directupload.eu/images/251208/2wyg4xqk.webp", isOnline: false, description: "Gecelerin efendisi DJ Gece Kuşu, chillout ve lounge müziklerle yorgun bir günün ardından ruhunuzu dinlendiriyor. Salı ve Perşembe akşamları yayında." },
+        { name: "DJ ESKİ ŞARKILAR", motto: "Nostaljinin En Güzel Sesleri", avatar: "https://s1.directupload.eu/images/251208/si9gwldq.webp", isOnline: true, description: "Geçmişten günümüze unutulmaz Türkçe pop ve alaturka eserlerle DJ Eski Şarkılar, dinleyicilerini zamanda yolculuğa çıkarıyor. Cuma geceleri sizlerle." },
+        { name: "DJ RÜZGAR", motto: "Akdeniz Esintileri", avatar: "https://s1.directupload.eu/images/251208/58nas8qt.webp", isOnline: false, description: "Akdeniz'in sıcak rüzgarlarını müzikle harmanlayan DJ Rüzgar, dinleyicilerine huzur dolu anlar yaşatıyor. Çarşamba akşamları yayında." }, 
+        { name: "DJ MÜZİK KURDU", motto: "Ege den Esintileri", avatar: "https://s1.directupload.eu/images/251208/58nas8qt.webp", isOnline: false, description: "Egenin'in sıcak rüzgarlarını müzikle harmanlayan DJ Müzik Kurdu, dinleyicilerine huzur dolu anlar yaşatıyor. Perşembe akşamları yayında." }
+    ];
+
+    const SCHEDULE_DATA = [
+        { day: "Pazartesi", dj: "DJ Ses Sultanı (21:00)" },
+        { day: "Salı", dj: "DJ Gece Kuşu (22:00)" },
+        { day: "Çarşamba", dj: "DJ Rüzgar (20:00)" },
+        { day: "Perşembe", dj: "DJ Müzik Kurdu (23:00)" }, 
+        { day: "Cuma", dj: "DJ Eski Şarkılar (20:00)" },
+        { day: "Cumartesi", dj: "DJ Sürpriz Yayın (Tüm Gün)" },
+        { day: "Pazar", dj: '<span class="no-dj">Yayında Kimse Yok</span>' }
+    ];
+
+    // --- KAYAN DJ LİSTESİ (GÜNCELLENEN KISIM) ---
+    const marqueeContent = document.getElementById('dj-marquee-content');
+
+    function renderMarquee() {
+        if (!marqueeContent) return;
+        let marqueeHtml = '';
+        
+        // 🔥 Tüm DJ'leri filtreleme yapmadan al
+        DJ_LIST_DATA.forEach(dj => {
+            marqueeHtml += `
+                <span class="marquee-item">
+                    <img src="${dj.avatar}" alt="${dj.name}">
+                    ${dj.name} - ${dj.motto}
+                </span>
+            `;
+        });
+        
+        // Eğer DJ varsa, listeyi tekrarlayarak kaydırmayı sağla
+        if (DJ_LIST_DATA.length > 0) {
+             marqueeHtml = marqueeHtml.repeat(5); 
+        } else {
+             marqueeHtml = '<span class="marquee-item">Radyomuzda kayıtlı yayıncı bulunmamaktadır.</span>';
+        }
+
+        marqueeContent.innerHTML = marqueeHtml;
+    }
+
+
+    // --- AÇILIR-KAPANIR DETAYLI DJ LİSTESİ ---
+    // (Aynı kaldı)
+    const detailedDjList = document.getElementById('detailed-dj-list');
+
+    function renderDetailedDjList() {
+        if (!detailedDjList) return;
+        detailedDjList.innerHTML = '';
+        
+        DJ_LIST_DATA.forEach((dj, index) => {
+            const statusColor = dj.isOnline ? '#2ed573' : 'gray';
+            const listItem = document.createElement('li');
+            
+            listItem.innerHTML = `
+                <div class="dj-profile-toggle" data-index="${index}">
+                    <img src="${dj.avatar}" style="border-color: ${statusColor};" alt="${dj.name}">
+                    <strong>${dj.name}</strong>
+                    <i style="font-style: normal; transition: transform 0.3s;">▼</i>
+                </div>
+                <div class="dj-description" id="dj-desc-${index}">${dj.description}</div>
+            `;
+            detailedDjList.appendChild(listItem);
+        });
+
+        detailedDjList.querySelectorAll('.dj-profile-toggle').forEach(toggleBtn => {
+            toggleBtn.addEventListener('click', function() {
+                const index = this.dataset.index;
+                const description = document.getElementById(`dj-desc-${index}`);
+                const icon = this.querySelector('i');
+
+                description.classList.toggle('active');
+                if (description.classList.contains('active')) {
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            });
+        });
+    }
+
+
+    // --- HAFTALIK YAYIN AKIŞI ---
+    // (Aynı kaldı)
+    const scheduleTableBody = document.getElementById('schedule-table-body');
+
+    function renderSchedule() {
+        if (!scheduleTableBody) return;
+        scheduleTableBody.innerHTML = ''; 
+        const dayNames = ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"];
+        const todayIndex = (new Date()).getDay(); 
+
+        SCHEDULE_DATA.forEach((item) => {
+            const currentDayName = dayNames[todayIndex];
+            const isToday = item.day === currentDayName;
+            
+            const rowClass = isToday ? 'today-row' : '';
+            const djContent = item.dj;
+
+            const row = document.createElement('tr');
+            row.className = rowClass;
+            
+            row.innerHTML = `
+                <td>${item.day}</td>
+                <td>${djContent}</td>
+            `;
+            scheduleTableBody.appendChild(row);
+        });
+    }
+
+    // --- BAŞLATMA FONKSİYONU ---
+    document.addEventListener('DOMContentLoaded', () => {
+        renderMarquee();
+        renderDetailedDjList();
+        renderSchedule();
+
+        radioPlayer.play().catch(error => {
+             playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+             console.log("Radyo otomatik başlamadı. Oynatmak için Play tuşuna basın.");
+        });
+    });
+
+</script>
+</body>
+</html>
