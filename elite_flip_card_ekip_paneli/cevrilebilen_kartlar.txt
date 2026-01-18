@@ -1,0 +1,146 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+/* ================== GENEL PANEL AYARLARI ================== */
+.ekip-paneli {
+  display: grid;
+  grid-template-columns: repeat(4, 200px); 
+  gap: 7px;
+  justify-content: center;
+  margin: 30px auto;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+.ekip-kart {
+  width: 200px;
+  height: 285px; 
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.kart-ic {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.ekip-kart.active .kart-ic { transform: rotateY(180deg); }
+
+.on-yuz, .arka-yuz {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* --- ÖN YÜZ VE SHINE EFEKTİ --- */
+.on-yuz {
+  background: #ffffff;
+  border: 1px solid #eee;
+  padding: 15px 10px;
+  align-items: center;
+}
+
+.profil-cerceve {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 4px solid #bdc3c7;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+/* TEK SEFERLİK SHINE (PARLAMA) */
+.profil-cerceve::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.6), transparent);
+  transition: all 0.6s;
+}
+
+.ekip-kart:hover .profil-cerceve::after { left: 150%; }
+
+.on-yuz img { width: 100%; height: 100%; object-fit: cover; }
+.on-yuz h3 { font-size: 14px; margin: 5px 0 2px 0; color: #333; font-weight: 800; }
+.on-yuz .unvan { font-size: 10px; color: #e67e22; font-weight: 700; text-transform: uppercase; }
+
+.detay-btn {
+  margin-top: auto;
+  padding: 5px 22px;
+  background: #2c3e50;
+  color: #fff;
+  font-size: 9px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+/* --- ARKA YÜZ --- */
+.arka-yuz {
+  background: #2c3e50;
+  color: #fff;
+  transform: rotateY(180deg);
+  padding: 12px;
+}
+
+.arka-yuz h4 { font-size: 12px; color: #bdc3c7; border-bottom: 1px solid #444; width: 100%; text-align: center; margin-bottom: 8px; padding-bottom: 4px; }
+.hakkinda { font-size: 10px; text-align: center; line-height: 1.4; color: #dfe6e9; margin-bottom: 10px; height: 55px; overflow: hidden; }
+
+.iletisim-liste { font-size: 9px; margin-bottom: 10px; border-top: 1px solid #3e4f5f; padding-top: 8px; }
+.iletisim-liste div { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.iletisim-liste i { color: #e67e22; width: 12px; }
+
+.sosyal-box { display: flex; gap: 8px; margin-top: auto; justify-content: center; }
+.sosyal-box a { 
+  width: 28px; height: 28px; border-radius: 50%; background: #1a252f; color: #fff;
+  display: flex; align-items: center; justify-content: center; text-decoration: none; 
+  font-size: 11px; transition: 0.4s; border: 1px solid #444;
+}
+.sosyal-box a:hover { background: #e67e22; transform: translateY(-3px); }
+
+@media (max-width: 850px) { .ekip-paneli { grid-template-columns: repeat(2, 200px); } }
+</style>
+
+<div class="ekip-paneli">
+  <div class="ekip-kart" onclick="kartCevir(this)"><div class="kart-ic"><div class="on-yuz"><div class="profil-cerceve"><img src="https://randomuser.me/api/portraits/men/43.jpg"></div><h3>Mehmet Can</h3><p class="unvan">Proje Müdürü</p><div class="detay-btn">BİLGİ AL</div></div><div class="arka-yuz"><h4>HAKKINDA</h4><p class="hakkinda">Dijital dönüşüm stratejileri ve geniş ölçekli ekip koordinasyonunda 10 yıllık kıdemli tecrübe.</p><div class="iletisim-liste"><div><i class="fa-solid fa-envelope"></i> m.can@site.com</div><div><i class="fa-solid fa-phone"></i> 0555 000 01</div></div><div class="sosyal-box"><a href="#"><i class="fa-brands fa-linkedin-in"></i></a><a href="#"><i class="fa-brands fa-twitter"></i></a><a href="#"><i class="fa-brands fa-instagram"></i></a></div></div></div></div>
+
+  <div class="ekip-kart" onclick="kartCevir(this)"><div class="kart-ic"><div class="on-yuz"><div class="profil-cerceve"><img src="https://randomuser.me/api/portraits/women/2.jpg"></div><h3>Selin Ak</h3><p class="unvan">Baş Yazılımcı</p><div class="detay-btn">BİLGİ AL</div></div><div class="arka-yuz"><h4>HAKKINDA</h4><p class="hakkinda">Modern web mimarileri, bulut bilişim ve veritabanı güvenliği konularında uzman sistem mühendisi.</p><div class="iletisim-liste"><div><i class="fa-solid fa-envelope"></i> s.ak@site.com</div><div><i class="fa-solid fa-phone"></i> 0555 000 02</div></div><div class="sosyal-box"><a href="#"><i class="fa-brands fa-linkedin-in"></i></a><a href="#"><i class="fa-brands fa-twitter"></i></a><a href="#"><i class="fa-brands fa-instagram"></i></a></div></div></div></div>
+
+  <div class="ekip-kart" onclick="kartCevir(this)"><div class="kart-ic"><div class="on-yuz"><div class="profil-cerceve"><img src="https://randomuser.me/api/portraits/men/3.jpg"></div><h3>Ahmet Yılmaz</h3><p class="unvan">Veri Analisti</p><div class="detay-btn">BİLGİ AL</div></div><div class="arka-yuz"><h4>HAKKINDA</h4><p class="hakkinda">Büyük veri analitiği ve pazar trendleri üzerinde çalışarak stratejik kararlara veri desteği sağlar.</p><div class="iletisim-liste"><div><i class="fa-solid fa-envelope"></i> a.y@site.com</div><div><i class="fa-solid fa-phone"></i> 0555 000 03</div></div><div class="sosyal-box"><a href="#"><i class="fa-brands fa-linkedin-in"></i></a><a href="#"><i class="fa-brands fa-twitter"></i></a><a href="#"><i class="fa-brands fa-instagram"></i></a></div></div></div></div>
+
+  <div class="ekip-kart" onclick="kartCevir(this)"><div class="kart-ic"><div class="on-yuz"><div class="profil-cerceve"><img src="https://randomuser.me/api/portraits/women/4.jpg"></div><h3>Canan Deniz</h3><p class="unvan">Editör</p><div class="detay-btn">BİLGİ AL</div></div><div class="arka-yuz"><h4>HAKKINDA</h4><p class="hakkinda">Marka kimliği oluşturma ve yaratıcı metin yazarlığı süreçlerinde içerik stratejilerini belirler.</p><div class="iletisim-liste"><div><i class="fa-solid fa-envelope"></i> c.d@site.com</div><div><i class="fa-solid fa-phone"></i> 0555 000 04</div></div><div class="sosyal-box"><a href="#"><i class="fa-brands fa-linkedin-in"></i></a><a href="#"><i class="fa-brands fa-twitter"></i></a><a href="#"><i class="fa-brands fa-instagram"></i></a></div></div></div></div>
+
+  <div class="ekip-kart" onclick="kartCevir(this)"><div class="kart-ic"><div class="on-yuz"><div class="profil-cerceve"><img src="https://randomuser.me/api/portraits/men/5.jpg"></div><h3>Burak Tan</h3><p class="unvan">Grafiker</p><div class="detay-btn">BİLGİ AL</div></div><div class="arka-yuz"><h4>HAKKINDA</h4><p class="hakkinda">Görsel iletişim ve kullanıcı deneyimi odaklı arayüz tasarımlarıyla projelerin estetiğini yönetir.</p><div class="iletisim-liste"><div><i class="fa-solid fa-envelope"></i> b.t@site.com</div><div><i class="fa-solid fa-phone"></i> 0555 000 05</div></div><div class="sosyal-box"><a href="#"><i class="fa-brands fa-linkedin-in"></i></a><a href="#"><i class="fa-brands fa-twitter"></i></a><a href="#"><i class="fa-brands fa-instagram"></i></a></div></div></div></div>
+
+  <div class="ekip-kart" onclick="kartCevir(this)"><div class="kart-ic"><div class="on-yuz"><div class="profil-cerceve"><img src="https://randomuser.me/api/portraits/women/6.jpg"></div><h3>Elif Şahin</h3><p class="unvan">Pazarlama</p><div class="detay-btn">BİLGİ AL</div></div><div class="arka-yuz"><h4>HAKKINDA</h4><p class="hakkinda">Performans pazarlaması ve global reklam stratejileri ile markanın dijital büyümesini yönetir.</p><div class="iletisim-liste"><div><i class="fa-solid fa-envelope"></i> e.s@site.com</div><div><i class="fa-solid fa-phone"></i> 0555 000 06</div></div><div class="sosyal-box"><a href="#"><i class="fa-brands fa-linkedin-in"></i></a><a href="#"><i class="fa-brands fa-twitter"></i></a><a href="#"><i class="fa-brands fa-instagram"></i></a></div></div></div></div>
+
+  <div class="ekip-kart" onclick="kartCevir(this)"><div class="kart-ic"><div class="on-yuz"><div class="profil-cerceve"><img src="https://randomuser.me/api/portraits/men/7.jpg"></div><h3>Deniz Kaya</h3><p class="unvan">Yönetici</p><div class="detay-btn">BİLGİ AL</div></div><div class="arka-yuz"><h4>HAKKINDA</h4><p class="hakkinda">İş geliştirme süreçleri ve kurumsal operasyon yönetimi alanında operasyonel mükemmelliği hedefler.</p><div class="iletisim-liste"><div><i class="fa-solid fa-envelope"></i> d.k@site.com</div><div><i class="fa-solid fa-phone"></i> 0555 000 07</div></div><div class="sosyal-box"><a href="#"><i class="fa-brands fa-linkedin-in"></i></a><a href="#"><i class="fa-brands fa-twitter"></i></a><a href="#"><i class="fa-brands fa-instagram"></i></a></div></div></div></div>
+
+  <div class="ekip-kart" onclick="kartCevir(this)"><div class="kart-ic"><div class="on-yuz"><div class="profil-cerceve"><img src="https://randomuser.me/api/portraits/women/8.jpg"></div><h3>Merve Gül</h3><p class="unvan">İK Uzmanı</p><div class="detay-btn">BİLGİ AL</div></div><div class="arka-yuz"><h4>HAKKINDA</h4><p class="hakkinda">Yetenek yönetimi ve kurum kültürü inşası süreçlerinde insan odaklı profesyonel çözümler üretir.</p><div class="iletisim-liste"><div><i class="fa-solid fa-envelope"></i> m.g@site.com</div><div><i class="fa-solid fa-phone"></i> 0555 000 08</div></div><div class="sosyal-box"><a href="#"><i class="fa-brands fa-linkedin-in"></i></a><a href="#"><i class="fa-brands fa-twitter"></i></a><a href="#"><i class="fa-brands fa-instagram"></i></a></div></div></div></div>
+
+  <div class="ekip-kart" onclick="kartCevir(this)"><div class="kart-ic"><div class="on-yuz"><div class="profil-cerceve"><img src="https://randomuser.me/api/portraits/men/9.jpg"></div><h3>Okan Vural</h3><p class="unvan">Güvenlik</p><div class="detay-btn">BİLGİ AL</div></div><div class="arka-yuz"><h4>HAKKINDA</h4><p class="hakkinda">Siber güvenlik mimarisi ve ağ altyapı koruma sistemleri konusunda kıdemli teknik danışman.</p><div class="iletisim-liste"><div><i class="fa-solid fa-envelope"></i> o.v@site.com</div><div><i class="fa-solid fa-phone"></i> 0555 000 09</div></div><div class="sosyal-box"><a href="#"><i class="fa-brands fa-linkedin-in"></i></a><a href="#"><i class="fa-brands fa-twitter"></i></a><a href="#"><i class="fa-brands fa-instagram"></i></a></div></div></div></div>
+
+  <div class="ekip-kart" onclick="kartCevir(this)"><div class="kart-ic"><div class="on-yuz"><div class="profil-cerceve"><img src="https://randomuser.me/api/portraits/women/10.jpg"></div><h3>Zeynep Bal</h3><p class="unvan">S. Medya</p><div class="detay-btn">BİLGİ AL</div></div><div class="arka-yuz"><h4>HAKKINDA</h4><p class="hakkinda">Topluluk yönetimi ve dijital etkileşim trendlerini takip ederek markayı dünyaya yansıtır.</p><div class="iletisim-liste"><div><i class="fa-solid fa-envelope"></i> z.b@site.com</div><div><i class="fa-solid fa-phone"></i> 0555 000 10</div></div><div class="sosyal-box"><a href="#"><i class="fa-brands fa-linkedin-in"></i></a><a href="#"><i class="fa-brands fa-twitter"></i></a><a href="#"><i class="fa-brands fa-instagram"></i></a></div></div></div></div>
+
+  <div class="ekip-kart" onclick="kartCevir(this)"><div class="kart-ic"><div class="on-yuz"><div class="profil-cerceve"><img src="https://randomuser.me/api/portraits/men/11.jpg"></div><h3>Kaan Erkan</h3><p class="unvan">Mobil Gel.</p><div class="detay-btn">BİLGİ AL</div></div><div class="arka-yuz"><h4>HAKKINDA</h4><p class="hakkinda">Yüksek performanslı iOS ve Android uygulamaları geliştiren kullanıcı deneyimi uzmanı.</p><div class="iletisim-liste"><div><i class="fa-solid fa-envelope"></i> k.e@site.com</div><div><i class="fa-solid fa-phone"></i> 0555 000 11</div></div><div class="sosyal-box"><a href="#"><i class="fa-brands fa-linkedin-in"></i></a><a href="#"><i class="fa-brands fa-twitter"></i></a><a href="#"><i class="fa-brands fa-instagram"></i></a></div></div></div></div>
+
+  <div class="ekip-kart" onclick="kartCevir(this)"><div class="kart-ic"><div class="on-yuz"><div class="profil-cerceve"><img src="https://randomuser.me/api/portraits/women/12.jpg"></div><h3>Aslı Fırat</h3><p class="unvan">Destek Şefi</p><div class="detay-btn">BİLGİ AL</div></div><div class="arka-yuz"><h4>HAKKINDA</h4><p class="hakkinda">Müşteri memnuniyetini en üst düzeye çıkarmak için teknik çözüm süreçlerini koordine eder.</p><div class="iletisim-liste"><div><i class="fa-solid fa-envelope"></i> a.f@site.com</div><div><i class="fa-solid fa-phone"></i> 0555 000 12</div></div><div class="sosyal-box"><a href="#"><i class="fa-brands fa-linkedin-in"></i></a><a href="#"><i class="fa-brands fa-twitter"></i></a><a href="#"><i class="fa-brands fa-instagram"></i></a></div></div></div></div>
+</div>
+
+<script>
+function kartCevir(secilenKart) {
+  const tumKartlar = document.querySelectorAll('.ekip-kart');
+  tumKartlar.forEach(kart => { if (kart !== secilenKart) kart.classList.remove('active'); });
+  secilenKart.classList.toggle('active');
+}
+</script>

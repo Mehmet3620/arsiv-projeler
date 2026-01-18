@@ -1,0 +1,44 @@
+Elite Flip-Card Ekip Paneli | Modern, Dinamik ve Tamamen Özelleştirilebilir!
+Merhaba arkadaşlar,
+
+Projelerinizde, kurumsal web sitelerinizde veya portfolyolarınızda kullanabileceğiniz; modern, şık ve kullanıcı etkileşimi yüksek bir Ekip/Takım Paneli hazırladım. 
+Tamamen HTML ve CSS üzerine kurulu bu sistem, hiçbir reklam veya dış bağımlılık (FontAwesome hariç) içermez.
+
+✨ Öne Çıkan Özellikler
+Premium Flip Effect: Kartlar üzerine tıklandığında akıllı bir çevirme animasyonuyla (3D Perspective) detayları gösterir.
+
+Akıllı Kapanma Özelliği: Bir kart açıldığında, diğer açık olan kartlar otomatik olarak kapanır (Sayfa düzenini bozmaz).
+
+One-Time Shine Efekti: Resimlerin üzerine gelindiğinde göz yormayan, tek seferlik gümüş parlama efekti.
+
+Full Responsive: Mobil cihazlarda, tabletlerde ve masaüstünde kusursuz görünür (200px sabit genişlik sistemi).
+
+Reklamsız & Ücretsiz: Kodlar tamamen açık kaynaklıdır, herhangi bir "Powered by" yazısı veya gizli link içermez.
+
+Resmi Kurum Uyumluluğu: Sade ve kurumsal renk paleti sayesinde yarı resmi kurumlar, dernekler ve büyük şirketler için uygundur.
+
+🛠️ Kurulum ve Özelleştirme Rehberi
+Sistemi sitenize entegre etmek sadece 30 saniyenizi alır.
+
+1. Sayfaya Nasıl Eklenir? Aşağıda paylaştığım kod bloğunu kopyalayın ve web sitenizde panelin görünmesini istediğiniz yere (genellikle <body> etiketleri arasına) yapıştırın.
+
+2. Resimler Nasıl Değişir? Kod içerisinde yer alan <img src="https://link-adresi.com/resim.jpg"> kısımlarını kendi resim linklerinizle değiştirmeniz yeterlidir.
+
+3. Yazılar ve Bilgiler:
+
+<h3>...</h3> arasına isimleri,
+
+<p class="unvan">...</p> arasına görevleri,
+
+<p class="hakkinda">...</p> arasına detaylı biyografiyi yazabilirsiniz.
+
+4. Sosyal Medya ve İletişim: Arka yüzdeki sosyal-box kısmından ikonları dilediğiniz gibi çoğaltabilir veya linklerini ekleyebilirsiniz. Telefon ve E-posta alanları standart olarak her kartta mevcuttur.
+
+5. Boyut Ayarları: Panel varsayılan olarak 200px genişlik ve 7px boşluk (gap) sistemine göre ayarlanmıştır. CSS kısmındaki .ekip-kart değerlerini değiştirerek boyutları projenize göre optimize edebilirsiniz.
+
+💻 Kod Bloğu
+Not: İkonların görünmesi için sayfanızın <head> kısmında FontAwesome kütüphanesinin ekli olduğundan emin olun. (Kod içerisinde hazır olarak verilmiştir.)
+
+📥 Tamamen Ücretsizdir! İstediğiniz projede tepe tepe kullanabilirsiniz. Bir teşekkür etmeniz yeterlidir. 😊
+
+#WebTasarım #HTML #CSS #EkipPaneli #ÜcretsizKod #WebMaster
