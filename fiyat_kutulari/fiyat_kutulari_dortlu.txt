@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        /* BODY: Koyu gri yapılarak kutuların parlaması sağlandı */
+        body { background-color: #2c3e50; font-family: 'Segoe UI', Arial, sans-serif; padding: 60px 10px; }
+
+        .blok-konteynir {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .satis-kutusu {
+            background-color: #ffffff;
+            width: 180px; 
+            min-height: 360px; 
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            border: 1px solid #34495e;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        /* Üst Şerit */
+        .satis-kutusu::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #ffcc00;
+            z-index: 10;
+        }
+
+        .satis-kutusu:hover {
+            transform: translateY(-10px);
+            border-color: #ffcc00;
+        }
+
+        /* BAŞLIK: Hepsi aynı koyu renk */
+        .kutu-ust {
+            background-color: #003d52;
+            color: #ffffff;
+            padding: 18px 5px;
+            text-align: center;
+        }
+
+        .kutu-ust h2 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .kutu-orta {
+            padding: 20px 15px;
+            flex-grow: 1;
+        }
+
+        .ozellik {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-size: 11px;
+            border-bottom: 1px solid #f1f4f6;
+            padding-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .ozellik span {
+            color: #ffcc00;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        .kutu-alt {
+            padding: 20px 15px;
+        }
+
+        /* GENEL BUTON STİLİ */
+        .satin-al-butonu {
+            position: relative;
+            display: block;
+            background-color: #003d52;
+            color: #ffffff;
+            text-align: center;
+            padding: 12px 0;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 700;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* TURUNCU BUTON (Ücretsiz Pakete Özel) */
+        .turuncu-btn {
+            background-color: #e67e22 !important;
+            box-shadow: 0 4px 10px rgba(230, 126, 34, 0.3);
+        }
+
+        /* İPEKSİ PARLAMA EFEKTİ */
+        .satin-al-butonu::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to right, 
+                rgba(255,255,255,0) 0%, 
+                rgba(255,255,255,0.4) 50%, 
+                rgba(255,255,255,0) 100%
+            );
+            transform: skewX(-30deg);
+        }
+
+        .satin-al-butonu:hover::after {
+            left: 200%;
+            transition: all 1.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .satin-al-butonu:hover {
+            opacity: 0.9;
+            transform: scale(1.03);
+        }
+
+        /* Popüler Vurgusu */
+        .populer {
+            border: 2px solid #ffcc00;
+        }
+        
+        .populer .satin-al-butonu {
+            background-color: #ffcc00;
+            color: #003d52;
+        }
+    </style>
+</head>
+<body>
+
+<div class="blok-konteynir">
+
+    <div class="satis-kutusu">
+        <div class="kutu-ust"><h2>ÜCRETSİZ</h2></div>
+        <div class="kutu-orta">
+            <div class="ozellik"><span>✓</span> Alt Alan Adı</div>
+            <div class="ozellik"><span>✓</span> 500 MB SSD</div>
+            <div class="ozellik"><span>✓</span> Reklamlı Sürüm</div>
+            <div class="ozellik"><span>✓</span> Standart Tema</div>
+            <div class="ozellik"><span>✓</span> Forum Desteği</div>
+        </div>
+        <div class="kutu-alt">
+            <a href="#" class="satin-al-butonu turuncu-btn">HEMEN DENE</a>
+        </div>
+    </div>
+
+    <div class="satis-kutusu">
+        <div class="kutu-ust"><h2>EKONOMİK</h2></div>
+        <div class="kutu-orta">
+            <div class="ozellik"><span>✓</span> 1 Adet Domain</div>
+            <div class="ozellik"><span>✓</span> 10 GB SSD</div>
+            <div class="ozellik"><span>✓</span> Ücretsiz SSL</div>
+            <div class="ozellik"><span>✓</span> Mobil Panel</div>
+            <div class="ozellik"><span>✓</span> Ticket Destek</div>
+        </div>
+        <div class="kutu-alt">
+            <a href="#" class="satin-al-butonu">SATIN AL</a>
+        </div>
+    </div>
+
+    <div class="satis-kutusu populer">
+        <div class="kutu-ust"><h2>PROFESYONEL</h2></div>
+        <div class="kutu-orta">
+            <div class="ozellik"><span>✓</span> Hediye Domain</div>
+            <div class="ozellik"><span>✓</span> Sınırsız SSD</div>
+            <div class="ozellik"><span>✓</span> SEO Modülü</div>
+            <div class="ozellik"><span>✓</span> 7/24 Canlı Destek</div>
+            <div class="ozellik"><span>✓</span> Haftalık Yedek</div>
+        </div>
+        <div class="kutu-alt">
+            <a href="#" class="satin-al-butonu">SATIN AL</a>
+        </div>
+    </div>
+
+    <div class="satis-kutusu">
+        <div class="kutu-ust"><h2>VİP PROJE</h2></div>
+        <div class="kutu-orta">
+            <div class="ozellik"><span>✓</span> Özel Yazılım</div>
+            <div class="ozellik"><span>✓</span> VDS Sunucu</div>
+            <div class="ozellik"><span>✓</span> Çoklu Dil</div>
+            <div class="ozellik"><span>✓</span> API Desteği</div>
+            <div class="ozellik"><span>✓</span> VIP Danışman</div>
+        </div>
+        <div class="kutu-alt">
+            <a href="#" class="satin-al-butonu">TEKLİF AL</a>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

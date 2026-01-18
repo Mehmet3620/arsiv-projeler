@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { background-color: #2c3e50; font-family: 'Segoe UI', Arial, sans-serif; padding: 40px 10px; }
+
+        .grup-konteynir {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Kutuların gereksiz uzamasını engeller */
+            gap: 15px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .alt-grup { margin-top: 30px; }
+
+        .satis-kutusu {
+            background-color: #ffffff;
+            width: 180px; 
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            border: 1px solid #34495e;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .satis-kutusu:hover {
+            transform: translateY(-8px);
+            border-color: #ffcc00;
+        }
+
+        /* GRUP BAŞLIKLARI */
+        .kutu-ust-koyu { background-color: #003d52; color: #ffffff; padding: 15px 5px; text-align: center; border-bottom: 3px solid #ffcc00; }
+        .kutu-ust-mavi { background-color: #0071b7; color: #ffffff; padding: 15px 5px; text-align: center; border-bottom: 3px solid #ffcc00; }
+
+        .kutu-ust-koyu h2, .kutu-ust-mavi h2 { margin: 0; font-size: 13px; font-weight: 800; text-transform: uppercase; }
+
+        /* İÇERİK ALANI - Boşluksuz ve Dolu */
+        .kutu-orta { padding: 15px 12px; }
+
+        .ozellik {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+            color: #2c3e50;
+            font-size: 10.5px;
+            border-bottom: 1px solid #f1f4f6;
+            padding-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .ozellik span { color: #ffcc00; margin-right: 6px; font-weight: bold; }
+
+        .kutu-alt { padding: 10px 12px 20px 12px; }
+
+        /* PARLAMA EFEKTLİ BUTONLAR */
+        .satin-al-butonu {
+            position: relative;
+            display: block;
+            background-color: #003d52;
+            color: #ffffff;
+            text-align: center;
+            padding: 11px 0;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 700;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .turuncu-btn { background-color: #e67e22 !important; }
+
+        .satin-al-butonu::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-30deg);
+        }
+
+        /* Ağır ve ipeksi parlama (1.3 saniye) */
+        .satin-al-butonu:hover::after {
+            left: 200%;
+            transition: all 1.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .populer { border: 2px solid #ffcc00; }
+    </style>
+</head>
+<body>
+
+<div class="grup-konteynir">
+    <div class="satis-kutusu">
+        <div class="kutu-ust-koyu"><h2>ÜCRETSİZ</h2></div>
+        <div class="kutu-orta">
+            <div class="ozellik"><span>✓</span> 500 MB Web Alanı</div>
+            <div class="ozellik"><span>✓</span> 1 GB Trafik Kotası</div>
+            <div class="ozellik"><span>✓</span> Standart Hazır Tema</div>
+            <div class="ozellik"><span>✓</span> 1 Adet Mail Hesabı</div>
+            <div class="ozellik"><span>✓</span> Reklamlı Kullanım</div>
+            <div class="ozellik"><span>✓</span> Forum Desteği</div>
+            <div class="ozellik"><span>✓</span> Alt Alan Adı (Sub)</div>
+            <div class="ozellik"><span>✓</span> Temel SEO Ayarı</div>
+        </div>
+        <div class="kutu-alt"><a href="#" class="satin-al-butonu turuncu-btn">HEMEN DENE</a></div>
+    </div>
+
+    <div class="satis-kutusu">
+        <div class="kutu-ust-koyu"><h2>EKONOMİK</h2></div>
+        <div class="kutu-orta">
+            <div class="ozellik"><span>✓</span> 1 Adet .Com/.Net</div>
+            <div class="ozellik"><span>✓</span> 10 GB SSD Alanı</div>
+            <div class="ozellik"><span>✓</span> 50 GB Aylık Trafik</div>
+            <div class="ozellik"><span>✓</span> Ücretsiz SSL Sertifika</div>
+            <div class="ozellik"><span>✓</span> 5 Adet Kurumsal Mail</div>
+            <div class="ozellik"><span>✓</span> %100 Mobil Uyum</div>
+            <div class="ozellik"><span>✓</span> Gelişmiş Admin Panel</div>
+            <div class="ozellik"><span>✓</span> Haftalık Yedekleme</div>
+        </div>
+        <div class="kutu-alt"><a href="#" class="satin-al-butonu">SATIN AL</a></div>
+    </div>
+
+    <div class="satis-kutusu populer">
+        <div class="kutu-ust-koyu"><h2>PROFESYONEL</h2></div>
+        <div class="kutu-orta">
+            <div class="ozellik"><span>✓</span> Hediye Domain Adı</div>
+            <div class="ozellik"><span>✓</span> Sınırsız SSD Alanı</div>
+            <div class="ozellik"><span>✓</span> Sınırsız Aylık Trafik</div>
+            <div class="ozellik"><span>✓</span> Gelişmiş SEO Modülü</div>
+            <div class="ozellik"><span>✓</span> 7/24 Teknik Destek</div>
+            <div class="ozellik"><span>✓</span> Günlük Yedekleme</div>
+            <div class="ozellik"><span>✓</span> LiteSpeed Teknolojisi</div>
+            <div class="ozellik"><span>✓</span> Özel Cache Sistemi</div>
+        </div>
+        <div class="kutu-alt"><a href="#" class="satin-al-butonu" style="background:#ffcc00; color:#003d52;">SATIN AL</a></div>
+    </div>
+
+    <div class="satis-kutusu">
+        <div class="kutu-ust-koyu"><h2>VİP</h2></div>
+        <div class="kutu-orta">
+            <div class="ozellik"><span>✓</span> Özel Yazılım Çözümü</div>
+            <div class="ozellik"><span>✓</span> VDS Sunucu Hizmeti</div>
+            <div class="ozellik"><span>✓</span> Çoklu Dil Seçeneği</div>
+            <div class="ozellik"><span>✓</span> Tam Güvenlik Kalkanı</div>
+            <div class="ozellik"><span>✓</span> API Entegrasyonları</div>
+            <div class="ozellik"><span>✓</span> 1 Yıl VIP Danışman</div>
+            <div class="ozellik"><span>✓</span> Özel Tasarım Çizimi</div>
+            <div class="ozellik"><span>✓</span> Anlık İzleme Sistemi</div>
+        </div>
+        <div class="kutu-alt"><a href="#" class="satin-al-butonu">TEKLİF AL</a></div>
+    </div>
+</div>
+
+<div class="grup-konteynir alt-grup">
+    <div class="satis-kutusu">
+        <div class="kutu-ust-mavi"><h2>BAŞLANGIÇ</h2></div>
+        <div class="kutu-orta">
+            <div class="ozellik"><span>✓</span> Temel Cloud Alanı</div>
+            <div class="ozellik"><span>✓</span> Tek Tıkla Kurulum</div>
+            <div class="ozellik"><span>✓</span> Ücretsiz Hazır Tema</div>
+            <div class="ozellik"><span>✓</span> E-Posta Yönetimi</div>
+            <div class="ozellik"><span>✓</span> Spam Koruması</div>
+            <div class="ozellik"><span>✓</span> Veritabanı Desteği</div>
+            <div class="ozellik"><span>✓</span> 100 Mbps Port</div>
+            <div class="ozellik"><span>✓</span> FTP/Panel Erişimi</div>
+        </div>
+        <div class="kutu-alt"><a href="#" class="satin-al-butonu turuncu-btn">ÜCRETSİZ BAŞLA</a></div>
+    </div>
+
+    <div class="satis-kutusu">
+        <div class="kutu-ust-mavi"><h2>GELİŞMİŞ</h2></div>
+        <div class="kutu-orta">
+            <div class="ozellik"><span>✓</span> Cloudflare CDN Ayarı</div>
+            <div class="ozellik"><span>✓</span> %99.9 Uptime Garantisi</div>
+            <div class="ozellik"><span>✓</span> DDoS Koruma Paketi</div>
+            <div class="ozellik"><span>✓</span> Ücretsiz Site Taşıma</div>
+            <div class="ozellik"><span>✓</span> Multi-PHP Desteği</div>
+            <div class="ozellik"><span>✓</span> Otomatik Güncelleme</div>
+            <div class="ozellik"><span>✓</span> Malware Taraması</div>
+            <div class="ozellik"><span>✓</span> Uzak MySQL Erişimi</div>
+        </div>
+        <div class="kutu-alt"><a href="#" class="satin-al-butonu">İNCELE</a></div>
+    </div>
+
+    <div class="satis-kutusu populer">
+        <div class="kutu-ust-mavi"><h2>KURUMSAL+</h2></div>
+        <div class="kutu-orta">
+            <div class="ozellik"><span>✓</span> Çoklu Lokasyon Desteği</div>
+            <div class="ozellik"><span>✓</span> Gelişmiş Güvenlik Seti</div>
+            <div class="ozellik"><span>✓</span> API Erişimi & Desteği</div>
+            <div class="ozellik"><span>✓</span> NVMe SSD Altyapısı</div>
+            <div class="ozellik"><span>✓</span> Dedike IP Adresi</div>
+            <div class="ozellik"><span>✓</span> Redis/Memcached</div>
+            <div class="ozellik"><span>✓</span> Kurumsal Yedekleme</div>
+            <div class="ozellik"><span>✓</span> Özel Panel Arayüzü</div>
+        </div>
+        <div class="kutu-alt"><a href="#" class="satin-al-butonu" style="background:#ffcc00; color:#003d52;">SATIN AL</a></div>
+    </div>
+
+    <div class="satis-kutusu">
+        <div class="kutu-ust-mavi"><h2>ULTRA</h2></div>
+        <div class="kutu-orta">
+            <div class="ozellik"><span>✓</span> Sınırsız CPU Kaynağı</div>
+            <div class="ozellik"><span>✓</span> Tam Yönetimli Hizmet</div>
+            <div class="ozellik"><span>✓</span> Sınırsız Veri Transferi</div>
+            <div class="ozellik"><span>✓</span> Anlık Kaynak Takibi</div>
+            <div class="ozellik"><span>✓</span> Yedekleme Sunucusu</div>
+            <div class="ozellik"><span>✓</span> Donanım Güvenliği</div>
+            <div class="ozellik"><span>✓</span> Yük Dengeleyici</div>
+            <div class="ozellik"><span>✓</span> Yazılım Desteği</div>
+        </div>
+        <div class="kutu-alt"><a href="#" class="satin-al-butonu">TEKLİF AL</a></div>
+    </div>
+</div>
+
+</body>
+</html>
