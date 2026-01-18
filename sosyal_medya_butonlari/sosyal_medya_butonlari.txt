@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allaturkaa Sosyal Medya Butonları</title>
+    
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* --- Tema Değişkenleri (Önceki Widget'lar ile Uyumlu) --- */
+        :root {
+            --bg-main: #3a3a3a;      
+            --bg-panel: #4a4a4a;     
+            --text-light: #f4f4f4;    
+            --accent-color: #ff9800; 
+            --secondary-accent: #00bcd4; /* Mavi/Turkuaz */
+            --shadow: 0 6px 6px rgba(0, 0, 0, 0.5); 
+        }
+        
+        body {
+            background-color: transparent; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* --- Ana Konteyner: 350px genişlik --- */
+        #social-media-wrapper {
+            width: 350px; 
+            margin: 0 auto;
+            background: var(--bg-main);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 20px 15px; 
+            text-align: center;
+        }
+        
+        /* --- Logo Stili --- */
+        #header-logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #header-logo {
+            max-width: 180px; 
+            height: auto;
+            border-radius: 6px;
+        }
+
+        /* --- Başlık Stili --- */
+        #widget-title {
+            color: var(--secondary-accent);
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            border-bottom: 2px solid var(--bg-panel);
+            padding-bottom: 10px;
+        }
+
+        /* --- Butonlar Konteyneri --- */
+        #buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px; 
+            padding: 10px 0;
+        }
+
+        /* --- Her Bir Sosyal Medya Butonu --- */
+        .social-button {
+            display: flex; 
+            align-items: center; 
+            padding: 10px 15px;
+            border-radius: 25px; 
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .social-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .social-button i {
+            width: 30px; 
+            text-align: left;
+            margin-right: 15px;
+            font-size: 1.5em;
+        }
+        
+        /* --- YENİ EKLENEN: Forum Butonu Stili --- */
+        .forum-button {
+            /* Tema vurgu rengi olan Turkuaz/Mavi tonlarını kullan */
+            background: linear-gradient(to right, var(--secondary-accent), #00a0b8);
+            margin-top: 15px; /* Diğer butonlardan biraz boşluk bırak */
+        }
+        /* Forum butonu ikon yerine logo kullanacak, bu yüzden i stiline ihtiyacı yok */
+
+        /* --- Buton Renkleri ve Gradientleri --- */
+        .facebook { background: linear-gradient(to right, #3b5998, #2a417a); }
+        .twitter { background: linear-gradient(to right, #1DA1F2, #0f8cd4); }
+        .instagram { background: linear-gradient(to right, #833AB4, #E1306C, #FD1D1D, #FCAF45); }
+        .youtube { background: linear-gradient(to right, #FF0000, #c40000); }
+        .vk { background: linear-gradient(to right, #4C75A3, #3a5c8c); }
+        .telegram { background: linear-gradient(to right, #0088CC, #0077b3); }
+        .whatsapp { background: linear-gradient(to right, #25D366, #1fad4e); }
+        .rss { background: linear-gradient(to right, #FFA500, #d48700); }
+        
+        /* Tüm ikonlar beyaz */
+        .social-button i { color: #fff; }
+
+        /* YENİ EKLENEN: Forum Butonu Logosunun Stili */
+        .forum-logo {
+            width: 30px; /* İkon ile aynı genişlikte */
+            height: auto;
+            margin-right: 15px;
+            border-radius: 4px;
+        }
+        
+    </style>
+    
+</head>
+<body>
+
+<div id="social-media-wrapper">
+    
+    <div id="header-logo-container">
+        <img id="header-logo" src="https://allaturkaa.de/forum/wcf/images/allaturkaa/logo.png" alt="Allaturkaa Logo">
+    </div>
+
+    <div id="widget-title">Bizi Takip Edin..</div>
+    
+    <div id="buttons-container">
+        
+        <a href="[FACEBOOK_URL]" target="_blank" class="social-button facebook">
+            <i class="fab fa-facebook-f"></i> Facebook
+        </a>
+        
+        <a href="[TWITTER_URL]" target="_blank" class="social-button twitter">
+            <i class="fab fa-twitter"></i> Twitter
+        </a>
+        
+        <a href="[INSTAGRAM_URL]" target="_blank" class="social-button instagram">
+            <i class="fab fa-instagram"></i> Instagram
+        </a>
+        
+        <a href="[YOUTUBE_URL]" target="_blank" class="social-button youtube">
+            <i class="fab fa-youtube"></i> YouTube
+        </a>
+
+        <a href="[VK_URL]" target="_blank" class="social-button vk">
+            <i class="fab fa-vk"></i> VK
+        </a>
+        
+        <a href="[TELEGRAM_URL]" target="_blank" class="social-button telegram">
+            <i class="fab fa-telegram-plane"></i> Telegram
+        </a>
+        
+        <a href="[WHATSAPP_URL]" target="_blank" class="social-button whatsapp">
+            <i class="fab fa-whatsapp"></i> WhatsApp
+        </a>
+        
+        <a href="[RSS_URL]" target="_blank" class="social-button rss">
+            <i class="fas fa-rss"></i> RSS
+        </a>
+        
+        <a href="https://allaturkaa.de/forum/index.php" target="_blank" class="social-button forum-button">
+            <img src="https://allaturkaa.de/forum/wcf/images/allaturkaa/logo.png" alt="Allaturkaa Logo" class="forum-logo">
+            Allaturkaa Forum
+        </a>
+
+    </div>
+    
+</div>
+
+</body>
+</html>
