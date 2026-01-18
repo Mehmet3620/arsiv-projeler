@@ -1,0 +1,98 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Untitled</title>
+<meta name="generator" content="Web Page Maker">
+</head>
+<body bgColor="#808080">
+
+<style>
+/* ================== ARAPÇA RAKAMLI SAAT ================== */
+#romanClockBlogger{
+  position: relative;
+  margin: 20px auto;
+  width:300px;
+  height:300px;
+  z-index:9999;
+}
+.hand{position:absolute;transform-origin:12px 50%;pointer-events:none;z-index: 10;}
+#hHand{width:100px;left:140px;top:140px;}
+#mHand{width:150px;left:142px;top:135px;}
+#sHand{width:110px;left:140px;top:140px;opacity:.85}
+
+/* Orta Yazı Ayarları */
+#forumText {
+  position: absolute;
+  top: 65%; 
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: "Arial", sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  color: #e6dcc6;
+  opacity: 0.6;
+  white-space: nowrap;
+  text-shadow: 1px 1px 2px #000;
+  z-index: 1;
+}
+
+#clockCenter{
+  position:absolute;left:150px;top:150px;width:22px;height:22px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(circle,#f0e0b0,#7a5321,#000);
+  z-index: 20;
+}
+
+#romanNumbers span{
+  position:absolute;
+  font-family: "Arial", sans-serif; /* Arapça rakamlar için düzgün bir font */
+  font-size:28px; /* Arapça karakterler biraz daha büyük durması için artırıldı */
+  font-weight:bold;
+  color:#e6dcc6;
+  text-shadow: 1px 1px 3px #000;
+}
+</style>
+
+<div id="romanClockBlogger">
+  <div id="forumText">Allaturkaa Forum</div>
+  <img src="https://i.ibb.co/RTNCyFRj/Chat-GPT-mage-8-Oca-2026-20-35-21-1.png" id="hHand" class="hand">
+  <img src="https://i.ibb.co/RTNCyFRj/Chat-GPT-mage-8-Oca-2026-20-35-21-1.png" id="mHand" class="hand">
+  <img src="https://i.ibb.co/RTNCyFRj/Chat-GPT-mage-8-Oca-2026-20-35-21-1.png" id="sHand" class="hand">
+  <div id="clockCenter"></div>
+  <div id="romanNumbers"></div>
+</div>
+
+<script>
+// Arapça Rakam Dizisi (١٢: 12, ١: 1, ٢: 2...)
+const rakamlar = ["١٢", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩", "١٠", "١١"];
+const c = document.getElementById("romanNumbers");
+
+rakamlar.forEach((n, i) => {
+  const a = (i * 30 - 90) * Math.PI / 180;
+  const x = 150 + 115 * Math.cos(a); 
+  const y = 150 + 115 * Math.sin(a);
+  const s = document.createElement("span");
+  s.innerText = n;
+  s.style.left = x + "px";
+  s.style.top = y + "px";
+  s.style.transform = `translate(-50%, -50%) rotate(0deg)`;
+  c.appendChild(s);
+});
+
+function updateClock() {
+  const d = new Date();
+  const h = d.getHours() % 12;
+  const m = d.getMinutes();
+  const s = d.getSeconds();
+  document.getElementById("hHand").style.transform = `rotate(${h * 30 + m / 2}deg)`;
+  document.getElementById("mHand").style.transform = `rotate(${m * 6 + s / 10}deg)`;
+  document.getElementById("sHand").style.transform = `rotate(${s * 6}deg)`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+</script>
+
+</body>
+</html>
