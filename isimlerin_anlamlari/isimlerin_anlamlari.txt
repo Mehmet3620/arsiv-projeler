@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İsim ve Anlamları Sözlüğü Widget'ı</title> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <style>
+        /* ======================================= */
+        /* TEMEL WIDGET STİLLERİ */
+        /* ======================================= */
+
+        /* YENİ RENK DÜZENİ: Koyu Gri / Turuncu Tema */
+        :root {
+            /* Renk Paleti */
+            --color-dark-grey: #333333;               /* Koyu Gri (Ana BG) */
+            --color-medium-grey: #444444;             /* Orta Gri (Sekme BG, Akordiyon İç BG/Hover) */
+            --color-accent-orange: #FF8800;           /* Parlak Turuncu (Vurgu, Çerçeve) */
+            --color-active-orange: #FF6600;           /* Koyu Turuncu (Aktif Sekme) */
+            
+            /* SADECE FOOTER İÇİN YENİ, DAHA KOYU TURUNCU */
+            --color-footer-dark-bg: #CC5500;         
+            
+            --color-text-white: #FFFFFF;              /* Beyaz (Ana Yazı) */
+            --color-text-light-grey: #CCCCCC;         /* Açık Gri (Açıklama Yazısı) */
+
+            /* WIDGET Yapısına Uyarlanan Değişkenler */
+            --widget-bg-inner: var(--color-dark-grey);
+            --border-gold: var(--color-accent-orange); 
+            --text-dark: var(--color-text-white);
+            --text-muted: var(--color-text-light-grey);
+            --list-marker-green: var(--color-accent-orange); 
+            --bg-light: var(--color-medium-grey); 
+            --color-accordion-bg: var(--color-medium-grey); /* Akordiyon İç BG ve Hover */
+            --color-active-tab: var(--color-active-orange);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: transparent; /* KULLANICI İSTEĞİ: Saydam arka plan */
+            margin: 0;
+            padding: 0; 
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+        }
+
+        .isim-widget-container {
+            width: 350px; 
+            margin: 20px auto;
+            background-color: var(--widget-bg-inner); /* Koyu Gri */
+            color: var(--text-dark); 
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); 
+            overflow: hidden;
+            border: 1px solid var(--border-gold); /* Turuncu Çerçeve */
+            box-sizing: border-box; 
+        }
+
+        /* Başlık Stili */
+        .widget-main-title {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--text-dark); /* Beyaz */
+            padding: 20px 15px 15px 15px; 
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2); 
+            margin-bottom: 5px;
+        }
+
+        /* Sekme Başlıkları (5 Sekmeye Uygun Düzen) */
+        .tab-headers {
+            display: flex;
+            flex-wrap: nowrap;
+            background-color: var(--bg-light); /* Orta Gri */
+            border-bottom: 2px solid var(--border-gold); /* Turuncu alt çizgi */
+        }
+
+        .tab-header {
+            flex-grow: 1; 
+            width: 20%; 
+            padding: 12px 2px; 
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            border-right: 1px solid rgba(255, 255, 255, 0.1); 
+            border-bottom: 1px solid var(--border-gold); 
+            box-sizing: border-box;
+            font-size: 0.8em;
+            color: var(--text-dark); /* Beyaz yazı */
+        }
+
+        .tab-header:last-child {
+            border-right: none;
+        }
+        .tab-header:nth-last-child(-n+5) { 
+            border-bottom: none;
+        }
+
+        .tab-header:hover:not(.active) {
+            background-color: var(--color-medium-grey); /* Orta Gri hover */
+        }
+
+        .tab-header.active {
+            background-color: var(--color-active-tab); /* Koyu Turuncu */
+            color: var(--color-text-white); /* Beyaz */
+        }
+
+        /* Arama Kutusu */
+        .search-container {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-gold);
+        }
+
+        #isimSearch {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-gold); /* Turuncu Kenarlık */
+            background-color: var(--widget-bg-inner); /* Koyu Gri BG */
+            color: var(--text-dark); 
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        #isimSearch::placeholder {
+            color: var(--text-muted); 
+        }
+
+        /* Sekme İçerikleri */
+        .tab-content {
+            padding: 0; 
+            display: none;
+            background-color: var(--widget-bg-inner); /* Koyu Gri */
+        }
+        
+        /* Açıklama İçeriği Özel Stili */
+        .aciklama-content {
+            padding: 15px;
+            line-height: 1.6;
+            font-size: 0.9em;
+            color: var(--text-muted); /* Açık Gri */
+        }
+        .aciklama-content h4 {
+            color: var(--text-dark); /* Beyaz Başlık */
+            margin-top: 15px;
+            margin-bottom: 5px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+            padding-bottom: 5px;
+            font-size: 1.1em;
+        }
+        .aciklama-content ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 5px;
+        }
+        .aciklama-content ul li {
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+        .aciklama-content ul li::before {
+            content: "\f00c"; 
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            color: var(--list-marker-green); /* Turuncu İkon Vurgu */
+            margin-right: 8px;
+        }
+
+        /* Akordiyon - İsim Kartları */
+        .isim-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Açık Beyaz ayırıcı */
+        }
+
+        .isim-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: 600;
+            color: var(--text-dark); 
+        }
+
+        .isim-header:hover {
+            background-color: var(--color-accordion-bg); /* Orta Gri hover */
+        }
+
+        .isim-header .name-text {
+            color: var(--text-dark); /* Beyaz İsim */
+        }
+        
+        /* İkon rengini vurgu turuncu yap */
+        .isim-header i {
+            color: var(--list-marker-green);
+        }
+
+
+        .isim-content {
+            padding: 0 15px;
+            background-color: var(--color-accordion-bg); /* Orta Gri Akordiyon İç BG */
+            display: none; 
+            overflow: hidden;
+        }
+
+        .isim-content p {
+            padding: 10px 0;
+            margin: 0;
+            line-height: 1.5;
+            color: var(--text-muted); 
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+        
+        .isim-content p:not(:last-child) {
+             border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .isim-content p strong {
+            color: var(--text-dark); 
+        }
+        
+        /* Arama Sonucu Yok Mesajı */
+        #globalNoResult {
+            text-align: center;
+            padding: 20px;
+            color: var(--border-gold); /* Turuncu Mesaj */
+            display: none;
+        }
+        
+        /* Yapımcı Bilgisi Stili */
+        .powered-by-isim {
+            text-align: right;
+            font-size: 0.7em;
+            color: var(--color-text-white); /* Beyaz yazı */
+            padding: 10px 15px;
+            opacity: 0.9;
+            /* DEĞİŞİKLİK BURADA: Daha Koyu Turuncu Footer BG */
+            background-color: var(--color-footer-dark-bg); 
+            margin-top: -1px;
+        }
+
+        /* Mobil Uyumluluk */
+        @media (max-width: 600px) {
+            .isim-widget-container {
+                margin: 0;
+                border-radius: 0;
+                width: 100%; 
+            }
+            .tab-header {
+                font-size: 0.75em; 
+                width: 20%;
+                padding: 10px 1px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="isim-widget-container">
+    
+    <div class="widget-main-title">İSİMLER VE ANLAMLARI SÖZLÜĞÜ</div>
+
+    <div class="tab-headers">
+        <div class="tab-header active" onclick="openTab('aciklama')">
+            <i class="fas fa-book-open"></i> Açıklama
+        </div>
+        <div class="tab-header" onclick="openTab('kizIsimleri1')">
+            <i class="fas fa-female"></i> Kızlar 1
+        </div>
+        <div class="tab-header" onclick="openTab('kizIsimleri2')">
+            <i class="fas fa-female"></i> Kızlar 2
+        </div>
+        <div class="tab-header" onclick="openTab('erkekIsimleri1')">
+            <i class="fas fa-male"></i> Erkekler 1
+        </div>
+        <div class="tab-header" onclick="openTab('erkekIsimleri2')">
+            <i class="fas fa-male"></i> Erkekler 2
+        </div>
+    </div>
+
+    <div class="search-container" id="searchContainer" style="display: none;">
+        <input type="text" id="isimSearch" onkeyup="filterIsimler()" placeholder="İsim ara...">
+    </div>
+    
+    <div id="globalNoResult">Aradığınız isim sözlükte bulunamamıştır.</div>
+
+    <div id="aciklama" class="tab-content active">
+        <div class="aciklama-content">
+            <p style="text-align: center; color: var(--border-gold); font-style: italic;">
+                "Sizler kıyamet günü isimlerinizle ve babalarınızın isimleriyle çağrılacaksınız. Öyleyse isimlerinizi güzel yapın." (Ebu Davud)
+            </p>
+            
+            <h4>İsim Koymanın Önemi ve Kuralları</h4>
+            <p style="color: var(--text-muted);">
+                Yeni doğan çocuğa güzel bir isim koymak, anne ve babanın en önemli dini görevlerindendir. Zira konulan isim hem bu dünyada hem de ahirette geçerlidir. Kötü veya olumsuz anlama gelen isimlerden kaçınılmalıdır.
+            </p>
+
+            <h4>Kullanılmaması Gereken İsim Türleri</h4>
+            <ul>
+                <li>Allah'ın zâtına has isimler ("Allah" ve "Rahman"). Bu isimler sadece "Abd" (kul) kelimesi eklenerek ("Abdullah", "Abdurrahman") şeklinde kullanılabilir.</li>
+                <li>Sadece Allah'a ait vasıfları ifade eden isimler ("Halık", "Samed", "Rezzak" vb.).</li>
+            </ul>
+
+            <h4>Tavsiye Edilen Güzel İsimler</h4>
+            <p style="color: var(--text-muted);">Peygamberimiz (sav)'in tavsiyelerine göre:</p>
+            <ul>
+                <li><strong style="color: var(--text-dark);">Erkekler için:</strong> Abdullah, Abdurrahman, Muhammed, peygamber isimleri, Hasan, Hüseyin.</li>
+                <li><strong style="color: var(--text-dark);">Kızlar için:</strong> Ayşe (Aişe), Fatıma, Zeynep, Hatice, Cemile, Zehra.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="kizIsimleri1" class="tab-content">
+        <div class="isim-list">
+            
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Aylin</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Ay'ın çevresindeki ışık halkası, hale. Parlak ve gizemli.</p> <p><strong>Kökeni:</strong> Türkçe</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Elif</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Arap alfabesinin ilk harfi. İnce, uzun boylu kız. Alışmış, uyum sağlamış.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Zeynep</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Değerli taşlar. Güzel, kıymetli. Hz. Peygamberin (s.a.v.) torununun adı.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Asya</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Dünyanın en büyük kıtası.</p> <p><strong>Kökeni:</strong> Coğrafi / Kökeni Antik Yunanca'ya dayandığı düşünülür.</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Ece</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Kraliçe, baş, ulu. Güzel kız.</p> <p><strong>Kökeni:</strong> Türkçe</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Yağmur</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Havadaki su buharının yoğunlaşmasıyla oluşan yağış. Bereket.</p> <p><strong>Kökeni:</strong> Türkçe</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Büşra</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Müjde, sevinçli haber.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Ceren</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Ceylan, ahu. İri ve güzel gözlü.</p> <p><strong>Kökeni:</strong> Farsça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Duygu</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> His, sezgi. İçsel tepki.</p> <p><strong>Kökeni:</strong> Türkçe</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Esra</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> En hızlı, çok çabuk. Karanlıkta yol gösteren.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Gizem</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Sır, bilinmeyen, gizli şey.</p> <p><strong>Kökeni:</strong> Türkçe</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Hande</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Gülen, neşeli, açık. Gülüş.</p> <p><strong>Kökeni:</strong> Farsça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">İrem</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Cennet bahçesi. Ok atmakta usta.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            
+        </div>
+    </div>
+
+    <div id="kizIsimleri2" class="tab-content">
+        <div class="isim-list">
+
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Lale</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Yaprakları katmerli, güzel kokulu bir çiçek türü.</p> <p><strong>Kökeni:</strong> Farsça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Melek</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Tanrı'nın emriyle çeşitli görevler yapan nurani varlık.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Nefise</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Çok güzel, değerli, beğenilen.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Öykü</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Hikaye, anlatı, vak'a.</p> <p><strong>Kökeni:</strong> Türkçe</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Pınar</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Yer altından çıkan su kaynağı, çeşme.</p> <p><strong>Kökeni:</strong> Türkçe</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Rüya</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Düş. Uykuda görülen şey.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Sena</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Övgü, methetme. Yüksek yer.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Şevval</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Hicri ayların onuncusu. İlkbahar.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Tuğçe</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Küçük tuğ, padişah sorgucu. Süslü.</p> <p><strong>Kökeni:</strong> Türkçe</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Umay</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Devlet kuşu, talih, şans getiren. Türk mitolojisinde bereket tanrıçası.</p> <p><strong>Kökeni:</strong> Türkçe</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Vuslat</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Kavuşma, erişme, sevgiliye ulaşma.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Zehra</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Çok parlak, nurlu yüzlü. Hz. Fatıma'nın lakabı.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            
+        </div>
+    </div>
+    
+    <div id="erkekIsimleri1" class="tab-content">
+        <div class="isim-list">
+            
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Emir</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Bir kavmin, şehrin veya devletin başı. Komutan, bey. Buyruk sahibi.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Burak</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Hz. Muhammed'in Miraç yolculuğunda bindiği varsayılan binek. Parlak, ışık saçan.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Arda</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Asa, işaret; sonradan gelen. Temiz, saf.</p> <p><strong>Kökeni:</strong> Türkçe</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Yusuf</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Güzellik, ihsan sahibi. (Kur'an'da adı geçen bir peygamberin ismi.)</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Kerem</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Cömertlik, ululuk, asalet, bağış.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Furkan</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Hakkı batıldan ayıran, delil. (Kur'an-ı Kerim'in bir ismi.)</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Ahmet</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Övülmeye layık. Hz. Muhammed'in isimlerinden biri.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Ali</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Yüce, yüksek, şerefli, ulu.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Baran</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Yağmur. Güç, kuvvet.</p> <p><strong>Kökeni:</strong> Farsça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Cem</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Hükümdar, şah. Toplanma, yığma.</p> <p><strong>Kökeni:</strong> Farsça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Deniz</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Büyük su kütlesi. Enginlik.</p> <p><strong>Kökeni:</strong> Türkçe</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Eren</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Olağanüstü yetenekleri olan kişi, ermiş. Yiğit.</p> <p><strong>Kökeni:</strong> Türkçe</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Fatih</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Fetheden, zapt eden, zafer kazanan.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+
+        </div>
+    </div>
+    
+    <div id="erkekIsimleri2" class="tab-content">
+        <div class="isim-list">
+
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Hakan</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Türk ve Moğol hükümdarlarının kullandığı unvan. İmparator.</p> <p><strong>Kökeni:</strong> Türkçe</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">İbrahim</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> İnananların babası, hakların babası. (Peygamber ismi.)</p> <p><strong>Kökeni:</strong> Arapça/İbranice</p> <p><strong>Açıklama:</strong> İbrahim ismi Halil (dost) ve Hanif (tek Allah'a inanan) sıfatlarıyla anılır.</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Kaan</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Hükümdar, Hanların Hanı.</p> <p><strong>Kökeni:</strong> Türkçe</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Mustafa</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Seçilmiş, seçkin, Hz. Muhammed'in isimlerinden.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Oğuz</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Sağlam, gürbüz, genç. Boy, kabile.</p> <p><strong>Kökeni:</strong> Türkçe</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Poyraz</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Kuzeydoğudan esen rüzgar.</p> <p><strong>Kökeni:</strong> Türkçe</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Recep</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Arabi ayların yedincisi. Saygıdeğer.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Selim</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Sağlam, kusursuz, doğru.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Tarık</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Sabah yıldızı, venüs. Gece gelen.</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Umut</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Beklenti, ümit.</p> <p><strong>Kökeni:</strong> Türkçe</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Volkan</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Yanardağ.</p> <p><strong>Kökeni:</strong> Latince/İtalyanca</p> </div> </div>
+            <div class="isim-item"> <div class="isim-header" onclick="toggleAccordion(this)"> <span class="name-text">Yasin</span> <i class="fas fa-chevron-down"></i> </div> <div class="isim-content"> <p><strong>Anlamı:</strong> Kur'an-ı Kerim'in bir suresinin adı. (Hz. Muhammed'in isimlerinden olduğu düşünülür.)</p> <p><strong>Kökeni:</strong> Arapça</p> </div> </div>
+            
+        </div>
+    </div>
+    
+    <div class="powered-by-isim">
+        **Powered by Allaturka**
+    </div>
+
+</div>
+
+<script>
+    // TÜM İSİM LİSTELERİNİN ID'LERİ
+    const nameTabIds = ['kizIsimleri1', 'kizIsimleri2', 'erkekIsimleri1', 'erkekIsimleri2'];
+
+    // 1. SEKME İŞLEVİ
+    // isFromFilter parametresi, bu çağrının filtreleme fonksiyonundan gelip gelmediğini kontrol eder.
+    function openTab(tabId, isFromFilter = false) {
+        // 1. Tüm içerikleri gizle ve başlıkların aktifliğini kaldır
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.style.display = 'none';
+            content.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-header').forEach(header => {
+            header.classList.remove('active');
+        });
+
+        // 2. İlgili sekmeyi göster ve başlığı aktif yap
+        const activeContent = document.getElementById(tabId);
+        const activeHeader = document.querySelector(`.tab-header[onclick*='${tabId}']`);
+        const searchContainer = document.getElementById('searchContainer');
+        
+        if (activeContent) {
+            activeContent.style.display = 'block';
+            activeContent.classList.add('active');
+        }
+        if (activeHeader) {
+            activeHeader.classList.add('active');
+        }
+
+        // 3. Arama kutusu ve filtrelemeyi yönet
+        if (tabId === 'aciklama') {
+            searchContainer.style.display = 'none';
+            document.getElementById('globalNoResult').style.display = 'none';
+            resetSearch(); // Aramayı sıfırla
+        } else {
+            searchContainer.style.display = 'block';
+            if (!isFromFilter) { 
+                // Eğer sekme manuel olarak değiştirilmişse, mevcut filtreyi yeniden uygula
+                filterIsimler(); 
+            }
+        }
+
+        closeAllAccordions();
+    }
+
+    // 2. AKORDİYON İŞLEVİ
+    function toggleAccordion(header) {
+        const content = header.nextElementSibling;
+        const icon = header.querySelector('i');
+        
+        // Sadece tek bir akordiyonun açık olmasını sağlamak için diğerlerini kapat
+        document.querySelectorAll('.isim-header').forEach(h => {
+            if (h !== header) {
+                h.nextElementSibling.style.display = 'none';
+                h.querySelector('i').classList.replace('fa-chevron-up', 'fa-chevron-down');
+            }
+        });
+
+        // Tıklanan akordiyonu aç/kapat
+        if (content.style.display === "block") {
+            content.style.display = "none";
+            icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+        } else {
+            content.style.display = "block";
+            icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+        }
+    }
+
+    function closeAllAccordions() {
+        document.querySelectorAll('.isim-content').forEach(content => {
+            content.style.display = 'none';
+        });
+        document.querySelectorAll('.isim-header i').forEach(icon => {
+            icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+        });
+    }
+
+    // 3. KRİTİK ARAMA İŞLEVİ (GLOBAL TARAMA VE OTOMATİK SEKME GEÇİŞİ)
+    function filterIsimler() {
+        const input = document.getElementById('isimSearch');
+        const filter = input.value.toLocaleUpperCase('tr').trim(); 
+        const globalNoResult = document.getElementById('globalNoResult');
+        
+        // Arama kutusu boşsa, tüm isimleri göster ve işlemi sonlandır
+        if (filter.length === 0) {
+            document.querySelectorAll('.isim-item').forEach(item => item.style.display = "");
+            globalNoResult.style.display = 'none';
+            return;
+        }
+
+        closeAllAccordions();
+        let firstMatchingTabId = null;
+        let globalMatchFound = false;
+
+        // 1. Tüm isim listelerini (4 sekme) tarayarak filtreleme yap ve ilk eşleşeni bul
+        nameTabIds.forEach(tabId => {
+            const listContainer = document.getElementById(tabId);
+            if (!listContainer) return; // Liste yoksa atla
+            
+            listContainer.querySelectorAll('.isim-item').forEach(item => {
+                const nameText = item.querySelector('.name-text').textContent;
+                const nameTextUpper = nameText.toLocaleUpperCase('tr');
+                
+                // İsim arama metniyle BAŞLIYORSA
+                const isMatch = nameTextUpper.indexOf(filter) === 0;
+
+                if (isMatch) {
+                    item.style.display = ""; // Öğeyi göster
+                    globalMatchFound = true;
+                    if (!firstMatchingTabId) {
+                        firstMatchingTabId = tabId; // İlk eşleşen sekmeyi kaydet
+                    }
+                } else {
+                    item.style.display = "none"; // Öğeyi gizle
+                }
+            });
+        });
+
+        // 2. Global "Sonuç Yok" mesajını yönet
+        if (!globalMatchFound) {
+            globalNoResult.style.display = "block";
+        } else {
+            globalNoResult.style.display = "none";
+            
+            // 3. Eşleşme bulunduysa, sekmeyi otomatik olarak değiştir
+            if (firstMatchingTabId) {
+                const activeTabId = document.querySelector('.tab-content.active').id;
+                
+                // Eğer aktif sekme, ilk eşleşen sekme değilse, geçiş yap
+                if (activeTabId !== firstMatchingTabId) {
+                    // openTab fonksiyonunu çağırırken 'true' (isFromFilter) göndererek 
+                    // sonsuz döngüyü ve gereksiz yeniden filtrelemeyi engelleriz.
+                    openTab(firstMatchingTabId, true);
+                }
+            }
+        }
+    }
+
+    // Aramayı ve sonuçları temizle
+    function resetSearch() {
+        document.getElementById('isimSearch').value = '';
+        document.getElementById('globalNoResult').style.display = 'none';
+        
+        // Açıklama sekmesine geçiş yapıldığında tüm isimleri tekrar görünür yap
+        document.querySelectorAll('.isim-item').forEach(item => item.style.display = "");
+    }
+
+    // Sayfa yüklendiğinde varsayılan sekmeyi aç
+    document.addEventListener("DOMContentLoaded", () => {
+        openTab('aciklama'); // Varsayılan olarak Açıklama sekmesini aç
+    });
+</script>
+
+</body>
+</html>
