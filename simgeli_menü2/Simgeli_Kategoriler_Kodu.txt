@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=windows-1254">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
+
+    <style>
+        body { background-color: #f4f7f9; padding: 10px; font-family: 'Segoe UI', Arial, sans-serif; }
+
+        .menu-konteynir {
+            width: 260px; /* Yazıların sığması için ideal genişlik */
+            background-color: #ffffff;
+            border: 1px solid #e1e8ed;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* RESİMDEKİ KOYU BAŞLIK */
+        .baslik-bandi {
+            background-color: #003d52; /* Resimdeki koyu lacivert tonu */
+            color: #ffffff;
+            text-align: center;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .liste {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .satir-link {
+            text-decoration: none;
+            display: block;
+            border-bottom: 1px solid #f2f5f7;
+            transition: background 0.2s;
+        }
+
+        /* MAUSE ÜZERİNE GELİNCE HAFİF RENK DEĞİŞİMİ */
+        .satir-link:hover {
+            background-color: #d9e9f2;
+        }
+
+        .satir-icerik {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+        }
+
+        /* SİMGELERİN STİLİ */
+        .simge {
+            width: 25px;
+            font-size: 18px;
+            color: #333;
+            margin-right: 12px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* KATEGORİ YAZILARI */
+        .yazi {
+            color: #444;
+            font-size: 14px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+<div class="menu-konteynir">
+    <div class="baslik-bandi">Kategoriler</div>
+
+    <div class="liste">
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#127760;</span><span class="yazi">Kurumsal Firma Paketleri</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#128187;</span><span class="yazi">One Page Paketler</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#127981;</span><span class="yazi">İnşaat & Mimarlık Paketleri</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#128663;</span><span class="yazi">Rent a car & Oto Galeri & Yat</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#128722;</span><span class="yazi">E-Ticaret Paketleri</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#127968;</span><span class="yazi">Emlak Paketleri</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#128716;</span><span class="yazi">Otel & Salon & Pansiyon</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#128205;</span><span class="yazi">Tur & Gezi & Seyehat</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#127860;</span><span class="yazi">Restaurant / Cafe Paketleri</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#128221;</span><span class="yazi">Firma Rehberi Paketleri</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#127891;</span><span class="yazi">Eğitim - Okul Paketleri</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#9813;</span><span class="yazi">Doktor & Medikal & Klinik</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#128278;</span><span class="yazi">Dernek - Belediye - Parti Aday</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#9878;</span><span class="yazi">Avukatlık & Hukuk Paketleri</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#128461;</span><span class="yazi">Temizlik Firması Paketleri</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#128295;</span><span class="yazi">Tamir - Servis - Tesisatçı</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#128666;</span><span class="yazi">Nakliyat & Lojistik Paketleri</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#127811;</span><span class="yazi">Kuaför & Güzellik Salonu</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#128172;</span><span class="yazi">Kişisel - Fotoğrafçılık - Blog</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#128101;</span><span class="yazi">Reklam & Danışmanlık Paketleri</span></div></a>
+
+        <a href="#" class="satir-link"><div class="satir-icerik"><span class="simge">&#9917;</span><span class="yazi">Spor Salonları</span></div></a>
+    </div>
+</div>
+
+</body>
+</html>
