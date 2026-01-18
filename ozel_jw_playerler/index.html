@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <title>Allaturkaa Radyo - 10 Renk Full Stabil</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jplayer/2.9.2/jplayer/jquery.jplayer.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+
+    <style>
+        body { 
+            /* Arkaplan düzeltildi */
+            background: #f0f2f5 url("https://radioplayer.link/iframe/assets/img/oldskin/background.jpg") repeat;
+            background-attachment: fixed;
+            font-family: 'Roboto', sans-serif; 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 40px 20px; 
+        }
+
+        .main-logo { max-width: 300px; height: auto; margin-bottom: 20px; }
+        h1 { color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 40px; font-weight: 300; font-size: 24px; }
+        
+        .player-container { width: 700px !important; margin-bottom: 40px; height: 100px; position: relative; clear: both; }
+
+        .player {
+            width: 700px; height: 100px; 
+            background-image: url("https://radioplayer.link/iframe/assets/img/oldskin/sprite.png");
+            background-repeat: no-repeat; background-position: center -26px; 
+            position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+
+        .playback { position: absolute; left: 15px; top: 15px; width: 72px; height: 72px; z-index: 30; }
+        .jp-play, .jp-pause { position: absolute; width: 72px; height: 72px; cursor: pointer; }
+        .jp-play { background: url("https://radioplayer.link/iframe/assets/img/oldskin/sprite.png") no-repeat -1px -210px; }
+        .jp-pause { background: url("https://radioplayer.link/iframe/assets/img/oldskin/sprite.png") no-repeat -165px -210px; display: none; }
+
+        .volume-area { position: absolute; left: 110px; right: 230px; top: 32px; z-index: 20; }
+        .jp-volume-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.15); border-radius: 4px; position: relative; cursor: pointer; }
+        .jp-volume-bar-value { height: 100%; border-radius: 4px; position: relative; }
+        .vol-circle { position: absolute; top: -7px; right: -11px; width: 23px; height: 23px; background: url("https://radioplayer.link/iframe/assets/img/oldskin/sprite.png") no-repeat -160px 0; }
+
+        .status-text { color: #fff; font-size: 10pt; text-align: center; margin-top: 15px; white-space: nowrap; }
+        
+        .playlist-area { float: right; width: 210px; height: 75px; background: url("https://radioplayer.link/iframe/assets/img/oldskin/sprite.png") no-repeat 0 -340px; text-align: center; margin: 5px 5px 0 0; padding-top: 10px; }
+        .playlist-area span { display: block; color: #fff; font-size: 8.5pt; margin-bottom: 12px; }
+        .playlist-area a { margin: 0 8px; text-decoration: none; display: inline-block; }
+        
+        .powered { position: absolute; right: 40px; bottom: 6px; font-size: 7.5pt; color: rgba(255,255,255,0.5); text-decoration: none; }
+
+        /* Renkler */
+        .c0 { background-color: #2c3e50; } .b0 { background-color: #3498db; }
+        .c1 { background-color: #1b4332; } .b1 { background-color: #52b788; }
+        .c2 { background-color: #641e1e; } .b2 { background-color: #e63946; }
+        .c3 { background-color: #4a148c; } .b3 { background-color: #ab47bc; }
+        .c4 { background-color: #37474f; } .b4 { background-color: #90a4ae; }
+        .c5 { background-color: #006064; } .b5 { background-color: #26c6da; }
+        .c6 { background-color: #4e342e; } .b6 { background-color: #a1887f; }
+        .c7 { background-color: #0d47a1; } .b7 { background-color: #64b5f6; }
+        .c8 { background-color: #33691e; } .b8 { background-color: #9ccc65; }
+        .c9 { background-color: #121212; } .b9 { background-color: #00e600; }
+    </style>
+</head>
+<body>
+
+    <img src="https://allaturkaa.de/forum/wcf/images/allaturkaa/logo.png" class="main-logo">
+    <h1>Allaturkaa Radyo Renk Paletleri</h1>
+
+    <div id="radio-wrapper"></div>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var streamURL = "https://eu4.fastcast4u.com/proxy/allaturka?mp=/1";
+            var colors = ["0","1","2","3","4","5","6","7","8","9"];
+
+            $.each(colors, function(index, v) {
+                var pID = "jplayer_" + v;
+                var cID = "jp_container_" + v;
+
+                var html = `
+                <div id="${cID}" class="player-container jp-audio-stream">
+                    <div class="player c${v}">
+                        <div class="playback">
+                            <div class="jp-play"></div>
+                            <div class="jp-pause"></div>
+                        </div>
+                        <div class="volume-area">
+                            <div class="jp-volume-bar">
+                                <div class="jp-volume-bar-value b${v}">
+                                    <div class="vol-circle"></div>
+                                </div>
+                            </div>
+                            <div class="status-text">Yayındaki: Allaturkaa Radyo <span class="jp-current-time">00:00</span></div>
+                        </div>
+                        <div class="playlist-area">
+                            <span>Favori oynatıcınızda dinleyin</span>
+                            <a href="${streamURL}.m3u" target="_blank"><img src="https://radioplayer.link/iframe/assets/img/player-winamp-icon.svg" width="26"></a>
+                            <a href="${streamURL}.asx" target="_blank"><img src="https://radioplayer.link/iframe/assets/img/player-wmp-icon.svg" width="26"></a>
+                            <a href="${streamURL}.qtl" target="_blank"><img src="https://radioplayer.link/iframe/assets/img/player-quicktime-icon.svg" width="26"></a>
+                            <a href="${streamURL}.pls" target="_blank"><img src="https://radioplayer.link/iframe/assets/img/player-vlc-icon.svg" width="26"></a>
+                        </div>
+                        <a href="https://allaturkaa.de" class="powered" target="_blank">Powered by Seyyah</a>
+                    </div>
+                    <div id="${pID}" class="jp-jplayer"></div>
+                </div>`;
+                
+                $("#radio-wrapper").append(html);
+
+                $("#" + pID).jPlayer({
+                    ready: function () {
+                        $(this).jPlayer("setMedia", { mp3: streamURL });
+                    },
+                    play: function() {
+                        // Diğerlerini sadece durdur, ama bağlantılarını bozma ki butonları çalışsın
+                        $(this).jPlayer("pauseOthers");
+                    },
+                    cssSelectorAncestor: "#" + cID,
+                    supplied: "mp3",
+                    useStateClassSkin: true,
+                    preload: "none",
+                    volume: 0.8
+                });
+            });
+        });
+    </script>
+</body>
+</html>
