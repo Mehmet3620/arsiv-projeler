@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allaturka Müzik Çalar Widget</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        :root {
+            /* Renk Kodları */
+            --color-bg-main: #141829;
+            --color-accent-blue: #3A8DFF;
+            --color-text-light: #FFFFFF;
+            --color-text-dim: #BBBBBB;
+            --color-border-dark: #20263D;
+            --color-border-outer: rgba(255, 255, 255, 0.05);
+            --color-player-control: #DCDCDC;
+        }
+
+        /* Ana Konteyner */
+        .player-widget-container {
+            width: 330px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 20px auto;
+            color: var(--color-text-light);
+            background-color: var(--color-bg-main);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.9);
+            border: 1px solid var(--color-border-outer);
+        }
+
+        /* Albüm Kapağı Alanı (Video İçin Güncellendi) */
+        .album-cover-area {
+            position: relative;
+            width: 100%;
+            height: auto; 
+            overflow: hidden;
+            border-bottom: 1px solid var(--color-border-dark);
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+        
+        /* Video Etiketine Tam Genişlik ve Boyut Uygulanması */
+        .album-cover-area video {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        /* Çalan Şarkı Bilgisi */
+        .current-track-info {
+            padding: 10px 15px 0 15px;
+            text-align: center;
+        }
+
+        /* Streaminfo tarafından eklenen öğeleri stilize etme */
+        .current-track-info .stream-song-title {
+            font-size: 1.1em;
+            font-weight: **bold**;
+            margin: 0;
+            display: block;
+            color: var(--color-text-light);
+            text-decoration: none;
+        }
+
+        .current-track-info .stream-artist-name {
+            font-size: 0.8em;
+            color: var(--color-text-dim);
+            margin: 0;
+            padding-bottom: 5px;
+            display: block;
+        }
+
+        /* Dinleyici sayısı metnini stilize etme */
+        .current-track-info .stream-listeners {
+            font-size: 0.7em;
+            color: var(--color-accent-blue);
+            margin: 0 0 5px 0;
+            display: block;
+            font-weight: **bold**;
+        }
+
+        /* Dinleyici sayısının yanına "Online Dinleyici" yazısını ekler */
+        .current-track-info .stream-listeners::before {
+            content: "Online Dinleyici: ";
+            color: var(--color-text-dim);
+            font-weight: normal;
+        }
+
+
+        /* İlerleme Çubuğu ve Süreler */
+        .progress-area {
+            padding: 5px 15px 15px 15px;
+        }
+
+        .times {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75em;
+            color: var(--color-text-dim);
+            margin-bottom: 5px;
+        }
+
+        /* İlerleme Çubuğu (Range Input) */
+        .progress-bar {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            background: var(--color-border-dark);
+            border-radius: 2px;
+            outline: none;
+        }
+
+        /* Çubuk Topuzu */
+        .progress-bar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--color-accent-blue);
+            cursor: pointer;
+            margin-top: -1px;
+        }
+
+        /* Ana Kontroller */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 15px 15px 15px;
+            /* Playlist kaldırıldığı için alt çizgi widget footer'ın üstüne geldi */
+            border-bottom: 1px solid var(--color-border-dark); 
+        }
+
+        .control-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .control-button {
+            color: var(--color-player-control);
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: color 0.2s;
+        }
+
+        .control-button:hover {
+            color: var(--color-accent-blue);
+        }
+        
+        .play-pause-button {
+            font-size: 1.5em;
+        }
+        
+        /* Playlist bölümü kaldırıldığı için bu CSS kuralları etkisiz kalacaktır. */
+        
+        /* WIDGET İÇİ POWERED BY ALANI */
+        .widget-footer {
+            padding: 5px 15px 10px 15px;
+            text-align: center;
+            font-size: 0.7em;
+            color: var(--color-text-dim);
+            background-color: var(--color-bg-main);
+        }
+        
+        /* Gizli Ses Etiketi */
+        .hidden-audio {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="player-widget-container">
+    
+    <audio id="indexPlayer" autoplay="true" preload="metadata" class="hidden-audio" loop>
+        <source src="https://eu4.fastcast4u.com/proxy/allaturka?mp=/1" type="audio/mpeg">
+        Tarayıcınız bu ses oynatıcıyı desteklemiyor.
+    </audio>
+
+    <div class="album-cover-area">
+        <video autoplay loop muted width="330" height="247" style="pointer-events: none; margin-right: 0px;" controlslist="nodownload">        
+            <source src="https://archive.org/download/hosgeldiniz_202412/Ho%C5%9Fgeldiniz.mp4" type="video/mp4">        
+            Tarayıcınız bu videoyu oynatamıyor.    
+        </video>
+    </div>
+
+    <div class="current-track-info">
+        <span class="stream-artist-name">Yayındaki Şarkı</span>
+        <a class="stream-song-title cc_streaminfo" data-type="song" data-username="allaturka" href="#">Yükleniyor...</a>
+        <span class="stream-listeners cc_streaminfo" data-type="listeners" data-username="allaturka"></span>
+        <script src="https://eu4.fastcast4u.com/system/streaminfo.js"></script>
+    </div>
+
+    <div class="progress-area">
+        <div class="times">
+            <span>ALLATURKA RADYO</span>
+            <span></span>
+        </div>
+        <input type="range" min="0" max="100" value="70" class="progress-bar" id="volumeSlider">
+    </div>
+
+    <div class="controls">
+        <div class="control-group">
+            <i class="fas fa-backward control-button"></i>
+            <i class="fas fa-play play-pause-button control-button" id="playPauseBtn"></i>
+            <i class="fas fa-forward control-button"></i>
+        </div>
+
+        <div class="control-group">
+            <i class="fas fa-random control-button"></i>
+            <i class="fas fa-volume-up control-button" id="volumeIcon"></i>
+            <i class="fas fa-bars control-button"></i>
+        </div>
+    </div>
+    
+    <div class="widget-footer">
+        Powered by **Allaturka**
+    </div>
+    
+</div>
+<script>
+    const audio = document.getElementById('indexPlayer');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeIcon = document.getElementById('volumeIcon');
+    
+    // Orijinal Oynatıcı Mantığı: Başlangıçta oynatmayı dene
+    audio.play().catch(error => {
+        playPauseBtn.classList.remove('fa-pause');
+        playPauseBtn.classList.add('fa-play');
+    });
+    
+    // Ses seviyesi çubuğunun rengini ayarlayan fonksiyon
+    function updateVolumeProgress(value) {
+        const percentage = (value / 100) * 100;
+        volumeSlider.style.background = `linear-gradient(to right, var(--color-accent-blue) 0%, var(--color-accent-blue) ${percentage}%, var(--color-border-dark) ${percentage}%, var(--color-border-dark) 100%)`;
+    }
+    
+    // Başlangıçta sesi ve çubuk rengini ayarla
+    audio.volume = volumeSlider.value / 100;
+    updateVolumeProgress(volumeSlider.value);
+
+
+    // Ses seviyesi çubuğunu dinle
+    volumeSlider.addEventListener('input', function() {
+        const volume = this.value / 100;
+        audio.volume = volume;
+        updateVolumeProgress(this.value);
+
+        if (volume === 0) {
+            volumeIcon.classList.remove('fa-volume-up');
+            volumeIcon.classList.add('fa-volume-mute');
+        } else {
+            volumeIcon.classList.remove('fa-volume-mute');
+            volumeIcon.classList.add('fa-volume-up');
+        }
+    });
+
+    // Oynat/Durdur düğmesi
+    playPauseBtn.addEventListener('click', () => {
+        if (audio.paused) {
+            audio.play();
+            playPauseBtn.classList.remove('fa-play');
+            playPauseBtn.classList.add('fa-pause');
+        } else {
+            audio.pause();
+            playPauseBtn.classList.remove('fa-pause');
+            playPauseBtn.classList.add('fa-play');
+        }
+    });
+
+    // Oynatma olaylarında ikonu güncelleme
+    audio.addEventListener('play', () => {
+        playPauseBtn.classList.remove('fa-play');
+        playPauseBtn.classList.add('fa-pause');
+    });
+
+    audio.addEventListener('pause', () => {
+        playPauseBtn.classList.remove('fa-pause');
+        playPauseBtn.classList.add('fa-play');
+    });
+    
+</script>
+</body>
+</html>
