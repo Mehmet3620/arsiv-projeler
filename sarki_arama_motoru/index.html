@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sade Müzik Keşif Widget'ı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* TEMA VE GENİŞLİK AYARI (350px) */
+        :root {
+            --bg-panel: #282c34;     
+            --text-light: #f4f4f4;    
+            --accent-color: #ff5722; 
+            --shadow: 0 6px 15px rgba(0, 0, 0, 0.6); 
+            --info-color: #61dafb; /* Mavi/Cyan */
+            --dark-text: #ccc; /* Footer ve küçük yazılar için soluk renk */
+        }
+
+        body { 
+            background-color: transparent; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            color: var(--text-light); 
+            margin: 0; 
+            padding: 10px; 
+            box-sizing: border-box; 
+        }
+
+        #search-widget {
+            /* Maksimum Genişlik 350px */
+            max-width: 350px; 
+            width: 100%;
+            background-color: var(--bg-panel);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 15px; 
+            margin: 0 auto;
+        }
+        
+        /* Başlık ve Dil Seçimi Konteyneri */
+        #widget-header {
+            display: flex;
+            justify-content: space-between; 
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        /* Widget İsmi Stili */
+        #widget-title {
+            font-size: 1.1em; 
+            font-weight: 700;
+            color: var(--accent-color); 
+            letter-spacing: 0.5px;
+        }
+        
+        /* YENİ: Geri Dönüş Butonu Stili */
+        #back-to-home {
+            background-color: #3e4451; 
+            color: var(--text-light);
+            border: 1px solid #4a4a4a;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em; 
+            font-weight: bold;
+            transition: background-color 0.2s;
+            display: none; /* Başlangıçta gizli */
+            width: 100%;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        #back-to-home:hover {
+             background-color: #4a4a4a;
+        }
+
+
+        /* Dil Seçimi Butonu */
+        .language-toggle button {
+            background-color: #3e4451;
+            color: var(--text-light);
+            border: 1px solid #4a4a4a;
+            padding: 3px 8px; 
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 0.75em; 
+            font-weight: bold;
+        }
+        .language-toggle button.active {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        /* Rastgele Öneri ve Arama Alanı */
+        .search-controls {
+             display: flex;
+             flex-direction: column; 
+             gap: 10px;
+             align-items: center;
+             margin-bottom: 15px;
+        }
+        
+        /* Hem buton hem arama alanı tam genişlik */
+        .search-area { flex-grow: 1; display: flex; gap: 10px; width: 100%; } 
+        #random-suggestion-button {
+            padding: 10px 15px;
+            border: none;
+            background-color: var(--info-color); 
+            color: #282c34;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            width: 100%; 
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        #random-suggestion-button:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* Arama Alanı */
+        .search-container { flex-grow: 1; position: relative; display: flex; }
+        /* Sadeleştirme sonrası input padding'i geri alındı */
+        .search-container input { 
+            flex-grow: 1; 
+            padding: 10px 10px 10px 40px; 
+            border: none; 
+            border-radius: 6px 0 0 6px; 
+            background-color: #333940; 
+            color: var(--text-light); 
+            font-size: 1em; 
+            box-sizing: border-box; 
+        }
+        
+        /* Search ikonu */
+        .search-container .fa-search { 
+            left: 15px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            position: absolute; 
+            color: var(--accent-color); 
+            font-size: 1em; 
+            z-index: 2; 
+        }
+
+        /* Arama Butonu */
+        #search-button { 
+            padding: 10px 15px; 
+            border: none; 
+            background-color: var(--accent-color); 
+            color: white; 
+            border-radius: 0 6px 6px 0; 
+            cursor: pointer; 
+            font-size: 1em; 
+            font-weight: bold; 
+            transition: background-color 0.2s; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+        }
+        #search-button:hover { background-color: #e04e1f; }
+        
+
+        /* Sanatçı Bilgi Kartı */
+        #artist-info-card { 
+            display: none; 
+            background-color: #3e4451; 
+            border-radius: 8px; 
+            padding: 15px; 
+            margin-bottom: 15px; 
+            border-left: 5px solid #61dafb; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            align-items: center; 
+        }
+        .artist-image { 
+            width: 80px; 
+            height: 80px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            flex-shrink: 0; 
+            border: 3px solid #61dafb; 
+        }
+        .artist-details { 
+            flex-grow: 1; 
+            text-align: center; 
+        }
+        .artist-details strong { 
+            display: block; 
+            font-size: 1.2em; 
+            margin-bottom: 3px; 
+            color: #61dafb; 
+        }
+        .artist-details .category-tag { 
+            font-size: 0.8em; 
+            color: #ccc; 
+            background-color: #555; 
+            padding: 3px 8px; 
+            border-radius: 4px; 
+            display: inline-block; 
+            margin-bottom: 8px; 
+        }
+        .artist-details .bio-text { 
+            font-size: 0.85em; 
+            color: #ccc; 
+            margin: 0 0 10px 0; 
+            line-height: 1.4; 
+            max-height: 70px; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            text-align: left; 
+        }
+        .info-link { 
+            display: block; 
+            margin-top: 5px; 
+            font-size: 0.8em; 
+            color: var(--accent-color); 
+            text-decoration: none; 
+            font-weight: bold; 
+            text-align: center; 
+        }
+
+        /* Biyografi Keşfet Butonu Stili */
+        #explore-bio-button {
+            width: 100%;
+            background-color: #555;
+            color: var(--info-color);
+            border: 1px solid #61dafb55;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        #explore-bio-button:hover {
+            background-color: #444;
+            color: var(--text-light);
+        }
+
+        /* Diğer Genel Stiller */
+        #resultsList { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            min-height: 100px; 
+        }
+        
+        /* Başlık fontu */
+        .section-header { 
+            font-weight: bold; 
+            color: var(--accent-color); 
+            margin-top: 15px; 
+            margin-bottom: 5px; 
+            padding-bottom: 5px; 
+            border-bottom: 1px solid #4a4a4a; 
+            font-size: 0.85em; 
+        }
+        #popular-searches, #recent-history, #featured-artists { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 6px; 
+            margin-bottom: 15px; 
+        }
+        
+        /* Ana sayfadaki sade etiketler */
+        .suggestion-tag, .artist-tag { 
+            padding: 0; 
+            font-size: 0.85em; 
+            color: var(--info-color); 
+            background-color: transparent; 
+            border: none; 
+            white-space: nowrap; 
+            cursor: pointer;
+            font-weight: normal; 
+            text-decoration: underline; 
+            text-underline-offset: 3px;
+        }
+        .suggestion-tag:hover, .artist-tag:hover { 
+            color: var(--accent-color); 
+            background-color: transparent;
+            text-decoration-color: var(--accent-color);
+        }
+
+        
+        /* Tarihte Bugün Kutusu Stili */
+        #tarihte-bugun-box {
+            background-color: #3e4451;
+            padding: 12px; 
+            border-radius: 8px;
+            border-left: 5px solid var(--accent-color);
+            margin-bottom: 15px;
+            font-size: 0.85em; 
+            line-height: 1.4;
+        }
+        
+        /* Arama Link Kutuları */
+        .search-link-box { 
+            display: flex; 
+            align-items: center; 
+            padding: 10px; 
+            background-color: #333940; 
+            border-radius: 6px; 
+            text-decoration: none; 
+            color: var(--text-light); 
+            transition: background-color 0.2s, transform 0.2s; 
+            font-size: 0.85em; 
+            cursor: pointer; 
+            border: none; 
+            border-left: 5px solid; 
+        }
+        .search-link-box:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); }
+
+        .search-link-box i { 
+            margin-right: 8px; 
+            font-size: 1.2em; 
+        }
+        .search-link-content { 
+            display: flex; 
+            align-items: center; 
+            flex-grow: 1; 
+            justify-content: space-between; 
+        }
+
+        /* DİĞER PLATFORMLARDA ARA (resultsList) Popülerlik Etiketi Stilleri (Küçük olarak KORUNDU) */
+        .pop-tag {
+            background-color: #555;
+            color: white;
+            border-radius: 4px;
+            padding: 2px 5px; 
+            font-size: 0.65em; 
+            font-weight: bold;
+            line-height: 1;
+            display: inline-block; 
+            margin-left: 8px;
+        }
+
+        .pop-rising { background-color: #4CAF50; color: white; } /* Yeşil */
+        .pop-high { background-color: #FF9800; color: #222; } /* Turuncu */
+        .pop-classic { background-color: #9E9E9E; color: white; } /* Gri */
+
+        
+        /* Footer Stili */
+        #widget-footer {
+            margin-top: 10px; 
+            padding-top: 8px; 
+            border-top: 1px solid #3e4451;
+            text-align: right;
+            font-size: 0.7em; 
+            color: var(--dark-text);
+        }
+       
+        #share-button { 
+            background-color: #555; 
+            color: white; 
+            border: none; 
+            padding: 8px 12px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 0.85em; 
+            font-weight: bold; 
+            margin-top: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 6px; 
+            transition: background-color 0.2s; 
+        }
+        #share-button:hover { background-color: #777; }
+        
+    </style>
+</head>
+<body>
+
+    <div id="search-widget">
+        <div id="widget-header">
+            <div id="widget-title">
+                <i class="fas fa-headphones-alt"></i> Müzik Keşif Merkezi
+            </div>
+            <div class="language-toggle">
+                <button id="lang-tr" data-lang="tr" class="active">TR</button>
+                <button id="lang-en" data-lang="en">EN</button>
+            </div>
+        </div>
+        
+        <button id="back-to-home" style="display: none;" data-tr="« Ana Sayfaya Dön" data-en="« Back to Home">
+            <i class="fas fa-arrow-left"></i> Ana Sayfaya Dön
+        </button>
+
+
+        <div class="search-controls">
+            <button id="random-suggestion-button" data-tr="Şimdi Ne Dinlesem? 🎲" data-en="What to Listen? 🎲">
+                Şimdi Ne Dinlesem? 🎲
+            </button>
+            <div class="search-area">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchText" data-tr="Şarkı Adı ve Sanatçıyı yazın" data-en="Enter Song Title and Artist" placeholder="Şarkı Adı ve Sanatçıyı yazın">
+                    <button id="search-button" data-tr="ARA" data-en="SEARCH">ARA</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="artist-info-card" style="display: none;">
+            </div>
+
+        <div class="initial-content" id="initial-content">
+            <button id="explore-bio-button" data-tr="🎤 Sanatçı Bilgilerini Keşfet" data-en="🎤 Explore Artist Info">
+                🎤 Sanatçı Bilgilerini Keşfet
+            </button>
+
+            <div class="section-header" data-tr="Popüler Aramalar" data-en="Popular Searches">
+                <i class="fas fa-fire-alt"></i> Popüler Aramalar
+            </div>
+            <div id="popular-searches">
+                </div>
+
+            <div class="section-header" data-tr="Son Aramalarınız" data-en="Your Recent Searches">
+                <i class="fas fa-history"></i> Son Aramalarınız
+            </div>
+            <div id="recent-history">
+                </div>
+            
+            <div class="section-header" data-tr="⭐ Gündemdeki Sanatçılar" data-en="⭐ Featured Artists">
+                ⭐ Gündemdeki Sanatçılar
+            </div>
+            <div id="featured-artists">
+                </div>
+
+            <div class="section-header" data-tr="📅 Tarihte Bugün" data-en="📅 On This Day in Music">
+                📅 Tarihte Bugün
+            </div>
+            <div id="tarihte-bugun-box">
+                </div>
+        </div>
+
+        <div id="resultsList" style="display:none;">
+            </div>
+
+        <div id="widget-footer">
+            Powered by: <strong>Allaturka</strong>
+        </div>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('searchText');
+        const searchButton = document.getElementById('search-button');
+        const resultsList = document.getElementById('resultsList');
+        const initialContent = document.getElementById('initial-content');
+        const popularSearchesContainer = document.getElementById('popular-searches');
+        const recentHistoryContainer = document.getElementById('recent-history');
+        const featuredArtistsContainer = document.getElementById('featured-artists');
+        const tarihteBugunBox = document.getElementById('tarihte-bugun-box');
+        const artistInfoCard = document.getElementById('artist-info-card');
+        const langTrButton = document.getElementById('lang-tr');
+        const langEnButton = document.getElementById('lang-en');
+        const widgetTitle = document.getElementById('widget-title');
+        const randomButton = document.getElementById('random-suggestion-button'); 
+        const exploreBioButton = document.getElementById('explore-bio-button'); 
+        // YENİ: Geri Dön Butonu
+        const backToHomeButton = document.getElementById('back-to-home');
+        
+        let currentLang = 'tr'; 
+
+        const SEARCH_HISTORY_KEY = 'songSearchHistory';
+        const GOOGLE_URL_PREFIX = 'https://www.google.com/search?q=';
+
+        const defaultPopularSearches = [
+            "Mabel Matiz Fırtınadayım",
+            "Duman Senden Daha Güzel",
+            "Sezen Aksu Geri Dön",
+            "Tarkan Şımarık"
+        ];
+        
+        const featuredArtists = [
+            "Mabel Matiz", 
+            "Sezen Aksu",
+            "Duman",
+            "Şebnem Ferah",
+            "Cem Adrian",
+            "Erkin Koray"
+        ];
+
+        const dynamicSearchQueries = {
+            "Mabel Matiz Fırtınadayım": { pop: 'rising' }, 
+            "Duman Senden Daha Güzel": { pop: 'classic' }, 
+            "Sezen Aksu Geri Dön": { pop: 'classic' },
+            "Tarkan Şımarık": { pop: 'high' },         
+            "Cem Adrian Mutlu Yıllar": { pop: 'rising' },
+            "Ezhel Felaket": { pop: 'high' },
+            "Teoman İstanbul\'da Sonbahar": { pop: 'classic' }
+        };
+        const randomSuggestions = Object.keys(dynamicSearchQueries); 
+
+        
+        // Çoklu Dil Çevirileri
+        const translations = {
+            'tr': {
+                'widget_title': 'Müzik Keşif Merkezi',
+                'explore_bio_button': '🎤 Sanatçı Bilgilerini Keşfet', 
+                'random_button': 'Şimdi Ne Dinlesem? 🎲',
+                'placeholder': 'Şarkı Adı ve Sanatçıyı yazın',
+                'search_button': 'ARA',
+                'back_button': '« Ana Sayfaya Dön', // YENİ ÇEVİRİ
+                'popular_header': 'Popüler Aramalar',
+                'recent_header': 'Son Aramalarınız',
+                'featured_header': '⭐ Gündemdeki Sanatçılar',
+                'tarihte_bugun_header': '📅 Tarihte Bugün',
+                'tarihte_bugun_content': 'Bugün, Rock müziğin efsanesi **Barış Manço**\'nun doğum günü. Ona ait bir şarkı dinlemek ister misin?',
+                'min_char_alert': 'Lütfen en az 3 karakter giriniz.',
+                'link_header': 'Diğer Platformlarda Hızlı Ara',
+                'lyrics_link_title': 'ŞARKI SÖZLERİ',
+                'lyrics_link_subtitle': 'Hemen Sözlerini Gör',
+                'artist_card_link': 'Detaylı Biyografiyi Gör',
+                'no_history': 'Henüz arama yapılmadı.',
+                'pop_rising': '🔥 Yükselişte',
+                'pop_high': '⭐ Popüler',       
+                'pop_classic': '🎶 Klasik',      
+                'share_button': 'Bu Aramayı Paylaş (Kopyala) 🔗',
+                'share_success': 'Arama metni panoya kopyalandı!'
+            },
+            'en': {
+                'widget_title': 'Music Discovery Hub',
+                'explore_bio_button': '🎤 Explore Artist Info', 
+                'random_button': 'What to Listen? 🎲',
+                'placeholder': 'Enter Song Title and Artist',
+                'search_button': 'SEARCH',
+                'back_button': '« Back to Home', // YENİ ÇEVİRİ
+                'popular_header': 'Popular Searches',
+                'recent_header': 'Your Recent Searches',
+                'featured_header': '⭐ Featured Artists',
+                'tarihte_bugun_header': '📅 On This Day in Music',
+                'tarihte_bugun_content': 'Today is the birthday of the Rock legend, **Barış Manço**. Would you like to listen to one of his songs?',
+                'min_char_alert': 'Please enter at least 3 characters.',
+                'link_header': 'Quick Search on Other Platforms',
+                'lyrics_link_title': 'LYRICS',
+                'lyrics_link_subtitle': 'See Lyrics Instantly',
+                'artist_card_link': 'View Detailed Biography',
+                'no_history': 'No searches yet.',
+                'pop_rising': '🔥 Trending',
+                'pop_high': '⭐ Popular',
+                'pop_classic': '🎶 Classic',
+                'share_button': 'Share This Search (Copy) 🔗',
+                'share_success': 'Search text copied to clipboard!'
+            }
+        };
+
+        const otherPlatforms = [
+            { name: "YouTube (Video)", icon: "fab fa-youtube", color: "#ff0000", prefix: "https://www.youtube.com/results?search_query=" },
+            { name: "Spotify (Official Page)", icon: "fab fa-spotify", color: "#1db954", prefix: "https://www.google.com/search?q=spotify+" },
+            { name: "Deezer", icon: "fas fa-record-vinyl", color: "#00e4e7", prefix: "https://www.deezer.com/search/" }
+        ];
+
+        const artistDatabase = {
+            "mabel matiz": {
+                name: "Mabel Matiz",
+                bio_tr: "Türk pop müziğinin yenilikçi isimlerinden. Elektronik ve geleneksel motifleri birleştirir. İlk albümünü 2011'de çıkardı.",
+                bio_en: "One of the innovative names in Turkish pop music. Combines electronic and traditional motifs. Released his first album in 2011.",
+                category: "Pop/Alternatif",
+                image: "https://s1.directupload.eu/images/251126/ll99soj5.jpg" 
+            },
+            "sezen aksu": {
+                name: "Sezen Aksu",
+                bio_tr: "Minik Serçe lakaplı, Türk pop müziğinin kraliçesi. 1970'lerden beri sayısız hite imza attı.",
+                bio_en: "Nicknamed 'Little Sparrow', the queen of Turkish pop music. She has released countless hits since the 1970s.",
+                category: "Pop/Türk Sanat",
+                image: "https://s1.directupload.eu/images/251126/h6e6apst.jpg"
+            },
+            "duman": {
+                name: "Duman",
+                bio_tr: "Türk rock müziğinin en popüler gruplarından. Kaan Tangöze önderliğindeki grup 1999'da kuruldu.",
+                bio_en: "One of the most popular Turkish rock bands. The group, led by Kaan Tangöze, was founded in 1999.",
+                category: "Anadolu Rock",
+                image: "https://s1.directupload.eu/images/251126/tfubm2pd.jpg"
+            },
+            "şebnem ferah": {
+                name: "Şebnem Ferah",
+                bio_tr: "Türk rock müziğinin en güçlü kadın vokallerinden ve söz yazarlarından biridir. 'Kadın' albümü ile tanındı.",
+                bio_en: "One of the most powerful female vocalists and songwriters in Turkish rock music. Known for her album 'Kadın'.",
+                category: "Rock/Metal",
+                image: "https://s1.directupload.eu/images/251126/25dchv2y.jpg"
+            },
+            "cem adrian": {
+                name: "Cem Adrian",
+                bio_tr: "Geniş vokal aralığı ve duygusal şarkı sözleriyle tanınan alternatif müzik sanatçısı. 'Ben Bu Şarkıyı Sana Yazdım' ile çıkış yaptı.",
+                bio_en: "Alternative music artist known for his wide vocal range and emotional lyrics. Debuted with 'Ben Bu Şarkıyı Sana Yazdım'.",
+                category: "Alternatif Pop",
+                image: "https://s1.directupload.eu/images/251126/gaz54ymy.jpg"
+            },
+            "teoman": {
+                name: "Teoman",
+                bio_tr: "Türk rock müziğinin popüler isimlerinden. 'O' albümü ve melankolik tarzıyla geniş kitlelere ulaştı.",
+                bio_en: "One of the popular names in Turkish rock music. Reached wide audiences with his album 'O' and melancholic style.",
+                category: "Rock/Pop",
+                image: "https://s1.directupload.eu/images/251126/o8j76nko.jpg"
+            },
+            "ezhel": {
+                name: "Ezhel",
+                bio_tr: "Türkçe hip-hop ve trap müziğin uluslararası tanınan ismi. Anadolu ezgilerini modern ritimlerle birleştirir.",
+                bio_en: "Internationally recognized name in Turkish hip-hop and trap music. Combines Anatolian melodies with modern rhythms.",
+                category: "Hip-Hop/Trap",
+                image: "https://s1.directupload.eu/images/251126/ueivstw4.jpg"
+            },
+            "erkin koray": {
+                name: "Erkin Koray",
+                bio_tr: "Türk rock müziğinin efsanesi ve psychedelic rock'ın öncüsü. 'Şaşkın' ve 'Estergon Kalesi' gibi eserleriyle bilinir.",
+                bio_en: "The legend of Turkish rock music and pioneer of psychedelic rock. Known for tracks like 'Şaşkın' and 'Estergon Kalesi'.",
+                category: "Anadolu Rock/Psychedelic",
+                image: "https://s1.directupload.eu/images/251126/cg5eeknw.jpg"
+            },
+            "yeni türkü": {
+                name: "Yeni Türkü",
+                bio_tr: "1977'de kurulan efsanevi grup. Akdeniz ve Anadolu ezgilerini pop/rock ile harmanlar. 'Fırtına', 'Yağmur' gibi hitleri vardır.",
+                bio_en: "Legendary band founded in 1977. Blends Mediterranean and Anatolian melodies with pop/rock. Known for hits like 'Fırtına', 'Yağmur'.",
+                category: "Etnik Pop/Rock",
+                image: "https://s1.directupload.eu/images/251126/3ry7pfuu.jpg"
+            },
+            "fazıl say": {
+                name: "Fazıl Say",
+                bio_tr: "Uluslararası alanda tanınan piyanist ve besteci. Klasik müziğe modern ve Türk motifli yorumlar getirir.",
+                bio_en: "Internationally acclaimed pianist and composer. Brings modern and Turkish-themed interpretations to classical music.",
+                category: "Klasik Müzik/Piyano",
+                image: "https://s1.directupload.eu/images/251126/87nx8e9f.jpg"
+            },
+            "sertab erener": {
+                name: "Sertab Erener",
+                bio_tr: "Güçlü sesi ve sahne performansıyla tanınan pop sanatçısı. 2003 Eurovision Şarkı Yarışması birincisidir.",
+                bio_en: "Pop artist known for her powerful voice and stage performance. Winner of the 2003 Eurovision Song Contest.",
+                category: "Pop",
+                image: "https://s1.directupload.eu/images/251126/fhooy7g6.jpg"
+            },
+            "bülent ortaçgil": {
+                name: "Bülent Ortaçgil",
+                bio_tr: "Türk müziğinin önemli söz yazarı ve gitaristi. Akustik ve lirik tarzıyla bilinen sanatçı, birçok müzisyene ilham olmuştur.",
+                bio_en: "Important songwriter and guitarist of Turkish music. Known for his acoustic and lyrical style, he has inspired many musicians.",
+                category: "Akustik/Folk",
+                image: "https://s1.directupload.eu/images/251126/xvenwu82.jpg"
+            },
+             "karsu": {
+                name: "Karsu",
+                bio_tr: "Hollanda'da yaşayan Türk kökenli piyanist ve vokalist. Caz, blues, soul ve Anadolu ezgilerini harmanlar.",
+                bio_en: "Turkish-Dutch pianist and vocalist living in the Netherlands. Blends jazz, blues, soul, and Anatolian melodies.",
+                category: "Caz/Soul",
+                image: "https://s1.directupload.eu/images/251126/nr8qid6w.jpg"
+            }
+        };
+
+        const artistKeys = Object.keys(artistDatabase);
+
+
+        // ----------------------------------------------------------------
+        // DİL İŞLEVİ
+        // ----------------------------------------------------------------
+        function updateLanguage(lang) {
+            currentLang = lang;
+            
+            widgetTitle.innerHTML = `<i class="fas fa-headphones-alt"></i> ${translations[lang].widget_title}`;
+            searchInput.placeholder = translations[lang].placeholder;
+            searchButton.textContent = translations[lang].search_button;
+            randomButton.textContent = translations[lang].random_button; 
+            exploreBioButton.textContent = translations[lang].explore_bio_button; 
+            
+            // YENİ: Geri Dön Butonu Çevirisi
+            const backButtonText = backToHomeButton.getAttribute(`data-${lang}`);
+            backToHomeButton.innerHTML = `<i class="fas fa-arrow-left"></i> ${translations[lang].back_button}`;
+
+            document.querySelectorAll('[data-tr]').forEach(element => {
+                const trText = element.getAttribute('data-tr');
+                const enText = element.getAttribute('data-en');
+                if (element.tagName === 'INPUT') {
+                    element.placeholder = (lang === 'tr' ? trText : enText);
+                } else {
+                    element.textContent = (lang === 'tr' ? trText : enText);
+                }
+            });
+            
+            tarihteBugunBox.innerHTML = `
+                <strong>${translations[lang].tarihte_bugun_header.replace('📅 ', '')}</strong>
+                ${translations[lang].tarihte_bugun_content}
+            `;
+
+            langTrButton.classList.remove('active');
+            langEnButton.classList.remove('active');
+            document.getElementById(`lang-${lang}`).classList.add('active');
+
+            renderTags(popularSearchesContainer, defaultPopularSearches);
+            renderTags(recentHistoryContainer, getHistory());
+            renderFeaturedArtists(featuredArtistsContainer, featuredArtists);
+
+            // Dil değişince view'i güncel tut
+            if (resultsList.style.display !== 'none' && searchInput.value.trim().length >= 3) {
+                 showDynamicLinks(searchInput.value);
+            }
+            if (artistInfoCard.style.display !== 'none' || (searchInput.value.trim() && artistDatabase[searchInput.value.toLowerCase().trim()])) {
+                 showArtistInfo(searchInput.value, true);
+            }
+        }
+
+        langTrButton.addEventListener('click', () => updateLanguage('tr'));
+        langEnButton.addEventListener('click', () => updateLanguage('en'));
+
+
+        // ----------------------------------------------------------------
+        // GÖRÜNÜM YÖNETİMİ
+        // ----------------------------------------------------------------
+
+        // YENİ: Ana Sayfaya Dönüş Fonksiyonu
+        function resetToHome() {
+             initialContent.style.display = 'block';
+             resultsList.style.display = 'none';
+             artistInfoCard.style.display = 'none';
+             backToHomeButton.style.display = 'none';
+             searchInput.value = '';
+             // Ana içerik geri gelince arama alanını etkinleştir
+             document.querySelector('.search-controls').style.display = 'flex';
+        }
+
+        // YENİ: Geri Butonu Tıklama Olayı
+        backToHomeButton.addEventListener('click', resetToHome);
+        
+        function showArtistInfo(searchTerm, forceUpdate = false) {
+            const normalizedTerm = searchTerm.toLowerCase().trim();
+            const artist = artistDatabase[normalizedTerm];
+            
+            resultsList.style.display = 'none';
+            initialContent.style.display = 'none';
+            document.querySelector('.search-controls').style.display = 'none'; // Arama alanını gizle
+            
+            if (artist) {
+                const bio = currentLang === 'tr' ? artist.bio_tr : artist.bio_en;
+                
+                artistInfoCard.innerHTML = `
+                    <img src="${artist.image}" alt="${artist.name}" class="artist-image" onerror="this.onerror=null;this.src='https://via.placeholder.com/80/3e4451/ffffff?text=Müzik'">
+                    <div class="artist-details">
+                        <strong>${artist.name}</strong>
+                        <span class="category-tag">${artist.category}</span>
+                        <p class="bio-text">${bio}</p>
+                        <a href="${GOOGLE_URL_PREFIX + encodeURIComponent(artist.name + (currentLang === 'tr' ? ' biyografi' : ' biography'))}" target="_blank" class="info-link">
+                            <i class="fas fa-external-link-alt"></i> ${translations[currentLang].artist_card_link}
+                        </a>
+                    </div>
+                `;
+                artistInfoCard.style.display = 'flex'; 
+                backToHomeButton.style.display = 'flex'; // Butonu göster
+                return true; 
+            }
+            artistInfoCard.style.display = 'none';
+            backToHomeButton.style.display = 'none';
+            return false; 
+        }
+        
+        // Keşfet Butonu Tıklandığında Rastgele Sanatçı Göster
+        exploreBioButton.addEventListener('click', () => {
+            const randomIndex = Math.floor(Math.random() * artistKeys.length);
+            const randomArtistKey = artistKeys[randomIndex];
+
+            searchInput.value = artistDatabase[randomArtistKey].name;
+
+            showArtistInfo(randomArtistKey); 
+        });
+
+        // ----------------------------------------------------------------
+        // ARAMA VE DİĞER İŞLEVLER
+        // ----------------------------------------------------------------
+        
+        function executeSearch(searchTerm) {
+            searchTerm = searchTerm.trim();
+            
+            if (searchTerm.length < 3) {
+                 alert(translations[currentLang].min_char_alert);
+                 return;
+            }
+            
+            // Eğer sanatçı bilgisi varsa kartı göster
+            const isArtistViewed = showArtistInfo(searchTerm);
+            
+            if (!isArtistViewed) {
+                // Sanatçı bilgisi gösterilmediyse, arama linklerini göster
+                showDynamicLinks(searchTerm);
+            }
+
+            const finalQuery = searchTerm + (currentLang === 'tr' ? " dinle" : " listen");
+            const encodedQuery = encodeURIComponent(finalQuery);
+            const fullUrl = GOOGLE_URL_PREFIX + encodedQuery;
+            
+            window.open(fullUrl, '_blank', 'noopener noreferrer');
+            
+            saveToHistory(searchTerm);
+            renderTags(recentHistoryContainer, getHistory()); 
+        }
+
+        function showDynamicLinks(searchTerm) {
+            initialContent.style.display = 'none';
+            artistInfoCard.style.display = 'none';
+            resultsList.style.display = 'flex';
+            document.querySelector('.search-controls').style.display = 'none'; // Arama alanını gizle
+            backToHomeButton.style.display = 'flex'; // Butonu göster
+            resultsList.innerHTML = ''; 
+            
+            resultsList.appendChild(createLyricsLink(searchTerm));
+
+            const header = document.createElement('div');
+            header.className = 'section-header';
+            header.innerHTML = `<i class="fas fa-share-alt"></i> ${translations[currentLang].link_header}`;
+            resultsList.appendChild(header);
+
+            const encodedQuery = encodeURIComponent(searchTerm);
+            otherPlatforms.forEach(platform => {
+                const url = platform.prefix + encodedQuery;
+                
+                const linkElement = document.createElement('a');
+                linkElement.className = 'search-link-box';
+                linkElement.href = url;
+                linkElement.target = '_blank';
+                linkElement.rel = 'noopener noreferrer';
+                linkElement.style.borderColor = platform.color;
+                
+                const platformName = platform.name.includes('(Official Page)') ? (currentLang === 'tr' ? 'Spotify (Resmi Sayfa)' : platform.name) : platform.name;
+
+                // Popülerlik etiketleri KORUNDU
+                const popData = dynamicSearchQueries[searchTerm] || {};
+                let popTagHtml = '';
+                if (popData.pop) {
+                    const popClass = `pop-${popData.pop}`;
+                    const popTextKey = `pop_${popData.pop}`;
+                    const popText = translations[currentLang][popTextKey].replace(/[\uD83C-\uDBFF\uDC00-\uDFFF]/g, '').trim(); 
+                    popTagHtml = `<span class="pop-tag ${popClass}">${popText}</span>`;
+                }
+                
+                linkElement.innerHTML = `
+                    <i class="${platform.icon}" style="color: ${platform.color}"></i>
+                    <div class="search-link-content">
+                        <div>
+                            <span class="platform">${platformName}</span>
+                            <span class="query-text">"${searchTerm}" ${currentLang === 'tr' ? 'için ara...' : 'search for...'}</span>
+                        </div>
+                        ${popTagHtml}
+                    </div>
+                `;
+                resultsList.appendChild(linkElement);
+            });
+            
+            resultsList.appendChild(createShareButton(searchTerm));
+        }
+
+        // Şarkı Sözü Linki Oluşturma Fonksiyonu
+        function createLyricsLink(searchTerm) {
+             const finalQuery = searchTerm + (currentLang === 'tr' ? " şarkı sözleri" : " lyrics");
+             const encodedQuery = encodeURIComponent(finalQuery);
+             const lyricsUrl = GOOGLE_URL_PREFIX + encodedQuery;
+             
+             const linkElement = document.createElement('a');
+             linkElement.className = 'search-link-box';
+             linkElement.href = lyricsUrl;
+             linkElement.target = '_blank';
+             linkElement.rel = 'noopener noreferrer';
+             linkElement.style.borderColor = '#61dafb'; 
+
+             linkElement.innerHTML = `
+                 <i class="fas fa-file-alt" style="color: #61dafb"></i>
+                 <div>
+                     <span class="platform">${translations[currentLang].lyrics_link_title}</span>
+                     <span class="query-text">${translations[currentLang].lyrics_link_subtitle}</span>
+                 </div>
+             `;
+             return linkElement;
+        }
+
+        // Paylaşım Butonu Oluşturma Fonksiyonu
+        function createShareButton(searchTerm) {
+            const button = document.createElement('button');
+            button.id = 'share-button';
+            button.innerHTML = `<i class="fas fa-share-alt"></i> ${translations[currentLang].share_button}`;
+            
+            button.addEventListener('click', async () => {
+                const shareText = `${searchTerm} ${currentLang === 'tr' ? 'şarkısını keşfet!' : 'discover this song!'} ${GOOGLE_URL_PREFIX + encodeURIComponent(searchTerm)}`;
+                
+                try {
+                    await navigator.clipboard.writeText(shareText);
+                    alert(translations[currentLang].share_success);
+                } catch (err) {
+                    console.error('Kopyalama başarısız oldu:', err);
+                    alert('Kopyalama başarısız oldu. Lütfen metni manuel kopyalayın.');
+                }
+            });
+            return button;
+        }
+
+        // Rastgele Öneri İşlevi
+        function executeRandomSuggestion() {
+            const randomIndex = Math.floor(Math.random() * randomSuggestions.length);
+            const randomQuery = randomSuggestions[randomIndex];
+            
+            searchInput.value = randomQuery;
+            executeSearch(randomQuery);
+        }
+
+
+        // --- Etiket Oluşturma Fonksiyonları ---
+        function getHistory() {
+            try {
+                const history = localStorage.getItem(SEARCH_HISTORY_KEY);
+                return history ? JSON.parse(history) : [];
+            } catch (e) { return []; }
+        }
+        function saveToHistory(query) {
+             if (!query || query.length < 3) return;
+             let history = getHistory();
+             history = history.filter(item => item.toLowerCase() !== query.toLowerCase());
+             history.unshift(query);
+             history = history.slice(0, 5); 
+             try { localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(history)); } catch (e) { /* Sessizce hata geçilir */ }
+        }
+
+        function renderTags(container, data, className = 'suggestion-tag') {
+            container.innerHTML = '';
+            if (data.length === 0) {
+                if (className === 'suggestion-tag') {
+                    container.innerHTML = `<div class="suggestion-tag">${translations[currentLang].no_history}</div>`;
+                }
+                return;
+            }
+
+            data.forEach(item => {
+                const tag = document.createElement('div');
+                tag.className = className;
+                
+                let popText = item;
+
+                if (className === 'suggestion-tag') {
+                    const popData = dynamicSearchQueries[item] || {};
+                    if (popData.pop) {
+                        const popTextKey = `pop_${popData.pop}`;
+                        popText = `${item} - ${translations[currentLang][popTextKey].replace(/[\uD83C-\uDBFF\uDC00-\uDFFF]/g, '').trim()}`; 
+                    }
+                    tag.textContent = popText; 
+                } else { 
+                    tag.textContent = item;
+                }
+                
+                tag.addEventListener('click', () => {
+                    searchInput.value = item;
+                    executeSearch(item);
+                });
+                container.appendChild(tag);
+            });
+        }
+        
+        function renderFeaturedArtists(container, data) {
+            renderTags(container, data, 'artist-tag');
+        }
+
+
+        // --- Event Listener'lar ---
+        searchButton.addEventListener('click', () => {
+            executeSearch(searchInput.value);
+        });
+        
+        randomButton.addEventListener('click', executeRandomSuggestion); 
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                executeSearch(searchInput.value);
+            }
+        });
+        
+        searchInput.addEventListener('input', (e) => {
+            const currentQuery = e.target.value.trim().toLowerCase();
+            const isArtistKnown = !!artistDatabase[currentQuery] || !!Object.values(artistDatabase).find(artist => artist.name.toLowerCase() === currentQuery);
+            
+            if (currentQuery.length === 0) {
+                 resetToHome(); // Buton yokken input sıfırlanırsa ana ekrana dön
+            }
+            
+            clearTimeout(window.infoTimer);
+            window.infoTimer = setTimeout(() => {
+                if (currentQuery.length > 2 && isArtistKnown) {
+                    // Sanatçı bilgisi bulunursa, arama alanını gizleyip kartı göster.
+                    showArtistInfo(currentQuery);
+                    initialContent.style.display = 'none';
+                    resultsList.style.display = 'none';
+                } else if (!isArtistKnown) {
+                    artistInfoCard.style.display = 'none';
+                    // Sanatçı yoksa ve ana içerik gizlenmişse, onu geri getir.
+                    if (currentQuery.length === 0) {
+                         initialContent.style.display = 'block';
+                    }
+                }
+            }, 300);
+        });
+
+
+        function initializeWidget() {
+            updateLanguage('tr');
+        }
+
+        initializeWidget();
+    </script>
+</body>
+</html>
