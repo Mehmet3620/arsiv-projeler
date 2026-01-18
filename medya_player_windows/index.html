@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Player Classic - Professional Edition</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --panel-color: #d4d0c8;
+            --text-color: #000;
+            --highlight-color: #0055e5;
+            --bar-bg: #808080;
+            --bar-fill: #0055e5;
+        }
+
+        body.theme-red { --highlight-color: #b22222; --bar-fill: #b22222; }
+        body.theme-green { --highlight-color: #2e8b57; --bar-fill: #2e8b57; }
+        body.theme-gold { --highlight-color: #b8860b; --bar-fill: #b8860b; }
+        body.theme-purple { --highlight-color: #6a5acd; --bar-fill: #6a5acd; }
+
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: transparent; 
+            height: 100vh; 
+            overflow: hidden; 
+        }
+
+        #mpc-player {
+            width: 640px; height: 480px; min-width: 450px; min-height: 350px;
+            background-color: var(--panel-color); border: 2px solid #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.7); display: flex; flex-direction: column;
+            position: absolute; resize: both; overflow: hidden; top: 100px; left: 100px;
+            transition: width 0.2s, height 0.2s, top 0.2s, left 0.2s;
+        }
+
+        .title-bar { height: 30px; background: linear-gradient(to bottom, #e0dfda, #d4d0c8); display: flex; align-items: center; justify-content: space-between; padding: 0 5px; border-bottom: 1px solid #fff; cursor: move; user-select: none; }
+        .title-left { display: flex; align-items: center; font-size: 13px; font-weight: bold; pointer-events: none; }
+        .window-controls { display: flex; gap: 2px; }
+        .win-btn { width: 25px; height: 20px; border: 1px solid #fff; background-color: var(--panel-color); display: flex; justify-content: center; align-items: center; font-size: 12px; cursor: pointer; box-shadow: inset 1px 1px #fff, 1px 1px #808080; }
+
+        .menu-bar { height: 20px; background-color: var(--panel-color); display: flex; align-items: center; padding: 0 5px; border-bottom: 1px solid #fff; font-size: 11px; }
+        .menu-item { padding: 2px 6px; cursor: pointer; position: relative; }
+        .menu-item:hover { background-color: var(--highlight-color); color: #fff; }
+        .dropdown-content { display: none; position: absolute; top: 100%; left: 0; background-color: var(--panel-color); border: 1px solid #808080; min-width: 150px; z-index: 100; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
+        .menu-item:hover .dropdown-content { display: block; }
+        .dropdown-item { padding: 4px 10px; color: var(--text-color); cursor: pointer; display: block; text-decoration: none;}
+
+        .main-display { flex-grow: 1; background-color: #000; display: flex; position: relative; overflow: hidden; align-items: center; justify-content: center; }
+        #visualizer-canvas { width: 100%; height: 100%; cursor: pointer; z-index: 5; background: transparent; }
+        #main-video { width: 100%; height: 100%; display: none; background: #000; z-index: 10; object-fit: contain; cursor: pointer; }
+        .mpc-logo { position: absolute; width: 120px; opacity: 0.5; z-index: 1; pointer-events: none; transition: opacity 0.3s; }
+        .playing .mpc-logo { opacity: 0; visibility: hidden; }
+
+        #playlist-panel { display: none; position: absolute; right: 0; top: 0; bottom: 0; width: 220px; background-color: var(--panel-color); border-left: 1px solid #fff; overflow-y: auto; z-index: 20; }
+        .playlist-header { background: #808080; color: white; padding: 5px; display: flex; justify-content: space-between; font-size: 11px; align-items: center; }
+        .pl-extra { display: flex; background: #eee; border-bottom: 1px solid #808080; padding: 2px; }
+        .pl-sm-btn { font-size: 10px; flex: 1; border: 1px solid #808080; background: #d4d0c8; cursor: pointer; text-align: center; padding: 4px; color: #000; font-weight: bold; }
+
+        .playlist-item { padding: 5px 10px; border-bottom: 1px solid #ccc; font-size: 11px; color: #000; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .playlist-item.active { background-color: var(--highlight-color); color: #fff; }
+
+        .control-panel { height: 75px; background-color: var(--panel-color); border-top: 1px solid #fff; display: flex; flex-direction: column; padding: 5px; box-sizing: border-box;}
+        .progress-bar { height: 12px; background-color: var(--bar-bg); border: 1px solid #fff; cursor: pointer; position: relative; margin-bottom: 5px; width: 100%; }
+        .progress-fill { height: 100%; background-color: var(--bar-fill); width: 0%; pointer-events: none; }
+
+        .controls-row { display: flex; align-items: center; justify-content: space-between; }
+        .btn-group { display: flex; }
+        .ctrl-btn { width: 32px; height: 32px; border: 1px solid #fff; background: linear-gradient(to bottom, #e0dfda, #d4d0c8); display: flex; justify-content: center; align-items: center; margin-right: 2px; cursor: pointer; font-size: 14px; color: #333; }
+        
+        .marquee-box { flex-grow: 1; height: 32px; background: #000; border: 1px inset #fff; margin: 0 5px; overflow: hidden; position: relative; display: flex; align-items: center; }
+        #marquee-text { white-space: nowrap; position: absolute; color: var(--bar-fill); font-family: 'Courier New', monospace; font-size: 12px; animation: scrollText 12s linear infinite; padding-left: 100%; font-weight: bold; }
+        @keyframes scrollText { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        .volume-area { display: flex; align-items: center; justify-content: flex-end; min-width: 155px; }
+        #time-display { font-size: 11px; font-family: monospace; margin-right: 5px; color: #333; }
+        .volume-slider { width: 50px; cursor: pointer; accent-color: var(--bar-fill); }
+
+        #about-box { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 360px; background: var(--panel-color); border: 2px solid #fff; padding: 25px; text-align: center; z-index: 1000; box-shadow: 0 0 40px #000; }
+        .signature { font-weight: normal; color: var(--highlight-color); font-size: 12px; border-top: 1px solid #808080; margin-top: 15px; padding-top: 10px; display: block; opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+<div id="mpc-player">
+    <div class="title-bar" id="drag-handle">
+        <div class="title-left">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PHBhdGggZmlsbD0iI0Y0NDMzNiIgZD0iTTQwIDhoLTMydjMyaDMyVjh6Ii8+PHBhdGggZmlsbD0iI0ZGRiIgZD0iTTIyIDI0bDgtNXYxMGwtOC01eiIvPjwvc3ZnPg==" style="width:16px; margin-right:5px;"> 
+            Media Player Classic - Professional
+        </div>
+        <div class="window-controls">
+            <div class="win-btn" onclick="centerWindow()">_</div>
+            <div id="max-btn" class="win-btn" onclick="toggleMaximize()">☐</div>
+            <div class="win-btn" onclick="location.reload()">X</div>
+        </div>
+    </div>
+
+    <div class="menu-bar">
+        <div class="menu-item">Dosya
+            <div class="dropdown-content">
+                <label for="file-input" class="dropdown-item">Dosya Aç...</label>
+                <div class="dropdown-item" onclick="openURL()">URL'den Aç...</div>
+                <div class="dropdown-item" id="toggle-playlist-btn">Oynatma Listesi</div>
+            </div>
+        </div>
+        <div class="menu-item">Efektler
+            <div class="dropdown-content">
+                <div class="dropdown-item" onclick="setVisual(0)">Klasik Çubuklar</div>
+                <div class="dropdown-item" onclick="setVisual(1)">Dalga Formu</div>
+                <div class="dropdown-item" onclick="setVisual(2)">Dairesel Spektrum</div>
+                <div class="dropdown-item" onclick="setVisual(3)">Aynalı Şelale</div>
+                <div class="dropdown-item" onclick="setVisual(4)">Merkezi Patlama</div>
+            </div>
+        </div>
+        <div class="menu-item">Skin
+            <div class="dropdown-content">
+                <div class="dropdown-item" onclick="setSkin('')">Varsayılan (Mavi)</div>
+                <div class="dropdown-item" onclick="setSkin('theme-red')">Koyu Kırmızı</div>
+                <div class="dropdown-item" onclick="setSkin('theme-green')">Mat Yeşil</div>
+                <div class="dropdown-item" onclick="setSkin('theme-gold')">Altın Sarısı</div>
+                <div class="dropdown-item" onclick="setSkin('theme-purple')">Zarif Mor</div>
+            </div>
+        </div>
+        <div class="menu-item">Seçenekler
+            <div class="dropdown-content">
+                <div class="dropdown-item" onclick="saveToLocalStorage()">Görünümü Kaydet</div>
+                <div class="dropdown-item" onclick="saveToPC()">Kodu Dışa Aktar</div>
+            </div>
+        </div>
+        <div class="menu-item">Yardım
+            <div class="dropdown-content"><div class="dropdown-item" onclick="toggleAbout()">Hakkında</div></div>
+        </div>
+    </div>
+
+    <div class="main-display" id="display-area">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgNDggNDgiPjxwYXRoIGZpbGw9IiM0NTVBMjQiIGQ9Ik00MiA3SDZ2MzRoMzZWN3oiLz48cGF0aCBmaWxsPSIjRkZGRkZGIiBkPSJNMzYgMTFIMTJ2MjZoMjRWMTF6Ii8+PHBhdGggZmlsbD0iIzQ1NUEyNCIgZD0iTTE0IDEzaDIydjIyaC0yMlYxM3oiLz48cGF0aCBmaWxsPSIjRkZGRkZGIiBkPSJNMjAgMThsMTAgNmwtMTAgNlYxOHoiLz48L3N2Zz4=" class="mpc-logo">
+        <video id="main-video" crossorigin="anonymous" playsinline onclick="togglePlay()"></video>
+        <canvas id="visualizer-canvas"></canvas>
+        <div id="playlist-panel">
+            <div class="playlist-header"><span>Oynatma Listesi</span> <span onclick="togglePlaylist()" style="cursor:pointer;">X</span></div>
+            <div class="pl-extra">
+                <div class="pl-sm-btn" onclick="clearPlaylist()">LİSTEYİ TEMİZLE</div>
+            </div>
+            <div id="pl-items"></div>
+        </div>
+    </div>
+
+    <div class="control-panel">
+        <div class="progress-bar" id="p-bar"><div class="progress-fill" id="p-fill"></div></div>
+        <div class="controls-row">
+            <div class="btn-group">
+                <button class="ctrl-btn" id="play-btn" onclick="togglePlay()"><i class="fas fa-play"></i></button>
+                <button class="ctrl-btn" onclick="media.pause(); media.currentTime=0;"><i class="fas fa-stop"></i></button>
+                <button class="ctrl-btn" onclick="loadTrack(curIdx-1)"><i class="fas fa-step-backward"></i></button>
+                <button class="ctrl-btn" onclick="media.currentTime-=10"><i class="fas fa-backward"></i></button>
+                <button class="ctrl-btn" onclick="media.currentTime+=10"><i class="fas fa-forward"></i></button>
+                <button class="ctrl-btn" onclick="loadTrack(curIdx+1)"><i class="fas fa-step-forward"></i></button>
+            </div>
+            <div class="marquee-box"><div id="marquee-text">Sistem Hazır... Lütfen bir medya dosyası seçin.</div></div>
+            <div class="volume-area">
+                <div id="time-display">00:00 / 00:00</div>
+                <input type="range" class="volume-slider" id="v-slider" min="0" max="1" step="0.1" value="0.7">
+            </div>
+        </div>
+    </div>
+
+    <div id="about-box">
+        <div style="font-weight:bold; font-size:18px;">Media Player Classic v6.5</div>
+        <p style="font-size:11px; color:#444; margin:10px 0;">
+            <b>Gelişmiş Multimedya Motoru:</b> Gerçek zamanlı ses analizi, dinamik görselleştirme algoritmaları ve düşük gecikmeli oynatma yapısı ile optimize edilmiştir. HTML5 teknolojileri kullanılarak modern web standartlarında geliştirilmiştir.
+        </p>
+        <span class="signature">Powered by Seyyah</span>
+        <button class="ctrl-btn" style="width:100%; margin-top:15px; height:30px;" onclick="toggleAbout()">Tamam</button>
+    </div>
+</div>
+
+<input type="file" id="file-input" accept="audio/*,video/*" multiple style="display:none">
+
+<script>
+    const player = document.getElementById('mpc-player');
+    const media = document.getElementById('main-video');
+    const marquee = document.getElementById('marquee-text');
+    const displayArea = document.getElementById('display-area');
+    let playlist = [], curIdx = 0, visualMode = 0, aCtx, analyser, dataArray, isMax = false, prevPos = {};
+
+    window.onload = () => {
+        centerWindow();
+        const s = localStorage.getItem('mpc_skin'); if(s) document.body.className = s;
+        const v = localStorage.getItem('mpc_vol'); if(v) { media.volume = v; document.getElementById('v-slider').value = v; }
+    };
+
+    function centerWindow() {
+        isMax = false; player.style.width='640px'; player.style.height='480px';
+        player.style.left=(window.innerWidth-640)/2+'px'; player.style.top=(window.innerHeight-480)/2+'px';
+        document.getElementById('max-btn').innerText='☐';
+    }
+
+    function toggleMaximize() {
+        player.style.transition = 'all 0.3s';
+        if(!isMax) {
+            prevPos = { t: player.style.top, l: player.style.left, w: player.style.width, h: player.style.height };
+            player.style.top='0'; player.style.left='0'; player.style.width='100%'; player.style.height='100vh';
+            document.getElementById('max-btn').innerText='❐'; isMax=true;
+        } else {
+            player.style.top=prevPos.t; player.style.left=prevPos.l; player.style.width=prevPos.w; player.style.height=prevPos.h;
+            document.getElementById('max-btn').innerText='☐'; isMax=false;
+        }
+    }
+
+    document.getElementById('file-input').onchange = (e) => {
+        const files = Array.from(e.target.files).map(f => ({ name: f.name, type: f.type, url: URL.createObjectURL(f) }));
+        if(files.length > 0) { 
+            const wasEmpty = playlist.length === 0;
+            playlist = [...playlist, ...files]; 
+            renderPL(); 
+            if(wasEmpty || !media.src || media.src === "") { loadTrack(playlist.length - files.length); } 
+        }
+    };
+
+    function loadTrack(i) {
+        if(playlist.length === 0) return;
+        if(i < 0) i = playlist.length - 1; if(i >= playlist.length) i = 0;
+        curIdx = i; const f = playlist[i];
+        marquee.innerText = "Yükleniyor...";
+        media.pause(); 
+        media.src = f.url;
+        media.load();
+        if(f.type.startsWith('video')) { 
+            media.style.display='block'; 
+            document.getElementById('visualizer-canvas').style.display='none'; 
+        } else { 
+            media.style.display='none'; 
+            document.getElementById('visualizer-canvas').style.display='block'; 
+            if(!aCtx) initAudio(); 
+        }
+        media.onloadeddata = () => {
+            media.play().then(() => {
+                document.getElementById('play-btn').innerHTML = '<i class="fas fa-pause"></i>';
+                displayArea.classList.add('playing');
+                marquee.innerText = "Oynatılıyor: " + f.name;
+            }).catch(e => {
+                marquee.innerText = "Oynatmak için Play'e basın";
+            });
+        };
+        renderPL();
+    }
+
+    media.onended = () => { if(playlist.length > 0) loadTrack(curIdx + 1); };
+
+    function togglePlay() {
+        if(!media.src) return;
+        if(media.paused) { media.play(); document.getElementById('play-btn').innerHTML='<i class="fas fa-pause"></i>'; }
+        else { media.pause(); document.getElementById('play-btn').innerHTML='<i class="fas fa-play"></i>'; }
+    }
+
+    document.getElementById('p-bar').onclick = function(e) {
+        if(!media.duration) return;
+        const rect = this.getBoundingClientRect();
+        const pos = (e.clientX - rect.left) / rect.width;
+        media.currentTime = pos * media.duration;
+    };
+
+    media.ontimeupdate = () => {
+        if(!media.duration) return;
+        document.getElementById('p-fill').style.width = (media.currentTime / media.duration * 100) + '%';
+        const m = Math.floor(media.currentTime/60), s = Math.floor(media.currentTime%60);
+        const dm = Math.floor(media.duration/60), ds = Math.floor(media.duration%60);
+        document.getElementById('time-display').innerText = `${m}:${s<10?'0'+s:s} / ${isNaN(dm)?'0:00':dm+':'+(ds<10?'0'+ds:ds)}`;
+    };
+
+    function removeItem(idx) {
+        playlist.splice(idx, 1);
+        if(playlist.length === 0) { clearPlaylist(); }
+        else if(idx === curIdx) { loadTrack(idx < playlist.length ? idx : 0); }
+        else if(idx < curIdx) { curIdx--; renderPL(); }
+        else { renderPL(); }
+    }
+
+    function renderPL() {
+        document.getElementById('pl-items').innerHTML = playlist.map((f, i) => 
+            `<div class="playlist-item ${i===curIdx?'active':''}" onclick="loadTrack(${i})">
+                <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:160px;">${i+1}. ${f.name}</span>
+                <span style="font-weight:bold; cursor:pointer;" onclick="event.stopPropagation(); removeItem(${i});">×</span>
+            </div>`).join('');
+    }
+
+    function clearPlaylist() { 
+        playlist=[]; media.pause(); media.src=""; media.removeAttribute('src'); media.load();
+        curIdx = 0; renderPL(); marquee.innerText="Hazır..."; displayArea.classList.remove('playing'); 
+        document.getElementById('p-fill').style.width='0%'; document.getElementById('play-btn').innerHTML='<i class="fas fa-play"></i>';
+    }
+
+    function saveToPC() { const blob = new Blob([document.documentElement.outerHTML], {type:'text/html'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='MPC_Professional.html'; a.click(); }
+    function saveToLocalStorage() { localStorage.setItem('mpc_skin', document.body.className); alert("Görünüm ve Skin Ayarları Kaydedildi!"); }
+    function setSkin(s) { document.body.className = s; }
+    function setVisual(v) { visualMode = v; }
+    function togglePlaylist() { const p = document.getElementById('playlist-panel'); p.style.display = p.style.display==='block'?'none':'block'; }
+    function toggleAbout() { const a = document.getElementById('about-box'); a.style.display = a.style.display==='block'?'none':'block'; }
+    function openURL() { const url = prompt("Medya URL'si girin:"); if(url) { playlist.push({name:"URL Medya", type:"unknown", url:url}); renderPL(); loadTrack(playlist.length-1); }}
+    
+    document.getElementById('v-slider').oninput = (e) => { media.volume = e.target.value; localStorage.setItem('mpc_vol', e.target.value); };
+    document.getElementById('toggle-playlist-btn').onclick = togglePlaylist;
+
+    function initAudio() {
+        aCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = aCtx.createAnalyser();
+        const src = aCtx.createMediaElementSource(media);
+        src.connect(analyser); analyser.connect(aCtx.destination);
+        analyser.fftSize = 512; dataArray = new Uint8Array(analyser.frequencyBinCount);
+        draw();
+    }
+
+    function draw() {
+        requestAnimationFrame(draw); if(!analyser || document.getElementById('visualizer-canvas').style.display === 'none') return;
+        analyser.getByteFrequencyData(dataArray);
+        const canvas = document.getElementById('visualizer-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const color = getComputedStyle(document.body).getPropertyValue('--bar-fill') || '#0055e5';
+        ctx.fillStyle = color; ctx.strokeStyle = color;
+
+        if(visualMode === 0) {
+            const bw = (canvas.width / dataArray.length) * 2.5;
+            for(let i=0; i<dataArray.length; i++) { ctx.fillRect(i*bw, canvas.height - dataArray[i], bw-1, dataArray[i]); }
+        } else if(visualMode === 1) {
+            ctx.beginPath(); ctx.lineWidth=2;
+            for(let i=0; i<dataArray.length; i++) {
+                const y = (canvas.height/2) + (dataArray[i]-128);
+                if(i===0) ctx.moveTo(0, y); else ctx.lineTo(i*(canvas.width/dataArray.length), y);
+            }
+            ctx.stroke();
+        } else if(visualMode === 2) {
+            const cx = canvas.width/2, cy = canvas.height/2; 
+            const totalBars = 120; ctx.lineWidth = 3;
+            for(let i=0; i<totalBars; i++) {
+                const barHeight = (dataArray[i % 128] / 255) * 100;
+                const angle = (i * (360 / totalBars)) * (Math.PI / 180);
+                const x1 = cx + Math.cos(angle) * 70;
+                const y1 = cy + Math.sin(angle) * 70;
+                const x2 = cx + Math.cos(angle) * (70 + barHeight);
+                const y2 = cy + Math.sin(angle) * (70 + barHeight);
+                ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+            }
+        } else if(visualMode === 3) {
+            for(let i=0; i<64; i++) {
+                ctx.globalAlpha = 0.6;
+                ctx.fillRect(canvas.width/2 + i*5, canvas.height/2 - dataArray[i]/2, 3, dataArray[i]);
+                ctx.fillRect(canvas.width/2 - i*5, canvas.height/2 - dataArray[i]/2, 3, dataArray[i]);
+            }
+            ctx.globalAlpha = 1.0;
+        } else if(visualMode === 4) {
+            for(let i=0; i<dataArray.length; i+=12) {
+                ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, dataArray[i]*0.8, 0, Math.PI*2);
+                ctx.globalAlpha = 0.25; ctx.stroke();
+            }
+            ctx.globalAlpha = 1.0;
+        }
+    }
+
+    let isDrg = false, sx, sy;
+    document.getElementById('drag-handle').onmousedown = (e) => { if(e.target.closest('.window-controls') || isMax) return; isDrg = true; sx = e.clientX - player.offsetLeft; sy = e.clientY - player.offsetTop; player.style.transition = 'none'; };
+    window.onmousemove = (e) => { if(isDrg) { player.style.left = (e.clientX-sx)+'px'; player.style.top = (e.clientY-sy)+'px'; } };
+    window.onmouseup = () => { isDrg = false; player.style.transition = 'all 0.2s'; };
+</script>
+</body>
+</html>
