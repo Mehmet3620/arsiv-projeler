@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastCast Orijinal Player Entegrasyonu (Final Düzen)</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* CSS Animasyonları */
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Temel Sıfırlamalar */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #333;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        /* --- Ana Player Kontayneri (520x160) --- */
+        .radio-player {
+            display: flex;
+            align-items: center;
+            width: 520px; 
+            height: 160px; 
+            background: linear-gradient(to bottom, #1a1a1a 0%, #0a0a0a 100%);
+            border-radius: 20px; 
+            padding: 10px; 
+            box-shadow: 
+                0 10px 15px rgba(0, 0, 0, 0.5); 
+            position: relative;
+        }
+
+        /* --- Hoparlörler (Dinamik Hareket) --- */
+        .speaker {
+            width: 90px; 
+            height: 90px;
+            border-radius: 50%;
+            background-color: #000;
+            border: 5px solid #222;
+            box-shadow: 
+                inset 0 0 15px rgba(0, 0, 0, 0.9),
+                0 0 5px rgba(0, 191, 255, 0.5); 
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            transition: transform 0.05s ease-out; 
+            transform: scale(1); 
+        }
+        .speaker-inner {
+            width: 70%;
+            height: 70%;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, #004d7a 0%, #001f3f 70%);
+            border: 4px solid #00c6ff;
+            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.8);
+            position: relative;
+        }
+        .speaker-inner::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 25%;
+            height: 25%;
+            border-radius: 50%;
+            background: linear-gradient(to top, #777, #bbb, #777);
+            border: 2px solid #555;
+            z-index: 2;
+        }
+        .left {
+            box-shadow: 
+                inset 0 0 15px rgba(0, 0, 0, 0.9),
+                0 0 5px rgba(0, 191, 255, 0.5),
+                0 0 30px rgba(255, 255, 255, 0.2);
+        }
+        
+        /* --- Orta Panel --- */
+        .center-panel {
+            flex-grow: 1;
+            margin: 0 8px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0; 
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), inset 0 0 5px rgba(0, 191, 255, 0.1); 
+            position: relative;
+        }
+
+        /* --- Ekran ve Marquee (Genişlik 270px) --- */
+        .radio-title-area {
+            width: 100%;
+            text-align: center; 
+            padding: 2px 0;
+            color: #00ffff;
+            font-size: 0.8em;
+            text-shadow: 0 0 4px #00ffff;
+            text-transform: uppercase;
+        }
+        .indicators {
+            display: flex;
+            justify-content: space-between;
+            width: 270px; 
+            padding: 1px 0;
+            color: #00ffff; 
+            font-size: 0.65em;
+            font-weight: bold;
+            text-shadow: 0 0 2px #00ffff;
+        }
+        .screen {
+            height: 30px; 
+            width: 270px; 
+            background-color: rgba(0, 0, 0, 0.6); 
+            border: 1px solid #00c6ff;
+            border-radius: 5px;
+            margin-top: 2px; 
+            overflow: hidden; 
+            display: flex;
+            align-items: center;
+            box-shadow: inset 0 0 8px rgba(0, 191, 255, 0.5);
+            padding: 0 5px;
+        }
+        .song-info {
+            display: flex;
+            align-items: center;
+            width: 100%; 
+            height: 100%;
+            overflow: hidden;
+        }
+        .song-icon {
+            color: #fff;
+            font-size: 1em; 
+            margin-right: 6px; 
+            text-shadow: 0 0 4px #00ffff;
+            flex-shrink: 0; 
+        }
+        .artist-name {
+            color: #fff;
+            font-size: 0.8em; 
+            text-shadow: 0 0 4px #00ffff;
+            white-space: nowrap; 
+            position: relative;
+            left: 0;
+            padding-left: 100%; 
+            animation: marquee 12s linear infinite; 
+            animation-play-state: paused; 
+            min-width: 100%; 
+        }
+        .scrolling .artist-name {
+            animation-play-state: running; 
+        }
+
+        /* --- Sosyal Medya Butonları (DAHA KÜÇÜK) --- */
+        .social-media {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        .social-btn {
+            color: #fff;
+            /* DEĞİŞİKLİK: İkon boyutu daha da küçültüldü (eski: 1em) */
+            font-size: 0.8em; 
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+        .social-btn:hover {
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+        }
+
+        /* --- Ekolayzer (YÜKSEK) --- */
+        .equalizer-container {
+            width: 270px; 
+            height: 40px; 
+            margin-top: 5px; 
+            padding: 0 5px;
+            background: #000;
+            border-radius: 3px;
+            box-shadow: 0 0 5px rgba(0, 191, 255, 0.5);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 1px;
+        }
+        .eq-bar {
+            width: 3px; 
+            min-width: 3px;
+            background: linear-gradient(to top, #00c6ff, #00ffff, #00aaff); 
+            box-shadow: 0 0 3px rgba(0, 191, 255, 0.9);
+            transform-origin: bottom;
+            border-radius: 1px 1px 0 0;
+            transition: height 0.05s linear;
+            opacity: 1;
+            height: 0px; 
+        }
+
+        /* --- Kontrol Düğmeleri ve Ses Çubuğu --- */
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 8px; 
+            margin-top: 5px; 
+            margin-bottom: 3px;
+        }
+        .control-btn {
+            width: 30px; height: 30px; border-radius: 50%; border: 2px solid #444; 
+            cursor: pointer; position: relative; transition: box-shadow 0.1s, transform 0.1s;
+            box-shadow: 0 3px 0 #666, 0 0 5px rgba(255, 255, 255, 0.2), inset 0 0 10px rgba(0, 0, 0, 0.6);
+            background: linear-gradient(to top, #666, #999, #666);
+        }
+        .control-btn:active {
+            box-shadow: 0 1px 0 #666, 0 0 5px rgba(255, 255, 255, 0.2), inset 0 0 10px rgba(0, 0, 0, 0.6);
+            transform: translateY(2px);
+        }
+        .control-btn::before {
+            color: black; font-weight: 900; text-shadow: none; position: absolute;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
+        #prev-btn::before { content: '«'; font-size: 18px; transform: translate(-60%, -50%); }
+        #next-btn::before { content: '»'; font-size: 18px; transform: translate(-40%, -50%); }
+        #play-pause-btn::before { content: '▶'; font-size: 16px; transform: translate(-50%, -50%); }
+        .playing::before { content: '❚❚'; font-size: 14px !important; }
+        .volume-container { display: flex; align-items: center; gap: 5px; }
+        .volume-icon { color: #999; font-size: 16px; text-shadow: 0 0 2px #000; }
+        .volume-dial-container { width: 100px; height: 20px; }
+        .volume-dial {
+            width: 100%; -webkit-appearance: none; height: 4px;
+            background: linear-gradient(to right, #00c6ff, #00ffff); border-radius: 2px; outline: none;
+        }
+        .volume-dial::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 12px; height: 12px; border-radius: 50%;
+            background: linear-gradient(to top, #777, #bbb); cursor: pointer; border: 2px solid #555;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="radio-player" id="radio-player">
+        <div class="speaker left" id="speaker-left">
+            <div class="speaker-inner"></div>
+        </div>
+
+        <div class="center-panel">
+            <div class="panel-top">
+                <div class="radio-title-area">
+                    <span id="radio-name">OKYANUS FM</span>
+                </div>
+                
+                <div class="indicators">
+                    <span id="bitrate-display">KALİTE: 128 KBPS</span>
+                    <span id="time-display">00:00</span>
+                </div>
+                
+                <div class="screen" id="screen-display">
+                    <div class="song-info">
+                        <span class="song-icon">♩</span>
+                        <p class="artist-name" id="song-title">Yayın Yükleniyor...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="social-media">
+                <a href="https://www.facebook.com/okyanusfm" target="_blank" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://twitter.com/okyanusfm" target="_blank" class="social-btn"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.instagram.com/okyanusfm" target="_blank" class="social-btn"><i class="fab fa-instagram"></i></a>
+                <a href="#" target="_blank" class="social-btn"><i class="fab fa-youtube"></i></a> 
+                <a href="#" target="_blank" class="social-btn"><i class="fas fa-globe"></i></a> 
+            </div>
+
+            <div class="equalizer-container" id="equalizer-container">
+                <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+            </div>
+            
+            <div class="controls">
+                <button class="control-btn" id="prev-btn" title="Geri"></button>
+                <button class="control-btn" id="play-pause-btn"></button>
+                <button class="control-btn" id="next-btn" title="İleri"></button>
+
+                <div class="volume-container">
+                    <span class="volume-icon">&#128266;</span> 
+                    <div class="volume-dial-container">
+                        <input type="range" min="0" max="100" value="70" class="volume-dial" id="volume-slider">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="speaker right" id="speaker-right">
+            <div class="speaker-inner"></div>
+        </div>
+    </div>
+
+    <audio id="radio-audio" crossorigin="anonymous" src="https://eu4.fastcast4u.com/proxy/okyanus35?mp=/1"></audio>
+
+    <div style="display: none;">
+        <a href="https://eu4.fastcast4u.com/tunein/okyanus35.pls" data-type="song" data-username="okyanus35" class="cc_streaminfo" id="fastcast-source">Yükleniyor...</a>
+        <script src="https://eu4.fastcast4u.com/system/streaminfo.js"></script>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const audio = document.getElementById('radio-audio'); 
+            const playPauseBtn = document.getElementById('play-pause-btn');
+            const volumeSlider = document.getElementById('volume-slider');
+            const songTitleElement = document.getElementById('song-title'); 
+            const streamSourceElement = document.getElementById('fastcast-source'); 
+            const screenElement = document.getElementById('screen-display');
+            const timeDisplay = document.getElementById('time-display'); 
+            const eqBars = document.querySelectorAll('.eq-bar');
+            const speakerLeft = document.getElementById('speaker-left');
+            const speakerRight = document.getElementById('speaker-right');
+            
+            let isPlaying = false;
+            let timeInterval = null; 
+            let seconds = 0;
+            let animationFrameId;
+
+            let audioContext;
+            let analyser;
+            let source;
+            const bufferLength = 1024;
+            const dataArray = new Uint8Array(bufferLength);
+            const eqBarCount = eqBars.length;
+
+            function setupAudioContext() {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    source = audioContext.createMediaElementSource(audio);
+                    analyser = audioContext.createAnalyser();
+                    
+                    analyser.fftSize = 2048;
+                    analyser.smoothingTimeConstant = 0.8;
+
+                    source.connect(analyser);
+                    analyser.connect(audioContext.destination);
+                }
+            }
+            
+            function visualize() {
+                if (!isPlaying) return;
+                animationFrameId = requestAnimationFrame(visualize);
+                analyser.getByteFrequencyData(dataArray);
+
+                let totalVolume = 0;
+                
+                for (let i = 0; i < eqBarCount; i++) {
+                    const dataIndex = Math.floor((i / eqBarCount) * 256); 
+                    let value = dataArray[dataIndex]; 
+                    totalVolume += value; 
+
+                    // KRİTİK DÜZELTME: Maksimum çubuk yüksekliği 30 piksel ile sınırlandı (Eski: 38)
+                    const height = (value / 255) * 30; 
+                    eqBars[i].style.height = height + 'px';
+                }
+                const avgVolume = (totalVolume / (eqBarCount * 255)) * 100;
+                const scale = 1 + (avgVolume / 100) * 0.15; 
+                
+                speakerLeft.style.transform = `scale(${scale})`;
+                speakerRight.style.transform = `scale(${scale})`;
+            }
+
+            function stopVisualization() {
+                cancelAnimationFrame(animationFrameId);
+                eqBars.forEach(bar => bar.style.height = '0px');
+                speakerLeft.style.transform = 'scale(1)';
+                speakerRight.style.transform = 'scale(1)';
+            }
+
+
+            function updateTimeDisplay() {
+                seconds++;
+                const min = String(Math.floor(seconds / 60)).padStart(2, '0');
+                const sec = String(seconds % 60).padStart(2, '0');
+                timeDisplay.textContent = `${min}:${sec}`;
+            }
+
+            function togglePlayPause() {
+                setupAudioContext();
+                
+                if (isPlaying) {
+                    audio.pause();
+                    isPlaying = false;
+                    playPauseBtn.classList.remove('playing');
+                    
+                    clearInterval(timeInterval);
+                    timeInterval = null;
+                    seconds = 0;
+                    timeDisplay.textContent = "00:00";
+                    
+                    stopVisualization(); 
+                    screenElement.classList.remove('scrolling');
+
+                } else {
+                    if (audioContext.state === 'suspended') {
+                        audioContext.resume();
+                    }
+                    
+                    audio.play().then(() => {
+                        isPlaying = true;
+                        playPauseBtn.classList.add('playing');
+                        
+                        visualize();
+                        
+                        if (timeInterval === null) {
+                            seconds = 0; 
+                            timeInterval = setInterval(updateTimeDisplay, 1000);
+                        }
+                        // Oynatma başladığında Marquee'yi kontrol et
+                        checkMarquee();
+
+                    }).catch(error => {
+                        console.error("Oynatma engellendi veya yayın yüklenemedi:", error);
+                        songTitleElement.textContent = "HATA: YAYIN BAŞLATILAMADI!";
+                        isPlaying = false;
+                        playPauseBtn.classList.remove('playing');
+                    });
+                }
+            }
+            
+            // Marquee kaymasını kontrol eden fonksiyon
+            function checkMarquee() {
+                const currentText = songTitleElement.textContent.trim();
+                if (currentText !== "Yükleniyor..." && currentText !== "Yayın Yükleniyor..." && currentText !== "" && isPlaying) {
+                    screenElement.classList.add('scrolling');
+                } else {
+                    screenElement.classList.remove('scrolling');
+                }
+            }
+
+            // KRİTİK: FastCast'in güncellediği gizli elementten veriyi çekip Marquee alanına kopyalama
+            function syncSongTitle() {
+                const streamText = streamSourceElement.textContent.trim();
+                // Eğer FastCast veriyi güncellediyse ve bu bizim alanda farklıysa
+                if (songTitleElement.textContent.trim() !== streamText) {
+                    songTitleElement.textContent = streamText;
+                    checkMarquee();
+                }
+            }
+            
+            // --- Olay Dinleyicileri ---
+            playPauseBtn.addEventListener('click', togglePlayPause);
+            volumeSlider.addEventListener('input', (e) => {
+                audio.volume = e.target.value / 100;
+            });
+            audio.volume = volumeSlider.value / 100;
+            
+            audio.addEventListener('error', (e) => {
+                console.error("Audio Load Error:", e);
+                songTitleElement.textContent = "HATA: YAYIN YÜKLENEMİYOR!";
+                isPlaying = false;
+                playPauseBtn.classList.remove('playing');
+                stopVisualization();
+                clearInterval(timeInterval);
+                timeInterval = null;
+            });
+
+            // KRİTİK: Veri akışını garanti etmek için düzenli kontrol
+            setInterval(syncSongTitle, 500); 
+            
+            // İlk yüklenmede metni senkronize etmeyi dene
+            syncSongTitle(); 
+        });
+    </script>
+</body>
+</html>
