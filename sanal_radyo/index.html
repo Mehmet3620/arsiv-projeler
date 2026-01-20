@@ -1,412 +1,472 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dost Yurdu Radyo Player - Şeffaf</title>
+    <title>Özgün Radyo Player</title>
     <style>
         body {
-            background-color: transparent;
-            font-family: Arial, sans-serif;
-            /* Forumun kendi yazıları görünmez olmasın diye bu satır kaldırıldı. */
-            /* color: #fff; */
             margin: 0;
-        }
-
-        .radio-player-container {
-            background-color: #1a1a1a;
-            border-radius: 15px;
-            width: 500px;
-            height: 180px;
-            padding: 20px;
+            background-color: #000;
+            color: white;
+            font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            box-shadow: 
-                0 4px 8px rgba(0, 0, 0, 0.4), 
-                0 8px 16px rgba(0, 0, 0, 0.3), 
-                0 16px 32px rgba(0, 0, 0, 0.2);
-            margin: auto;
-            color: #fff; /* Yazı rengi sadece player'ın içine uygulandı */
-        }
-
-        .player-info-section {
-            background-color: #2a2a2a;
-            border-radius: 12px;
-            padding: 15px;
-            display: flex;
+            justify-content: center;
             align-items: center;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            flex-shrink: 0;
+            height: 100vh;
         }
 
-        .album-art-section {
+        #player-container {
+            width: 80%;
+            max-width: 600px;
+            background-color: rgba(34, 34, 34, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            box-sizing: border-box;
             position: relative;
-            width: 100px;
-            height: 100px;
-            border-radius: 8px;
             overflow: hidden;
-            margin-right: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+            z-index: 10;
         }
 
-        .album-art-section img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .album-art-section::after {
-            content: '';
+        #visualizer-canvas {
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 50%;
+            left: 0;
+            width: 100%;
             height: 100%;
-            background: linear-gradient(
-                90deg, 
-                rgba(255, 255, 255, 0) 0%, 
-                rgba(255, 255, 255, 0.2) 50%, 
-                rgba(255, 255, 255, 0) 100%
-            );
-            transform: skewX(-20deg);
-            animation: none;
-            transition: opacity 0.3s ease;
+            z-index: 11;
         }
 
-        .album-art-section.playing::after,
-        .album-art-section:hover::after {
-            animation: shine 2s infinite linear;
-        }
-
-        @keyframes shine {
-            0% { left: -100%; }
-            100% { left: 150%; }
-        }
-
-        .station-info {
-            flex-grow: 1;
-        }
-
-        .station-name {
-            font-size: 18px;
-            font-weight: bold;
-            color: #fff;
-            margin-bottom: 5px;
-        }
-
-        .artist-title-container {
-            overflow: hidden;
-            white-space: nowrap;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .artist-title {
-            font-size: 16px;
-            font-weight: 500;
-            color: #aaa;
-            display: inline-block;
-            animation: marquee 15s linear infinite;
-        }
-
-        @keyframes marquee {
-            0%   { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-
-        .equalizer-visual {
-            display: flex;
-            align-items: flex-end;
-            width: 100%;
-            height: 20px;
-            gap: 2px;
-            margin-top: 8px;
-        }
-
-        .equalizer-bar {
-            width: 5%;
-            background-color: #ff5722;
-            animation: bounce 1.2s ease-in-out infinite;
-        }
-
-        .equalizer-bar:nth-child(2) { animation-delay: 0.2s; }
-        .equalizer-bar:nth-child(3) { animation-delay: 0.4s; }
-        .equalizer-bar:nth-child(4) { animation-delay: 0.6s; }
-        .equalizer-bar:nth-child(5) { animation-delay: 0.8s; }
-        .equalizer-bar:nth-child(6) { animation-delay: 1s; }
-        .equalizer-bar:nth-child(7) { animation-delay: 1.2s; }
-        .equalizer-bar:nth-child(8) { animation-delay: 0.5s; }
-        .equalizer-bar:nth-child(9) { animation-delay: 0.9s; }
-        .equalizer-bar:nth-child(10) { animation-delay: 0.1s; }
-
-        @keyframes bounce {
-            0%, 100% { height: 2px; }
-            50% { height: 100%; }
-        }
-
-        .controls-section {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .playback-area {
-            display: flex;
-            align-items: center;
-            flex-grow: 1;
-        }
-
-        .play-pause-btn {
-            background-color: #ff5722;
+        .fullscreen-btn {
+            background: none;
             border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            color: white;
+            font-size: 24px;
             cursor: pointer;
-            transition: transform 0.2s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-            margin-right: 20px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 15;
+            padding: 5px;
         }
 
-        .play-pause-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .play-pause-btn .icon {
-            color: #fff;
-            font-size: 28px;
-        }
-
-        .volume-control-area {
-            display: flex;
-            align-items: center;
-            flex-grow: 1;
-            margin-right: 15px;
-        }
-
-        .volume-icon {
-            font-size: 20px;
-            color: #fff;
-            margin-right: 10px;
-        }
-
-        .volume-slider {
-            width: 100%;
-            height: 8px;
-            background-color: #555;
-            border-radius: 4px;
-            -webkit-appearance: none;
-            appearance: none;
-            cursor: pointer;
-        }
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            background-color: #ff5722;
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-        }
-
-        .time-display {
-            font-size: 14px;
-            color: #aaa;
-            margin-left: 10px;
-        }
-
-        .external-links-section {
+        #content-wrapper {
+            position: relative;
+            z-index: 12;
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
+            align-items: center;
+            width: 100%;
         }
 
-        .listen-label {
-            display: none;
+        .vinyl-container {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin-bottom: 20px;
         }
 
-        .player-icons {
-            display: flex;
-            gap: 10px;
+        .vinyl-record {
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.1) 75%),
+                linear-gradient(-45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.1) 75%),
+                radial-gradient(circle, #555, #111 60%);
+            background-size: 5px 5px, 5px 5px, cover;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            animation: rotate 10s linear infinite paused;
+            position: relative;
         }
 
-        .player-icons a {
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .vinyl-record::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            background-color: #111;
+            border: 2px solid black;
+            border-radius: 50%;
+        }
+
+        #circular-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 60%;
+            height: 60%;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        #circular-text span {
+            position: absolute;
+            top: 19%;
+            left: 80%;
+            color: #ccc;
+        }
+
+        #radio-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #radio-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff5722;
+        }
+
+        #song-title {
+            font-size: 18px;
+            color: #ccc;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #controls {
             display: flex;
             justify-content: center;
             align-items: center;
+            gap: 20px;
+            margin-top: 20px;
         }
 
-        .player-icons img {
-            width: 28px;
-            height: 28px;
+        #play-pause-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #play-pause-btn:hover {
+            background-color: #e64a19;
+        }
+
+        .volume-control-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        #volume-icon {
+            font-size: 24px;
+            color: #ccc;
+        }
+
+        #volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 150px;
+            height: 8px;
+            background: #444;
+            outline: none;
+            border-radius: 4px;
+        }
+
+        #volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #ff5722;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .social-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-buttons a {
+            color: #fff;
+            font-size: 24px;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .social-buttons a:hover {
             opacity: 1;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .player-icons a:hover img {
-            transform: scale(1.1);
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
 
-    <div class="radio-player-container">
-        <div class="player-info-section">
-            <div class="album-art-section">
-                <img id="track-image" src="https://s1.directupload.eu/images/250921/kpdpfrc2.webp" alt="Album Art">
-            </div>
-            <div class="station-info">
-                <div class="station-name">Dost Yurdu Radyo</div>
-                <div class="artist-title-container">
-                    <span id="artist-title-label" class="artist-title">Yükleniyor...</span>
-                    <div class="equalizer-visual">
-                        <div class="equalizer-bar"></div>
-                        <div class="equalizer-bar"></div>
-                        <div class="equalizer-bar"></div>
-                        <div class="equalizer-bar"></div>
-                        <div class="equalizer-bar"></div>
-                        <div class="equalizer-bar"></div>
-                        <div class="equalizer-bar"></div>
-                        <div class="equalizer-bar"></div>
-                        <div class="equalizer-bar"></div>
-                        <div class="equalizer-bar"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div id="player-container">
+        <canvas id="visualizer-canvas"></canvas>
+        <button class="fullscreen-btn" id="fullscreen-btn">&#x26F6;</button>
 
-        <div class="controls-section">
-            <div class="playback-area">
-                <button id="play-pause-btn" class="play-pause-btn">
-                    <span id="play-icon" class="icon">&#9658;</span>
-                </button>
-                <div class="volume-control-area">
-                    <span class="volume-icon">&#128266;</span>
-                    <input type="range" id="volume-slider" class="volume-slider" min="0" max="100" value="50">
-                    <span id="time-display" class="time-display">00:00</span>
+        <div id="content-wrapper">
+            <div class="vinyl-container">
+                <div class="vinyl-record">
+                    <div id="circular-text"></div>
                 </div>
             </div>
 
-            <div class="external-links-section">
-                <div class="player-icons">
-                    <a href="https://eu1.fastcast4u.com/tunein/qpnslltp.pls" title="Winamp, iTunes">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Winamp-logo.svg/596px-Winamp-logo.svg.png?20240531140507" alt="Winamp, iTunes">
-                    </a>
-                    <a href="https://eu1.fastcast4u.com/tunein/qpnslltp.asx" title="Windows Media Player">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Media_Player_Windows_11_logo.svg/640px-Media_Player_Windows_11_logo.svg.png" alt="Windows Media Player">
-                    </a>
-                    <a href="https://eu1.fastcast4u.com/tunein/qpnslltp.ram" title="Real Player">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Realplayer.svg" alt="Real Player">
-                    </a>
-                    <a href="https://eu1.fastcast4u.com/tunein/qpnslltp.qtl" title="QuickTime">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/QuickTime_Logo.svg/249px-QuickTime_Logo.svg.png?20170202170032" alt="QuickTime">
-                    </a>
-                    <a href="https://eu1.fastcast4u.com/stream/qpnslltp/stream.pls" title="Stream Proxy">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Emoji_u1f30e.svg/128px-Emoji_u1f30e.svg.png?20170527190141" alt="Stream Proxy">
-                    </a>
+            <div id="radio-info">
+                <div id="radio-name">Allaturkaa Radyo</div>
+                <div id="song-title">Çalan Şarkı: Yükleniyor...</div>
+            </div>
+
+            <div id="controls">
+                <button id="play-pause-btn">&#9658;</button>
+                <div class="volume-control-group">
+                    <span id="volume-icon">&#x1F50A;</span>
+                    <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
                 </div>
+            </div>
+
+            <div class="social-buttons">
+                <a href="https://www.facebook.com/radyoallaturka" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.twitter.com/radyoallaturka" target="_blank"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.instagram.com/radyoallaturka" target="_blank"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
     </div>
 
-    <audio id="audio-player" style="display:none;" preload="metadata" src="https://eu1.fastcast4u.com/proxy/qpnslltp?mp=/stream"></audio>
-    <div style="display: none;">
-        <a href="https://eu1.fastcast4u.com/tunein/qpnslltp.pls" class="cc_streaminfo" data-type="song" data-username="qpnslltp">Yükleniyor...</a>
-        <script src="https://eu1.fastcast4u.com/system/streaminfo.js"></script>
-    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const playPauseBtn = document.getElementById('play-pause-btn');
-            const playIcon = document.getElementById('play-icon');
-            const volumeSlider = document.getElementById('volume-slider');
-            const artistTitleLabel = document.getElementById('artist-title-label');
-            const audio = document.getElementById('audio-player');
-            const timeDisplay = document.getElementById('time-display');
-            const trackImage = document.getElementById('track-image');
-            const albumArtSection = document.querySelector('.album-art-section');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const volumeSlider = document.getElementById('volume-slider');
+        const visualizerCanvas = document.getElementById('visualizer-canvas');
+        const playerContainer = document.getElementById('player-container');
+        const volumeIcon = document.getElementById('volume-icon');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const vinylRecord = document.querySelector('.vinyl-record');
+        const circularText = document.getElementById('circular-text');
+        const songTitle = document.getElementById('song-title');
 
-            let isPlaying = false;
-            let currentTrack = '';
-            let startTime = 0;
-            let intervalId = null;
+        const radioStreamUrl = 'https://eu4.fastcast4u.com/proxy/allaturka?mp=/1';
+        const audio = new Audio();
+        let audioContext, analyser, source, dataArray;
+        let isPlaying = false;
+        
+        function getSongTitle() {
+            fetch('https://allaturka.live/yayin.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.current_song) {
+                        songTitle.textContent = `Çalan Şarkı: ${data.current_song}`;
+                    } else {
+                        songTitle.textContent = 'Çalan Şarkı: Bilgi Yok';
+                    }
+                })
+                .catch(error => {
+                    console.error('Şarkı bilgisi alınamadı:', error);
+                    songTitle.textContent = 'Çalan Şarkı: Bilgi Yok';
+                });
+        }
+        
+        getSongTitle();
+        setInterval(getSongTitle, 10000);
 
-            const defaultImageUrl = 'https://s1.directupload.eu/images/250921/kpdpfrc2.webp';
+        function setupAudio() {
+            if (audioContext) return;
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 512;
+            dataArray = new Uint8Array(analyser.fftSize);
+            source = audioContext.createMediaElementSource(audio);
+            source.connect(analyser);
+            analyser.connect(audioContext.destination);
 
-            playPauseBtn.addEventListener('click', () => {
-                if (isPlaying) {
-                    audio.pause();
-                } else {
-                    audio.play().catch(e => console.error("Oynatma hatası:", e));
-                }
+            volumeSlider.addEventListener('input', () => {
+                audio.volume = volumeSlider.value;
+                updateVolumeIcon(audio.volume);
             });
+            audio.volume = volumeSlider.value;
+            updateVolumeIcon(audio.volume);
+        }
 
-            audio.addEventListener('play', () => {
-                isPlaying = true;
-                playIcon.innerHTML = '&#10074;&#10074;';
-                startTime = Date.now();
-                if (intervalId) { clearInterval(intervalId); }
-                intervalId = setInterval(updateTime, 1000);
-                albumArtSection.classList.add('playing');
+        function updateVolumeIcon(volume) {
+            if (volume == 0) {
+                volumeIcon.textContent = '🔇';
+            } else if (volume < 0.5) {
+                volumeIcon.textContent = '🔉';
+            } else {
+                volumeIcon.textContent = '🔊';
+            }
+        }
+
+        function createCircularText(text, elementId) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = '';
+            const characters = text.split('');
+            const degreeStep = 360 / characters.length;
+            let currentDegree = -90;
+            const radius = (vinylRecord.offsetWidth / 2) - 15;
+
+            characters.forEach(char => {
+                const span = document.createElement('span');
+                span.textContent = char;
+                span.style.transformOrigin = `0 ${radius}px`;
+                span.style.transform = `rotate(${currentDegree}deg) translate(0px, -${radius}px) rotate(90deg)`;
+                element.appendChild(span);
+                currentDegree += degreeStep;
             });
+        }
+        createCircularText('RADYO ALLATURKA', 'circular-text');
 
-            audio.addEventListener('pause', () => {
+        playPauseBtn.addEventListener('click', () => {
+            if (!isPlaying) {
+                setupAudio();
+                audio.src = radioStreamUrl;
+                audio.crossOrigin = "anonymous";
+                audio.play().then(() => {
+                    isPlaying = true;
+                    playPauseBtn.innerHTML = '&#10074;&#10074;';
+                    vinylRecord.style.animationPlayState = 'running';
+                }).catch(e => {
+                    console.error("Oynatma hatası:", e);
+                    alert("Radyo akışı başlatılamadı. CORS veya adres sorunu olabilir.");
+                });
+            } else {
+                audio.pause();
                 isPlaying = false;
-                playIcon.innerHTML = '&#9658;';
-                if (intervalId) { clearInterval(intervalId); }
-                albumArtSection.classList.remove('playing');
-            });
-
-            volumeSlider.addEventListener('input', (e) => {
-                audio.volume = e.target.value / 100;
-            });
-
-            audio.volume = volumeSlider.value / 100;
-
-            function fetchAndDisplayTrackInfo() {
-                const trackInfoElement = document.querySelector('.cc_streaminfo[data-type="song"]');
-                const imageInfoElement = document.querySelector('.cc_streaminfo[data-type="image"]');
-                const newTrackInfo = trackInfoElement ? trackInfoElement.textContent : 'Yükleniyor...';
-                const newImageUrl = imageInfoElement ? imageInfoElement.textContent : defaultImageUrl;
-
-                if (newTrackInfo && newTrackInfo !== currentTrack) {
-                    currentTrack = newTrackInfo;
-                    artistTitleLabel.textContent = newTrackInfo;
-                    trackImage.src = newImageUrl || defaultImageUrl;
-                    artistTitleLabel.style.animation = 'none';
-                    void artistTitleLabel.offsetWidth;
-                    artistTitleLabel.style.animation = null;
-                }
+                playPauseBtn.innerHTML = '&#9658;';
+                vinylRecord.style.animationPlayState = 'paused';
             }
-
-            setTimeout(() => {
-                fetchAndDisplayTrackInfo();
-                setInterval(fetchAndDisplayTrackInfo, 10000);
-            }, 1000);
-
-            function updateTime() {
-                const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
-                const minutes = Math.floor(elapsedSeconds / 60);
-                const seconds = elapsedSeconds % 60;
-                timeDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            }
-
-            const equalizerBars = document.querySelectorAll('.equalizer-bar');
-            audio.addEventListener('play', () => {
-                equalizerBars.forEach(bar => bar.style.animationPlayState = 'running');
-            });
-            audio.addEventListener('pause', () => {
-                equalizerBars.forEach(bar => bar.style.animationPlayState = 'paused');
-            });
-            equalizerBars.forEach(bar => bar.style.animationPlayState = 'paused');
         });
+
+        fullscreenBtn.addEventListener('click', () => {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+                fullscreenBtn.innerHTML = '&#x26F6;';
+            } else {
+                playerContainer.requestFullscreen();
+                fullscreenBtn.innerHTML = '&#x26F5;';
+            }
+        });
+
+        // 3D PARÇACIK GÖRSELLEŞTİRME KODU
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, playerContainer.offsetWidth / playerContainer.offsetHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: visualizerCanvas, antialias: true, alpha: true });
+        renderer.setSize(playerContainer.offsetWidth, playerContainer.offsetHeight);
+
+        camera.position.z = 200;
+
+        const particleCount = 2000;
+        const particlesGeometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+        const velocities = new Float32Array(particleCount * 3);
+
+        const color = new THREE.Color();
+        const baseHue = 0.08;
+
+        for (let i = 0; i < particleCount; i++) {
+            const i3 = i * 3;
+            positions[i3 + 0] = (Math.random() - 0.5) * 500;
+            positions[i3 + 1] = (Math.random() - 0.5) * 500;
+            positions[i3 + 2] = (Math.random() - 0.5) * 500;
+
+            velocities[i3 + 0] = (Math.random() - 0.5) * 0.1;
+            velocities[i3 + 1] = (Math.random() - 0.5) * 0.1;
+            velocities[i3 + 2] = (Math.random() - 0.5) * 0.1;
+
+            color.setHSL(baseHue, 1, 0.5);
+            colors[i3 + 0] = color.r;
+            colors[i3 + 1] = color.g;
+            colors[i3 + 2] = color.b;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        particlesGeometry.velocities = velocities;
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 2,
+            vertexColors: true,
+            blending: THREE.AdditiveBlending,
+            transparent: true,
+            opacity: 0.8
+        });
+
+        const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particles);
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (isPlaying && analyser) {
+                analyser.getByteFrequencyData(dataArray);
+
+                const positions = particles.geometry.attributes.position.array;
+                const colors = particles.geometry.attributes.color.array;
+                const velocities = particles.geometry.velocities;
+
+                const averageFrequency = dataArray.reduce((a, b) => a + b) / dataArray.length;
+                const scale = averageFrequency / 1000;
+                
+                const lowFrequency = dataArray.slice(0, 100).reduce((a, b) => a + b) / 100;
+                const highFrequency = dataArray.slice(100, 256).reduce((a, b) => a + b) / 156;
+
+                for (let i = 0; i < particleCount; i++) {
+                    const i3 = i * 3;
+
+                    positions[i3 + 0] += velocities[i3 + 0] * (1 + scale * 5);
+                    positions[i3 + 1] += velocities[i3 + 1] * (1 + scale * 5);
+                    positions[i3 + 2] += velocities[i3 + 2] * (1 + scale * 5);
+
+                    if (Math.abs(positions[i3 + 0]) > 250 || Math.abs(positions[i3 + 1]) > 250 || Math.abs(positions[i3 + 2]) > 250) {
+                        positions[i3 + 0] = (Math.random() - 0.5) * 500;
+                        positions[i3 + 1] = (Math.random() - 0.5) * 500;
+                        positions[i3 + 2] = (Math.random() - 0.5) * 500;
+                    }
+                    
+                    const hue = (baseHue + highFrequency / 255) % 1;
+                    const saturation = 1;
+                    const lightness = 0.5 + lowFrequency / 500;
+                    color.setHSL(hue, saturation, lightness);
+                    colors[i3 + 0] = color.r;
+                    colors[i3 + 1] = color.g;
+                    colors[i3 + 2] = color.b;
+                }
+
+                particles.geometry.attributes.position.needsUpdate = true;
+                particles.geometry.attributes.color.needsUpdate = true;
+            }
+
+            camera.rotation.z += 0.0005;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = playerContainer.offsetWidth / playerContainer.offsetHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(playerContainer.offsetWidth, playerContainer.offsetHeight);
+            createCircularText('RADYO ALLATURKAA', 'circular-text');
+        });
+        window.dispatchEvent(new Event('resize'));
     </script>
 </body>
 </html>
