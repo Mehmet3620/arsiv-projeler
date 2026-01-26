@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İhtiyaç Listesi - Seyyah20</title>
+    <style>
+        :root {
+            --ana-yesil: #43a047;
+            --cerceve: #888; 
+            --arka-plan: #e9eff1;
+            --sil-kirmizi: #e53935;
+            --yazdir-mavi: #1e88e5;
+        }
+
+        body {
+            background-color: var(--arka-plan);
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            display: flex;
+            justify-content: center;
+            padding: 15px;
+            margin: 0;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .header-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 12px;
+            padding-bottom: 5px;
+            border-bottom: 3px solid var(--ana-yesil);
+        }
+
+        h1 { margin: 0; font-size: 22px; color: #000; }
+
+        .time-info { text-align: right; }
+        #currentTime { display: block; font-size: 18px; font-weight: bold; color: var(--ana-yesil); }
+        #currentDate { display: block; font-size: 10px; color: #555; }
+
+        .progress-area {
+            background: #fff;
+            padding: 6px 12px;
+            border: 2px solid var(--cerceve);
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .progress-text { display: flex; justify-content: space-between; font-weight: bold; font-size: 12px; margin-bottom: 4px; }
+        .bar-bg { background: #ccc; height: 8px; border-radius: 4px; overflow: hidden; }
+        #progressBar { height: 100%; width: 0%; background: var(--ana-yesil); transition: width 0.4s; }
+
+        /* Yeni Kontrol Butonları Alanı */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            gap: 10px;
+        }
+        .control-btn {
+            flex: 1;
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid var(--cerceve);
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+            background: white;
+            transition: 0.2s;
+        }
+        .clear-all:hover { background: var(--sil-kirmizi); color: white; border-color: var(--sil-kirmizi); }
+        .print-btn:hover { background: var(--yazdir-mavi); color: white; border-color: var(--yazdir-mavi); }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid var(--cerceve);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+        .add-btn {
+            background-color: var(--ana-yesil);
+            color: white;
+            border: none;
+            padding: 0 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        ul { list-style: none; padding: 0; margin: 0; }
+        li {
+            background: white;
+            border: 2px solid var(--cerceve); 
+            border-radius: 8px;
+            margin-bottom: 6px;
+            padding: 6px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .content { flex: 1; overflow: hidden; margin-right: 10px; }
+        .item-text { font-size: 15px; font-weight: 600; color: #000; word-break: break-word; }
+        .item-date { font-size: 9px; color: #777; display: block; }
+
+        .buttons { display: flex; gap: 8px; }
+        .btn { background: none; border: none; cursor: pointer; font-weight: bold; font-size: 12px; }
+        .edit-btn { color: var(--ana-yesil); }
+        .del-btn { color: var(--sil-kirmizi); }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 11px;
+            color: #666;
+            border-top: 1px solid var(--cerceve);
+            padding-top: 10px;
+        }
+
+        /* Yazdırma Ayarı */
+        @media print {
+            .input-group, .controls, .buttons, .footer, .progress-area { display: none !important; }
+            body { background: white; padding: 0; }
+            li { border: 1px solid #ccc; box-shadow: none; margin-bottom: 10px; }
+            .header-box { border-bottom: 2px solid #000; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header-box">
+        <h1>İhtiyaç Listem</h1>
+        <div class="time-info">
+            <span id="currentTime">00:00</span>
+            <span id="currentDate">-- -- ----</span>
+        </div>
+    </div>
+
+    <div class="progress-area">
+        <div class="progress-text">
+            <span>Liste Doluluğu</span>
+            <span id="progressPercent">0 / 20</span>
+        </div>
+        <div class="bar-bg">
+            <div id="progressBar"></div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn print-btn" onclick="yazdir()">🖨️ Listeyi Yazdır</button>
+        <button class="control-btn clear-all" onclick="tumunuTemizle()">🗑️ Tümünü Sil</button>
+    </div>
+    
+    <div class="input-group">
+        <input type="text" id="taskInput" placeholder="Yeni bir ürün yazın...">
+        <button class="add-btn" onclick="ekle()">Ekle</button>
+    </div>
+
+    <ul id="listUI"></ul>
+
+    <div class="footer">
+        Powered by <b>Allaturkaa Forum/Seyyah20</b>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById('taskInput');
+    const listUI = document.getElementById('listUI');
+    const pBar = document.getElementById('progressBar');
+    const pPercent = document.getElementById('progressPercent');
+
+    const STORAGE_KEY = 'mehmet_list_pro_fix';
+    const MAX_LIMIT = 20;
+
+    let veriler = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+    function updateClock() {
+        const simdi = new Date();
+        document.getElementById('currentDate').innerText = simdi.toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', year: 'numeric' });
+        document.getElementById('currentTime').innerText = simdi.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function kaydet() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(veriler));
+        yenile();
+    }
+
+    function ekle() {
+        if (input.value.trim() === "") return;
+        if (veriler.length >= MAX_LIMIT) {
+            alert("Liste limiti doldu!");
+            return;
+        }
+        const yeni = {
+            id: Date.now(),
+            text: input.value,
+            date: new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}),
+        };
+        veriler.unshift(yeni);
+        input.value = "";
+        kaydet();
+    }
+
+    function sil(id) {
+        if(confirm("Bu ürünü silmek istediğinize emin misiniz?")) {
+            veriler = veriler.filter(x => x.id !== id);
+            kaydet();
+        }
+    }
+
+    function tumunuTemizle() {
+        if (veriler.length === 0) return;
+        if (confirm("TÜM LİSTEYİ SİLMEK İSTEDİĞİNİZE EMİN MİSİNİZ? Bu işlem geri alınamaz.")) {
+            veriler = [];
+            kaydet();
+        }
+    }
+
+    function yazdir() {
+        if (veriler.length === 0) {
+            alert("Yazdırılacak ürün yok!");
+            return;
+        }
+        window.print();
+    }
+
+    function duzenleModu(id) {
+        const li = document.getElementById(`li-${id}`);
+        const currentText = veriler.find(x => x.id === id).text;
+        li.querySelector('.content').innerHTML = `<input type="text" class="edit-input" style="width:80%;" id="edit-${id}" value="${currentText}">`;
+        li.querySelector('.buttons').innerHTML = `<button class="btn edit-btn" onclick="guncelle(${id})">Onayla</button>`;
+    }
+
+    function guncelle(id) {
+        const yeniDeger = document.getElementById(`edit-${id}`).value;
+        const index = veriler.findIndex(x => x.id === id);
+        if(yeniDeger.trim() !== "") {
+            veriler[index].text = yeniDeger;
+            kaydet();
+        }
+    }
+
+    function yenile() {
+        listUI.innerHTML = "";
+        veriler.forEach(item => {
+            const li = document.createElement('li');
+            li.id = `li-${item.id}`;
+            li.innerHTML = `
+                <div class="content">
+                    <span class="item-text">${item.text}</span>
+                    <span class="item-date">🕒 ${item.date}</span>
+                </div>
+                <div class="buttons">
+                    <button class="btn edit-btn" onclick="duzenleModu(${item.id})">Düzenle</button>
+                    <button class="btn del-btn" onclick="sil(${item.id})">Sil</button>
+                </div>
+            `;
+            listUI.appendChild(li);
+        });
+
+        const toplam = veriler.length;
+        const oran = Math.min((toplam / MAX_LIMIT) * 100, 100);
+        pBar.style.width = oran + "%";
+        pPercent.innerText = `${toplam} / ${MAX_LIMIT}`;
+        pBar.style.backgroundColor = oran >= 100 ? "#e53935" : "var(--ana-yesil)";
+    }
+
+    input.addEventListener("keypress", (e) => { if(e.key === "Enter") ekle(); });
+    yenile();
+</script>
+
+</body>
+</html>
