@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mehmet3620 Neon Tasarım</title>
+    <style>
+        * {
+             margin: 0;
+             padding: 0;
+             transition: all 0.35s linear;
+             font-family: sans-serif;
+             box-sizing: border-box;
+        }
+
+        /* Arka planın beyaz olmaması için body'yi siyaha kilitledik */
+        body {
+            background-color: #101010;
+            min-height: 100vh;
+        }
+
+        /* Grupları birbirinden ayırmak için genel kapsayıcı */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px 0;
+            gap: 50px; /* Yatay ve dikey grup arasındaki mesafe */
+        }
+
+        /* Yatay grup: Yan yana diz */
+        .ust-grup {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Dikey grup: Tam hizalı ve alt alta */
+        .alt-grup {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Butonları merkezde bir hizaya sokar */
+            width: 100%;
+        }
+
+        /* SENİN ORİJİNAL NEON BUTONUN (Dokunulmadı) */
+        .neon {
+             width: 320px; /* Butonları aynı hizaya sokmak için sabit genişlik verdik */
+             padding: 1.5rem 0; /* İç boşluğu dikeyde bıraktık, yatayı genişlik çözer */
+             margin: 10px; /* Butonlar arası nefes payı */
+             border-width: 1px;
+             border-style: solid;
+             border-color: #00ff00 #ffff00 #ffff00 #00ff00;
+             border-radius: 3rem;
+             font-size: 1.5rem;
+             font-weight: bold;
+             text-transform: uppercase;
+             cursor: pointer;
+             color: transparent;
+             background-image: linear-gradient(to bottom right, #00ff00, #ffff00);
+             background-clip: text;
+             text-align: center; /* Yazıyı buton içinde ortalar */
+             box-shadow: -2px -2px 0.5rem #00ff0086,
+                 2px 2px 0.5rem inset #00ff0086,
+                 2px 2px 0.5rem #ffff0086,
+                 -2px -2px 0.5rem inset #ffff0086;
+        }
+
+        .neon:hover {
+             color: #101010;
+             background-clip: border-box;
+             box-shadow: -0.5rem -0.25rem 1.5rem #00ff008f,
+                 0.5rem 0.25rem 1.5rem #ffff008f;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="ust-grup">
+        <button class="neon">Neon Button</button>
+        <button class="neon">Allaturka Forum</button>
+		<button class="neon">Sid Gönder</button>
+        <button class="neon">İfadeler</button>
+		<button class="neon">Seyyah20</button>
+    </div>
+
+    <div class="alt-grup">
+        <button class="neon">Neon Button</button>
+        <button class="neon">Allaturka Forum</button>
+        <button class="neon">Sid Gönder</button>
+        <button class="neon">İfadeler</button>
+		<button class="neon">Seyyah20</button>
+    </div>
+
+</div>
+
+</body>
+</html>

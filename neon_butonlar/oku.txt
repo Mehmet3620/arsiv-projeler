@@ -1,0 +1,62 @@
+Çift Renkli Ultra Neon Buton Seti (Yatay & Dikey Seçenekli)
+Selamlar dostlar,
+
+Bugün sizlere görsel kalitesi oldukça yüksek, modern CSS teknikleriyle (background-clip, inset shadows, linear-gradient) harmanlanmış "Ultra Neon Buton" setini paylaşıyorum. Bu butonlar sadece parlamıyor, aynı zamanda üzerindeki yazıya kadar renk geçişini hissettiriyor.
+
+🚀 Öne Çıkan Özellikler
+Çift Renkli Geçiş (Gradient): Sarı ve Yeşil tonlarının mükemmel uyumuyla hazırlanmış neon çerçeve ve metin yapısı.
+
+İç ve Dış Gölge (Double Shadow): Hem butonun dışına yayılan hem de içine derinlik katan (inset) gerçekçi neon efekti.
+
+Tam Uyumlu Dizilim: Kodun içinde hem yan yana (yatay) hem de alt alta (dikey) kullanım için hazır yapılar mevcuttur.
+
+Saf CSS: Hiçbir JavaScript veya harici resim dosyası gerektirmez, sadece kopyalayıp yapıştırın.
+
+🛠️ Nasıl Kullanılır? (Teknik Detaylar)
+1. Grupları Ayırmak
+Butonları nasıl dizeceğinizi belirlemek için HTML kısmındaki class isimlerini kullanmanız yeterlidir:
+
+Yan yana dizmek için: Butonlarınızı <div class="ust-grup"> içine alın.
+
+Alt alta dizmek için: Butonlarınızı <div class="alt-grup"> içine alın.
+
+2. Renkleri Değiştirmek
+Eğer Sarı-Yeşil yerine farklı renkler isterseniz, CSS içindeki şu iki kodu bulup renk kodlarını (HEX veya RGB) değiştirin:
+
+border-color: #00ff00 #ffff00 #ffff00 #00ff00; (Kenarlık renkleri)
+
+background-image: linear-gradient(to bottom right, #00ff00, #ffff00); (Yazı ve Hover geçişi)
+
+3. Boyut Ayarları
+Butonların genişliği dikeyde tam hizalı durmaları için sabitlenmiştir. CSS kısmındaki .neon sınıfı altındaki şu değerleri oynatabilirsiniz:
+
+Genişlik: width: 320px; (Daha ince veya kalın butonlar için).
+
+Yükseklik: padding: 1.5rem 0; (Butonun etli duruşunu ayarlar).
+
+Yazı Boyutu: font-size: 1.5rem; (Yazıları büyütüp küçültür).
+
+📝 Kod Bloğu (Kopyala-Yapıştır)
+HTML
+<style>
+/* CSS kodlarını buraya yapıştırın (Yukarıdaki tam kodu kullanın) */
+/* Arka planın her zaman siyah kalması için body rengini unutmayın! */
+</style>
+
+<div class="container">
+    <div class="ust-grup">
+        <button class="neon">Yatay 1</button>
+        <button class="neon">Yatay 2</button>
+    </div>
+
+    <div class="alt-grup">
+        <button class="neon">Dikey Menü 1</button>
+        <button class="neon">Dikey Menü 2</button>
+    </div>
+</div>
+💡 Kullanım İpucu
+Eğer butonları kendi web sayfanıza ekleyecekseniz, sayfanın geri kalanının beyaz kalmaması için body { background-color: #101010; } satırını mutlaka ekleyin. Bu neonların kendini göstermesi için karanlık bir ortama ihtiyacı var!
+
+Güle güle kullanın, geliştirmelerinizi ve yorumlarınızı bekliyorum!
+
+Mehmet3620
