@@ -1,0 +1,35 @@
+bir arkadaş bu uygulamayı televizyonda göstermek için ayarlamak istiyor nasıl yapılabilir
+
+Televizyonlarda (Smart TV) bu uygulamayı göstermek harika bir fikir! Genelde cami dernekleri veya evde büyük ekranda vakitleri takip etmek isteyenler bunu çok tercih ediyor.
+
+Arkadaşına bu 3 basit yöntemi önerebilirsin:
+
+1. En Kolay Yöntem: Akıllı TV Tarayıcısı
+Çoğu Smart TV'de (Samsung, LG, Android TV) bir internet tarayıcısı (Web Browser) bulunur.
+
+Yazdığımız kodu bir web sitesine (örneğin ücretsiz bir hostinge) yükleyip linkini TV'den açabilir.
+
+Veya kodu bir USB belleğe atıp TV'ye takabilir (bazı TV'ler yerel HTML dosyalarını açabilir).
+
+2. Tam Profesyonel Yöntem: TV Arkası "Stick" (Önerilen)
+Eğer TV çok akıllı değilse veya tarayıcısı yavaşsa, en sağlam yol bir Android TV Stick (Xiaomi Mi Stick, Google Chromecast veya Amazon Fire Stick) kullanmaktır.
+
+Bu cihazlar bir bilgisayar gibi çalışır. Cihazın içindeki tarayıcıdan uygulamayı açıp "Tam Ekran" moduna getirdiğinde, televizyon tıpkı profesyonel bir "Namaz Vakitleri Paneli"ne dönüşür.
+
+3. Bilgisayar/Laptop Bağlantısı (HDMI)
+En garanti ve hızlı yöntemdir. Bir laptopu HDMI kablosu ile televizyona bağlar, sayfayı açıp klavyeden F11 tuşuna basarak tam ekran yapar.
+
+📺 TV İçin Küçük Bir "İpucu":
+Televizyon ekranları genelde 1920x1080 (Full HD) çözünürlüktedir. Bizim kod şu an 1000px genişliğinde sabit duruyor. Eğer televizyonun ekranını tam kaplamasını istiyorsan, kodun içindeki şu kısmı arkadaşına verebilirsin:
+
+CSS kısmındaki bu satırı değiştirin:
+
+CSS
+.ana-konteyner { 
+    width: 100vw; /* Ekran genişliğini tam kapla */
+    height: 100vh; /* Ekran yüksekliğini tam kapla */
+    border: none; /* Kenarlıkları kaldır */
+}
+Bu sayede Süleymaniye görseli tüm televizyonu kaplar, sanki özel bir yazılım satın alınmış gibi çok şık durur.
+
+Arkadaşın hangi yöntemi deneyecek? Eğer TV'nin marka modelini söylerse ona göre daha özel bir ayar da yapabiliriz.

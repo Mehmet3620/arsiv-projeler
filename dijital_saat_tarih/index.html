@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seyyah20 - Terminal V3</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --altin-sarisi: #d4af37;
+            --panel-arka-plan: #c5a87a;
+            --led-kirmizi: #ff0000;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .imsakiye-cerceve {
+            background: linear-gradient(135deg, #f0d57d 0%, #967d33 50%, #5e4b1a 100%);
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+            border: 3px solid #b8932d;
+        }
+
+        .imsakiye-panel {
+            background-color: var(--panel-arka-plan);
+            width: 760px;
+            padding: 15px 10px;
+            border: 2px solid #4a3a1a;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .ust-bilgi-bari {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 10px;
+            background: rgba(0,0,0,0.08);
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        .ek-takvim { font-size: 11px; font-weight: bold; color: #4a3a1a; width: 140px; }
+        .input-merkez-konteyner { display: flex; flex-direction: column; align-items: center; }
+        .input-merkez { display: flex; gap: 4px; }
+        
+        .input-merkez input { 
+            background: rgba(255,255,255,0.7); 
+            border: 1px solid #4a3a1a; 
+            border-radius: 3px; 
+            padding: 3px 6px; 
+            font-size: 10px; 
+            width: 115px;
+            font-weight: bold; 
+        }
+
+        .input-merkez button { 
+            background: #4a3a1a; 
+            color: #f0d57d; 
+            border: none; 
+            padding: 3px 12px; 
+            border-radius: 3px; 
+            font-size: 10px; 
+            font-weight: bold; 
+            cursor: pointer; 
+        }
+
+        /* Sıcaklık Göstergesi Yeni Konumu */
+        .hava-durumu {
+            font-size: 13px;
+            font-weight: 900;
+            color: #2b0505;
+            margin: 10px auto 5px auto; /* Yeşil kutunun hemen üstü için pay */
+            text-align: center;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.3);
+        }
+
+        .display-box {
+            background-color: #2b0505;
+            color: var(--led-kirmizi);
+            font-family: 'Orbitron', sans-serif;
+            border-radius: 3px;
+            border: 2px inset #441111;
+            text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px;
+        }
+
+        .active-vakit { border-color: #fff !important; box-shadow: 0 0 12px #ff0000; }
+
+        .top-row { display: flex; justify-content: space-between; margin-bottom: 12px; padding: 0 5px; }
+        .date-box { width: 170px; font-size: 22px; }
+        .loc-box { width: 220px; font-size: 17px; text-transform: uppercase; }
+        .time-box { width: 220px; font-size: 32px; }
+
+        .countdown-bar {
+            background: #1a2b1a;
+            color: #00ff00;
+            font-family: 'Orbitron', sans-serif;
+            padding: 6px;
+            border-radius: 3px;
+            font-size: 12px;
+            text-align: center;
+            margin: 0 5px 15px 5px;
+            border: 1px solid #2d4a2d;
+            box-shadow: inset 0 0 5px rgba(0,255,0,0.2);
+        }
+
+        .vakit-konteyner { position: relative; display: flex; flex-direction: column; gap: 12px; padding: 0 10px; }
+        
+        .besmele-merkez {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 115px;
+            color: rgba(0, 0, 0, 0.15);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .vakit-satir { display: flex; align-items: center; justify-content: space-between; z-index: 2; }
+        .vakit-grubu { display: flex; align-items: center; }
+
+        .vakit-adi { font-size: 20px; font-weight: 900; color: #1a1a1a; font-style: italic; width: 85px; }
+        .sol-yazi { text-align: left; margin-right: 20px; }
+        .sag-yazi { text-align: right; margin-left: 20px; }
+        
+        .vakit-led { width: 140px; font-size: 32px; }
+
+        .etiket { font-size: 10px; font-weight: bold; color: #222; text-align: center; margin-bottom: 3px; }
+        .footer-note { text-align: center; font-size: 10px; color: #3d2e10; font-weight: bold; margin-top: 15px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 5px; }
+        .blink { animation: blinker 1s step-start infinite; }
+        @keyframes blinker { 50% { opacity: 0.1; } }
+        .saniye-text { font-size: 16px; margin-left: 4px; color: #ff4444; }
+    </style>
+</head>
+<body>
+
+<div class="imsakiye-cerceve">
+    <div class="imsakiye-panel">
+        <div class="ust-bilgi-bari">
+            <div class="ek-takvim" id="hicriAlan" style="text-align: left;">Hicri: -- --- ----</div>
+            <div class="input-merkez-konteyner">
+                <div class="input-merkez">
+                    <input type="text" id="countryInp" placeholder="Country (Turkey)">
+                    <input type="text" id="cityInp" placeholder="City (Denizli)">
+                    <button onclick="verileriYukle()">GETİR</button>
+                </div>
+            </div>
+            <div class="ek-takvim" id="rumiAlan" style="text-align: right;">Rumi: -- --- ----</div>
+        </div>
+
+        <div class="hava-durumu" id="havaDurumu">SICAKLIK: --°C</div>
+        
+        <div class="countdown-bar" id="nextVakitText">SİSTEM BAŞLATILIYOR...</div>
+
+        <div class="top-row">
+            <div><div class="etiket">MİLADİ TARİH</div><div class="display-box date-box" id="miltarih">--.--.----</div></div>
+            <div><div class="etiket">AKTİF BÖLGE</div><div class="display-box loc-box" id="locDisplay">KONUM</div></div>
+            <div><div class="etiket">SAAT / SN</div><div class="display-box time-box" id="clockDisplay"></div></div>
+        </div>
+
+        <div class="vakit-konteyner">
+            <div class="besmele-merkez">﷽</div>
+
+            <div class="vakit-satir">
+                <div class="vakit-grubu">
+                    <div class="vakit-adi sol-yazi">İMSAK</div>
+                    <div class="display-box vakit-led" id="fajr">--:--</div>
+                </div>
+                <div class="vakit-grubu">
+                    <div class="display-box vakit-led" id="sunrise">--:--</div>
+                    <div class="vakit-adi sag-yazi">GÜNEŞ</div>
+                </div>
+            </div>
+
+            <div class="vakit-satir">
+                <div class="vakit-grubu">
+                    <div class="vakit-adi sol-yazi">ÖĞLE</div>
+                    <div class="display-box vakit-led" id="dhuhr">--:--</div>
+                </div>
+                <div class="vakit-grubu">
+                    <div class="display-box vakit-led" id="asr">--:--</div>
+                    <div class="vakit-adi sag-yazi">İKİNDİ</div>
+                </div>
+            </div>
+
+            <div class="vakit-satir">
+                <div class="vakit-grubu">
+                    <div class="vakit-adi sol-yazi">AKŞAM</div>
+                    <div class="display-box vakit-led" id="maghrib">--:--</div>
+                </div>
+                <div class="vakit-grubu">
+                    <div class="display-box vakit-led" id="isha">--:--</div>
+                    <div class="vakit-adi sag-yazi">YATSI</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-note">Allaturkaa Forum / Seyyah20 - Dijital Komuta Merkezi</div>
+    </div>
+</div>
+
+<script>
+    let timings = {};
+
+    async function verileriYukle() {
+        const country = document.getElementById('countryInp').value || "Turkey";
+        const city = document.getElementById('cityInp').value || "Denizli";
+        
+        try {
+            const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=13`);
+            const data = await res.json();
+            timings = data.data.timings;
+            document.getElementById('locDisplay').innerText = city.toUpperCase();
+            
+            const h = data.data.date.hijri;
+            document.getElementById('hicriAlan').innerText = `Hicri: ${h.day} ${h.month.tr || h.month.en} ${h.year}`;
+            
+            const bugun = new Date();
+            const rumiAy = ["Kânun-ı Sâni", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Teşrin-i Evvel", "Teşrin-i Sâni", "Kânun-ı Evvel"];
+            const rDate = new Date(); rDate.setDate(bugun.getDate() - 13);
+            document.getElementById('rumiAlan').innerText = `Rumi: ${rDate.getDate()} ${rumiAy[rDate.getMonth()]} ${rDate.getFullYear() - 584}`;
+            
+            havaGetir(city);
+
+        } catch (e) { document.getElementById('nextVakitText').innerText = "VERİ HATASI!"; }
+    }
+
+    async function havaGetir(sehir) {
+        try {
+            const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${sehir}&count=1&language=tr&format=json`);
+            const geoData = await geoRes.json();
+            if(geoData.results) {
+                const { latitude, longitude } = geoData.results[0];
+                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
+                const weatherData = await weatherRes.json();
+                const temp = Math.round(weatherData.current_weather.temperature);
+                document.getElementById('havaDurumu').innerText = `SICAKLIK: ${temp}°C`;
+            }
+        } catch (f) { document.getElementById('havaDurumu').innerText = "SICAKLIK: --°C"; }
+    }
+
+    function ekranGuncelle() {
+        const simdi = new Date();
+        const dot = `<span class="blink">:</span>`;
+        document.getElementById('miltarih').innerText = simdi.toLocaleDateString('tr-TR');
+
+        const sa = String(simdi.getHours()).padStart(2, '0');
+        const dk = String(simdi.getMinutes()).padStart(2, '0');
+        const sn = String(simdi.getSeconds()).padStart(2, '0');
+        document.getElementById('clockDisplay').innerHTML = `${sa}${dot}${dk}<span class="saniye-text">${sn}</span>`;
+
+        if (!timings.Fajr) return;
+
+        const vakitList = [
+            {n: "İmsak", t: timings.Fajr, id: "fajr"}, {n: "Güneş", t: timings.Sunrise, id: "sunrise"},
+            {n: "ÖĞLE", t: timings.Dhuhr, id: "dhuhr"}, {n: "İKİNDİ", t: timings.Asr, id: "asr"},
+            {n: "AKŞAM", t: timings.Maghrib, id: "maghrib"}, {n: "YATSI", t: timings.Isha, id: "isha"}
+        ];
+
+        let currentIdx = -1;
+        const simdiDakika = simdi.getHours() * 60 + simdi.getMinutes();
+
+        vakitList.forEach((v, i) => {
+            const [h, m] = v.t.split(':');
+            const vDakika = parseInt(h) * 60 + parseInt(m);
+            document.getElementById(v.id).innerHTML = `${h}${dot}${m}`;
+            document.getElementById(v.id).classList.remove('active-vakit');
+            if (simdiDakika >= vDakika) currentIdx = i;
+        });
+
+        if(currentIdx !== -1) document.getElementById(vakitList[currentIdx].id).classList.add('active-vakit');
+
+        let next = vakitList[(currentIdx + 1) % 6];
+        const [nh, nm] = next.t.split(':');
+        let nDakika = parseInt(nh) * 60 + parseInt(nm);
+        let fark = nDakika - simdiDakika;
+        if (fark < 0) fark += 1440;
+        document.getElementById('nextVakitText').innerText = `${next.n.toUpperCase()} VAKTİNE KALAN: ${Math.floor(fark/60)} SAAT ${fark%60} DK ${59-simdi.getSeconds()} SN`;
+    }
+
+    setInterval(ekranGuncelle, 1000);
+    verileriYukle();
+</script>
+
+</body>
+</html>
