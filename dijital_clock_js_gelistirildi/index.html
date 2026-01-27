@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seyyah20 - Akıllı Dijital Saat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    @font-face { font-family: 'DS-DIGI'; src: url('DS-DIGI.TTF'); } /* Font dosyanızın yanına koyun */
+    
+    body {
+      width: 100vw; height: 100vh; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; background-color: #111;
+      font-family: 'Poppins', sans-serif; color: white; margin: 0; overflow: hidden;
+    }
+
+    /* Üst Bilgi ve Arama */
+    .ust-panel { display: flex; gap: 10px; margin-bottom: 20px; }
+    .ust-panel input { background: #222; border: 1px solid #444; color: #fff; padding: 5px 10px; border-radius: 4px; font-size: 12px; }
+    .ust-panel button { background: #ffc312; border: none; padding: 5px 15px; cursor: pointer; font-weight: bold; border-radius: 4px; }
+
+    .days, .month {
+      width: 800px; display: flex; justify-content: center; color: rgba(113, 128, 147, 0.2);
+    }
+    .days span, .month span { font-size: 14px; width: 100px; text-align: center; padding: 10px 0; }
+    .day-active { color: #ffc312 !important; font-weight: bold; text-shadow: 0 0 10px #ffc312; }
+
+    /* Ana Saat Alanı */
+    .clock {
+      display: flex; align-items: center; font-family: 'DS-DIGI', sans-serif;
+      font-size: 140px; color: #4cd137; text-shadow: 0 0 20px rgba(76, 209, 55, 0.3);
+    }
+    .num { width: 80px; text-align: center; position: relative; }
+    .num::before { content: '8'; position: absolute; opacity: 0.05; z-index: -1; }
+    .colon { width: 40px; text-align: center; animation: blink 1s infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.1; } }
+
+    .meridian { font-size: 30px; margin-left: 15px; color: rgba(113, 128, 147, 0.2); }
+    .active { color: #4cd137 !important; }
+
+    .date { color: #ea2027; font-family: 'DS-DIGI'; font-size: 45px; margin: 15px 0; }
+
+    /* Yeni: Hava Durumu ve Vakit Paneli */
+    .info-bar {
+      width: 800px; display: flex; justify-content: space-around;
+      background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 20px;
+    }
+    .info-item { text-align: center; }
+    .info-label { font-size: 12px; color: #888; text-transform: uppercase; display: block; }
+    .info-val { font-family: 'DS-DIGI'; font-size: 24px; color: #00a8ff; }
+  </style>
+</head>
+<body>
+
+  <div class="ust-panel">
+    <input type="text" id="countryInp" placeholder="Ülke" value="Turkey">
+    <input type="text" id="cityInp" placeholder="Şehir" value="Denizli">
+    <button onclick="verileriGuncelle()">GÜNCELLE</button>
+  </div>
+
+  <div class="days">
+    <span>Pazar</span><span>Pazartesi</span><span>Salı</span><span>Çarşamba</span><span>Perşembe</span><span>Cuma</span><span>Cumartesi</span>
+  </div>
+
+  <div class="clock">
+    <div class="num" id="h0">0</div><div class="num" id="h1">0</div>
+    <div class="colon">:</div>
+    <div class="num" id="m0">0</div><div class="num" id="m1">0</div>
+    <div class="colon">:</div>
+    <div class="num" id="s0">0</div><div class="num" id="s1">0</div>
+    <div class="meridian">
+      <span id="am">ÖÖ</span><br><span id="pm">ÖS</span>
+    </div>
+  </div>
+
+  <div class="date" id="dateText">--. --. ----</div>
+
+  <div class="month">
+    <span>OCA</span><span>SUB</span><span>MAR</span><span>NIS</span><span>MAY</span><span>HAZ</span><span>TEM</span><span>AGU</span><span>EYL</span><span>EKI</span><span>KAS</span><span>ARA</span>
+  </div>
+
+  <div class="info-bar">
+    <div class="info-item"><span class="info-label">Sıcaklık</span><span class="info-val" id="tempDisp">--°C</span></div>
+    <div class="info-item"><span class="info-label">Sonraki Vakit</span><span class="info-val" id="nextVakitName">--</span></div>
+    <div class="info-item"><span class="info-label">Kalan Süre</span><span class="info-val" id="kalanSure">00:00</span></div>
+  </div>
+
+  <div style="margin-top:20px; color:#444; font-size:12px;">Allaturkaa Forum / Seyyah20</div>
+
+  <script>
+    let timings = {};
+
+    async function verileriGuncelle() {
+      const city = document.getElementById('cityInp').value;
+      const country = document.getElementById('countryInp').value;
+      try {
+        // Hava Durumu
+        const wRes = await fetch(`https://wttr.in/${city}?format=j1`);
+        const wData = await wRes.json();
+        document.getElementById('tempDisp').innerText = wData.current_condition[0].temp_C + "°C";
+
+        // Namaz Vakitleri
+        const vRes = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=13`);
+        const vData = await vRes.json();
+        timings = vData.data.timings;
+      } catch (e) { console.log("Hata oluştu."); }
+    }
+
+    function runClock(){
+      var time = new Date();
+      
+      // Gün/Ay Aktif Etme
+      document.querySelectorAll('.days span').forEach(s => s.classList.remove('day-active'));
+      document.querySelectorAll('.month span').forEach(s => s.classList.remove('day-active'));
+      document.querySelectorAll('.days span')[time.getDay()].classList.add('day-active');
+      document.querySelectorAll('.month span')[time.getMonth()].classList.add('day-active');
+
+      // Tarih
+      let d = String(time.getDate()).padStart(2,'0');
+      let m = String(time.getMonth()+1).padStart(2,'0');
+      document.getElementById('dateText').innerText = `${d}-${m}-${time.getFullYear()}`;
+
+      // Saat Motoru
+      let hrs = time.getHours();
+      let ampm = hrs >= 12 ? 'pm' : 'am';
+      document.getElementById('am').classList.toggle('active', ampm === 'am');
+      document.getElementById('pm').classList.toggle('active', ampm === 'pm');
+      
+      if(hrs > 12) hrs -= 12;
+      if(hrs == 0) hrs = 12;
+
+      let hStr = String(hrs).padStart(2,'0');
+      let mStr = String(time.getMinutes()).padStart(2,'0');
+      let sStr = String(time.getSeconds()).padStart(2,'0');
+
+      document.getElementById('h0').innerText = hStr[0]; document.getElementById('h1').innerText = hStr[1];
+      document.getElementById('m0').innerText = mStr[0]; document.getElementById('m1').innerText = mStr[1];
+      document.getElementById('s0').innerText = sStr[0]; document.getElementById('s1').innerText = sStr[1];
+
+      // Kalan Vakit Hesaplama
+      if(timings.Fajr) {
+        const simdiDakika = time.getHours() * 60 + time.getMinutes();
+        const vaktis = [
+          {n:"İmsak", t:timings.Fajr}, {n:"Güneş", t:timings.Sunrise}, 
+          {n:"Öğle", t:timings.Dhuhr}, {n:"İkindi", t:timings.Asr}, 
+          {n:"Akşam", t:timings.Maghrib}, {n:"Yatsı", t:timings.Isha}
+        ];
+        
+        let next = vaktis.find(v => {
+          const [vh, vm] = v.t.split(':');
+          return (parseInt(vh)*60 + parseInt(vm)) > simdiDakika;
+        }) || vaktis[0];
+
+        document.getElementById('nextVakitName').innerText = next.n;
+        const [nh, nm] = next.t.split(':');
+        let fark = (parseInt(nh)*60 + parseInt(nm)) - simdiDakika;
+        if(fark < 0) fark += 1440;
+        document.getElementById('kalanSure').innerText = Math.floor(fark/60).toString().padStart(2,'0') + ":" + (fark%60).toString().padStart(2,'0');
+      }
+    }
+
+    setInterval(runClock, 1000);
+    verileriGuncelle();
+  </script>
+</body>
+</html>
