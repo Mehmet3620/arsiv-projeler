@@ -1,0 +1,26 @@
+Elite Renk Analizörü v1.0 - Tasarımcılar ve Grafikerler İçin Hassas Renk Çözümü!
+Merhaba Allaturkaa ailesi,
+
+Projelerinizde beğendiğiniz bir görselin içindeki o "tam rengi" bulmak artık saniyeleriniz alacak! Hem site sahiplerini hem de grafik tasarım meraklılarını heyecanlandıracak,
+tamamen yerli ve Seyyah20 Elite Series imzalı yeni widget'ımızı gururla sunuyorum: Görsel Renk Analizörü!
+
+Neden Bu Aracı Kullanmalısınız?
+Piksel Hassasiyeti: Yüklediğiniz görselin üzerindeki en küçük noktaya dokunsanız bile anında tepki verir.
+Çift Kod Desteği: Renkleri hem HEX (Web tasarım standardı) hem de RGB (Grafik tasarım standardı) formatında sunar.
+Akıllı Rehber Paneli: Görsel yüklenmeden önce kullanıcıyı yönlendiren, yüklendiği an ise pürüzsüzce kaybolan dinamik arayüz.
+Ultra-Modern Tasarım: Allaturkaa logosuyla taçlandırılmış, koyu tema uyumlu (#1a1a1a) ve 740px genişliğinde mükemmel dengelenmiş bir layout.
+Hız Canavarı: Hiçbir dış kütüphane kullanmaz, sitenizi yavaşlatmaz, doğrudan tarayıcı üzerinde (Client-side) çalışır.
+Kimler İçin İdeal?
+Grafikerler: Beğendikleri görsellerden hızlıca renk paleti oluşturmak isteyenler.
+Site Sahipleri: Forumlarına veya bloglarına "Web Master Araçları" ekleyerek ziyaretçi trafiğini artırmak isteyenler.
+Tasarım Meraklıları: "Bu resmin arka plan rengi neymiş?" diyen herkes!
+Kurulum ve Kullanım (Çok Basit!)
+Hiçbir teknik bilgiye gerek duymadan, paylaştığım tek parça HTML kodunu kopyalayıp sitenizin:
+WoltLab/vBulletin/XenForo gibi forumlarda "HTML Widget" alanına,
+WordPress sitelerde "Özel HTML" bileşenine,
+Veya bağımsız bir .html dosyası olarak doğrudan sunucunuza atabilirsiniz.
+Kullanım: 1. "Resim Seçin" butonuna basın. 2. Görseli yükleyin. 3. İlginizi çeken rengin üzerine tıklayın. Sağ panelde kodlar anında belirecektir!
+
+Yapımcı Notu: "Gönlünüze ektiğiniz her güzellik, bir gün size bereketli bir hasat olarak dönecektir." Herkese iyi tasarımlar ve bol ilhamlı günler dilerim!
+
+Demo Adres: BURADAN BUYRUN
