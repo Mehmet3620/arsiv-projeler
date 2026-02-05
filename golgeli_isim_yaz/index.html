@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <style type="text/css"> 
+        /* MEHMET3620 ELITE STUDIO v2.8 - TARİFLİ & TAM SÜRÜM */
+        body { background-color: #0a0a0a; font-family: Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        
+        .preview-area { margin-bottom: 20px; text-align: center; width: 100%; min-height: 140px; display: flex; align-items: center; justify-content: center; }
+        #demo-text { font-weight: bold; text-transform: uppercase; transition: all 0.3s ease; font-size: 5.8em; display: block; }
+
+        .elite-panel {
+            background: #151515; padding: 25px; border-radius: 25px; border: 1px solid #222;
+            text-align: center; width: 520px; box-shadow: 0 25px 50px rgba(0,0,0,0.9);
+        }
+
+        /* GERİ GELEN AÇIKLAMA BÖLÜMÜ */
+        .hizli-tarif {
+            color: #666; font-size: 0.75rem; margin-bottom: 20px; font-style: italic; line-height: 1.4;
+        }
+        .hizli-tarif b { color: #3498db; }
+
+        .section-title { color: #555; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; margin: 12px 0 8px; border-top: 1px solid #222; padding-top: 8px; }
+
+        .selector-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin-bottom: 10px; }
+        
+        .dot { width: 17px; height: 17px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .dot.active { border-color: white; box-shadow: 0 0 10px white; }
+        
+        .opt-btn { background: #1e1e1e; color: #777; border: 1px solid #333; padding: 4px 9px; border-radius: 4px; cursor: pointer; font-size: 0.65rem; transition: 0.2s; min-width: 38px; }
+        .opt-btn.active { background: #3498db; color: white; border-color: #3498db; }
+
+        .copy-section { background: #080808; padding: 15px; border-radius: 12px; border: 1px solid #222; margin: 15px 0; }
+        #codeBox { width: 100%; height: 55px; background: transparent; color: #f1c40f; border: none; font-family: monospace; font-size: 9px; resize: none; text-align: center; outline: none; }
+        .copy-btn { background: #3498db; color: white; border: none; padding: 8px 30px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase; }
+
+        .footer { color: #333; font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; display: flex; justify-content: space-between; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="preview-area">
+    <div id="demo-text">~ SEYYAH ~</div>
+</div>
+
+<div class="elite-panel">
+    <img src="https://allaturkaa.de/forum/wcf/images/allaturkaa/logo.png" style="max-width:230px; margin-bottom:10px;">
+
+    <div class="hizli-tarif">
+        Renk, font ve simge seç, kodu kopyala! <br>İsim değiştirmek için kodun sonundaki <b>"~ SEYYAH ~"</b> kısmını düzenle.
+    </div>
+
+    <div class="section-title">Simge Seçimi</div>
+    <div class="selector-row" id="sym-picker">
+        <button class="opt-btn active" onclick="setSym('~','~',0)">~</button>
+        <button class="opt-btn" onclick="setSym('★','★',1)">★</button>
+        <button class="opt-btn" onclick="setSym('●','●',2)">●</button>
+        <button class="opt-btn" onclick="setSym('♦','♦',3)">♦</button>
+        <button class="opt-btn" onclick="setSym('•','•',4)">•</button>
+        <button class="opt-btn" onclick="setSym('∞','∞',5)">∞</button>
+        <button class="opt-btn" onclick="setSym('❤','❤',6)">❤</button>
+        <button class="opt-btn" onclick="setSym('→','←',7)">→←</button>
+        <button class="opt-btn" onclick="setSym('[',']',8)">[ ]</button>
+        <button class="opt-btn" onclick="setSym('≈','≈',9)">≈</button>
+        <button class="opt-btn" onclick="setSym('','',10)">YOK</button>
+    </div>
+
+    <div class="section-title">Yazı Tipi</div>
+    <div class="selector-row" id="font-picker">
+        <button class="opt-btn active" onclick="setFont('Verdana',0)">Verdana</button>
+        <button class="opt-btn" onclick="setFont('Georgia',1)">Georgia</button>
+        <button class="opt-btn" onclick="setFont('Impact',2)">Impact</button>
+        <button class="opt-btn" onclick="setFont('Trebuchet MS',3)">Trebuchet</button>
+        <button class="opt-btn" onclick="setFont('Arial Black',4)">Arial B.</button>
+        <button class="opt-btn" onclick="setFont('Tahoma',5)">Tahoma</button>
+        <button class="opt-btn" onclick="setFont('Comic Sans MS',6)">Comic</button>
+    </div>
+
+    <div class="section-title">Renk Paleti</div>
+    <div class="selector-row" id="palette"></div>
+
+    <div class="copy-section">
+        <textarea id="codeBox" readonly></textarea>
+        <button class="copy-btn" onclick="copyCode()">KODU KOPYALA</button>
+    </div>
+
+    <div class="footer">
+        <span>Seyyah20</span>
+        <span>v2.8 Full Elite Pack</span>
+    </div>
+</div>
+
+<script>
+    const colors = ['#1abc9c','#3498db','#e74c3c','#f1c40f','#9b59b6','#e67e22','#2ecc71','#f39c12','#16a085','#d35400','#8e44ad','#27ae60','#2980b9','#c0392b','#bdc3c7','#f5b041','#5dade2','#48c9b0','#f7dc6f','#ff7675'];
+    const shadows = ['#16a085','#2E86C1','#CB4335','#D4AC0D','#884EA0','#CA6F1E','#28B463','#D68910','#138D75','#BA4A00','#7D3C98','#229954','#2471A3','#A93226','#909497','#D48E11','#2E86C1','#16A085','#D4AC0D','#d63031'];
+
+    let currentC = 0, currentF = 'Verdana', sL = '~', sR = '~';
+
+    function setSym(l, r, idx) { sL = l; sR = r; updateUI('sym-picker', idx); refresh(); }
+    function setFont(f, idx) { currentF = f; updateUI('font-picker', idx); refresh(); }
+    function setCol(idx) { currentC = idx; updateUI('palette', idx); refresh(); }
+
+    function updateUI(id, idx) {
+        const parent = document.getElementById(id);
+        Array.from(parent.children).forEach((child, i) => child.classList.toggle('active', i === idx));
+    }
+
+    function refresh() {
+        const color = colors[currentC];
+        const shadow = shadows[currentC];
+        const shadowStyle = `${color} 0 0 1px, ${shadow} 0 4px 3px, ${shadow} 0 9px 3px, ${shadow} 0 12px 1px, rgba(0,0,0,0.3) 0 14px 3px`;
+        const demo = document.getElementById('demo-text');
+        
+        demo.style.color = color;
+        demo.style.textShadow = shadowStyle;
+        demo.style.fontFamily = currentF;
+        demo.innerText = `${sL} SEYYAH ${sR}`;
+
+        const finalCode = `<style>.elite-text { color: ${color}; font-weight: bold; text-shadow: ${shadowStyle}; font-family: ${currentF}; font-size: 3em; text-align: center; text-transform: uppercase; }</style><div class="elite-text">${sL} SEYYAH ${sR}</div>`;
+        document.getElementById('codeBox').value = finalCode;
+    }
+
+    colors.forEach((c, i) => {
+        const d = document.createElement('div');
+        d.className = 'dot';
+        d.style.backgroundColor = c;
+        d.onclick = () => setCol(i);
+        document.getElementById('palette').appendChild(d);
+    });
+
+    function copyCode() {
+        const box = document.getElementById('codeBox');
+        box.select(); document.execCommand("copy");
+        const btn = document.querySelector('.copy-btn');
+        btn.innerText = "KOPYALANDI!";
+        setTimeout(() => btn.innerText = "KODU KOPYALA", 2000);
+    }
+
+    refresh();
+</script>
+
+</body>
+</html>

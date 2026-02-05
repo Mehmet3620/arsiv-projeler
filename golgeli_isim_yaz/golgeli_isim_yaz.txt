@@ -1,0 +1,43 @@
+Allaturka "Elite Studio" v2.8 – Kendi Logonuzu Tasarlayın! 🌟
+Değerli Allaturka Üyeleri ve Ziyaretçilerimiz,
+
+Sizlere forum sayfalarınızda, profillerinizde veya özel projelerinizde kullanabileceğiniz, tamamen interaktif ve kullanımı çok kolay olan Elite Studio v2.8 tasarım aracını sunmaktan mutluluk duyuyorum! Bu araç sayesinde hiçbir grafik bilgisine ihtiyaç duymadan, saniyeler içinde keskin gölgeli, profesyonel görünümlü isim logoları oluşturabileceksiniz.
+
+🚀 Nasıl Kullanılır? (Adım Adım Rehber)
+1. Tasarımınızı Yapın:
+
+Panel üzerindeki Renk Paleti'nden favori renginizi seçin.
+
+Yazı Tipi kısmından karakterinize en uygun fontu belirleyin.
+
+Simge Seçimi ile isminizin yanına şık süslemeler ekleyin (yıldız, sonsuzluk, kalp vb.).
+
+2. Kodu Kopyalayın:
+
+Tasarımınız bittiğinde, panelin altındaki sarı kod kutusunun altındaki "KODU KOPYALA" butonuna basın. Kodunuz anında hafızaya alınacaktır.
+
+3. İsminizi Değiştirin:
+
+Kopyaladığınız kodu sitenize yapıştırdıktan sonra kodun en sonunda bulunan ~ SEYYAH ~ yazısını silip kendi adınızı veya istediğiniz herhangi bir metni yazın.
+
+4. Yazı Boyutunu Ayarlayın:
+
+Yazıyı daha büyük veya küçük yapmak isterseniz, kodun içindeki font-size: 3em; kısmındaki rakamı (örneğin 4em veya 5em yaparak) değiştirmeniz yeterlidir.
+
+5. Özel Simge ve Font Ekleme:
+
+Kendi özel simgenizi isminizin yanına manuel olarak yazabilirsiniz. Kod her türlü özel karakteri destekler. Panelde olmayan bir font kullanmak isterseniz, font-family kısmına o fontun adını yazmanız kafi.
+
+💻 Yazılım Uyumluluğu
+Hazırladığımız bu kodlar modern HTML5 ve CSS3 standartlarındadır. Şu platformlarla tam uyumlu çalışır: ✅ WoltLab Suite (Widget veya mesaj içi) ✅ XenForo (HTML widget alanları) ✅ vBulletin ve IPB ✅ WordPress (Özel HTML bileşeni) ✅ Tüm HTML tabanlı web siteleri ve kişisel sayfalar.
+
+🛠️ Tasarım Aracı Kodları
+Aşağıdaki kodu kopyalayıp bir HTML dosyası olarak kaydedebilir veya doğrudan sitenizin yönetim panelindeki HTML alanına yapıştırarak üyelerinize bu hizmeti sunabilirsiniz:
+
+[KODLARI BURAYA EKLEYECEKSİN]
+
+Mehmet3620 tarafından Allaturka ailesine özel olarak geliştirilen bu araçla, sayfalarınız artık çok daha renkli ve prestijli görünecek!
+
+Hayal gücünüzü konuşturun, kendi tarzınızı yaratın!
+
+Saygılarımla, Mehmet3620
