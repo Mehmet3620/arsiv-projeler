@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* MEHMET3620 - ELITE SERIES PREMIUM STYLE (SÖZ EKLENDİ) */
+        :root {
+            --bg-body: #121212;
+            --bg-card: #1a1a1a; 
+            --glass: rgba(255, 255, 255, 0.03);
+            --accent: #3498db;
+            --text-gold: #f1c40f;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: white;
+        }
+
+        .app-container {
+            width: 440px;
+            background: var(--bg-card);
+            border-radius: 30px;
+            padding: 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.1);
+            border: 1px solid #2c3e50;
+            text-align: center;
+        }
+
+        .app-logo {
+            max-width: 200px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.1));
+        }
+
+        .app-header h1 {
+            font-size: 1.3rem;
+            margin: 0 0 15px 0;
+            background: linear-gradient(45deg, #f1c40f, #e67e22);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .display-screen {
+            background: #0d0d0d;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border: 1px solid #333;
+            transition: all 0.3s ease;
+        }
+
+        #type-label {
+            font-size: 0.65rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        #content-text {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #eee;
+        }
+
+        /* Yeni Eklenen İlham Sözü Alanı */
+        .inspiration-quote {
+            font-size: 0.8rem;
+            font-style: italic;
+            color: #888;
+            margin-bottom: 20px;
+            padding: 0 10px;
+            line-height: 1.4;
+        }
+
+        .grid-menu {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-item {
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 12px 8px;
+            border-radius: 12px;
+            color: #ccc;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .btn-item:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-color: var(--text-gold);
+        }
+
+        .footer-action { margin-top: 20px; }
+
+        .google-btn {
+            color: var(--text-gold);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border: 2px solid var(--text-gold);
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: none;
+        }
+
+        .developer-credit {
+            margin-top: 20px;
+            font-size: 0.6rem;
+            color: #444;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-top: 1px solid #222;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <img src="https://allaturkaa.de/forum/wcf/images/allaturkaa/logo.png" alt="Allaturkaa Logo" class="app-logo">
+    
+    <div class="app-header">
+        <h1>KÜLTÜR HARMANI</h1>
+    </div>
+
+    <div class="display-screen" id="screen">
+        <div id="type-label">KEŞİF MODU HAZIR</div>
+        <div id="content-text">Bir kategori seç ve keşfetmeye başla!</div>
+    </div>
+
+    <div class="inspiration-quote">
+        "Gönlünüze ektiğiniz her güzellik,<br> bir gün size bereketli bir hasat olarak dönecektir."
+    </div>
+
+    <div class="grid-menu">
+        <div class="btn-item" onclick="mix('siir', 'Şiirler')">✍️ Şiirler</div>
+        <div class="btn-item" onclick="mix('pop', 'Türkçe Pop')">🔥 Türk Pop</div>
+        <div class="btn-item" onclick="mix('slow', 'Türkçe Slow')">🕯️ Türk Slow</div>
+        <div class="btn-item" onclick="mix('arabesk', 'Damar Arabesk')">🚬 Arabesk</div>
+        <div class="btn-item" onclick="mix('tsm', 'Klasik Musiki')">🎻 TSM / Musiki</div>
+        <div class="btn-item" onclick="mix('ilahi', 'İlahi & Ezgi')">🌙 İlahi & Ezgi</div>
+        <div class="btn-item" onclick="mix('tiyatro', 'Tiyatro Eserleri')">🎭 Tiyatro</div>
+        <div class="btn-item" onclick="mix('radyo', 'Radyo Tiyatrosu')">🎙️ Radyo Tiyatrosu</div> 
+		<div class="btn-item" onclick="mix('sinema', 'Dünya Sineması')">🎬 Sinema</div>
+        <div class="btn-item" onclick="mix('roman', 'Efsane Kitaplar')">📚 Roman / Kitap</div>
+        <div class="btn-item" onclick="mix('dunya', 'Dünya Müziği')">🌎 Dünya Müzik</div>
+        <div class="btn-item" onclick="mix('tarih', 'Tarihte Bugün')">📜 Tarihte Bugün</div> </div>
+
+    <div class="footer-action">
+        <a href="#" id="go-btn" class="google-btn" target="_blank">HEMEN DİNLE / İNCELE ↗</a>
+    </div>
+
+    <div class="developer-credit">
+        SEYYAH20 ELITE SERIES
+    </div>
+</div>
+
+<script>
+    function mix(key, tamIsim) {
+        const ekler = ["En Çok Dinlenen", "Unutulmaz", "En İyi", "Efsane", "Seçme", "Popüler"];
+        const rastgeleEk = ekler[Math.floor(Math.random() * ekler.length)];
+        
+        const screen = document.getElementById('screen');
+        const contentText = document.getElementById('content-text');
+        const btn = document.getElementById('go-btn');
+        
+        screen.style.opacity = "0.5";
+        contentText.innerText = "Hazırlanıyor...";
+
+        setTimeout(() => {
+            document.getElementById('type-label').innerText = tamIsim;
+            contentText.innerText = `✨ ${rastgeleEk} ${tamIsim} bulundu!`;
+            
+            // Arama motoru mantığını kategorilere göre uzmanlaştırıyoruz:
+let aramaSorgusu = "";
+
+if (key === 'tarih') {
+    aramaSorgusu = "tarihte bugün neler oldu önemli olaylar";
+} else if (key === 'roman' || key === 'siir' || key === 'tiyatro') {
+    aramaSorgusu = `${rastgeleEk} ${tamIsim} oku tam metin`;
+} else if (key === 'radyo') {
+    aramaSorgusu = `${rastgeleEk} radyo tiyatrosu dinle tek parça`;
+} else {
+    // Müzik kategorileri için (Pop, Arabesk, TSM, İlahi vb.)
+    aramaSorgusu = `${rastgeleEk} ${tamIsim} dinle`;
+}
+
+            btn.href = `https://www.google.com/search?q=${encodeURIComponent(aramaSorgusu)}`;
+            btn.style.display = "inline-block";
+            
+            screen.style.opacity = "1";
+            screen.style.borderColor = (key === 'siir' ? '#ff7675' : (key === 'arabesk' ? '#d63031' : '#3498db'));
+        }, 400);
+    }
+</script>
+
+</body>
+</html>
