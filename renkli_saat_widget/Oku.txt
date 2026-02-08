@@ -1,0 +1,35 @@
+[TÜRKÇE] Modern Canlı Saat & Takvim Widget v1.0 | Tamamen Dinamik!
+Selamlar dostlar! Bugün sizlere hem sitemizde hem de projelerimizde kullanabileceğimiz, görseliyle göz dolduran, tamamen Türkçe ve Mehmet3620 Engine ile güçlendirilmiş mini bir widget hazırladım.
+
+✨ Neden Bu Widget'ı Kullanmalısın?
+🇹🇷 %100 Türkçe: Ay ve gün isimleri otomatik yerelleştirilmiştir.
+
+🕒 Canlı Performans: Saniye sayacı ve yanıp sönen noktalarla yaşayan bir tasarım.
+
+🎨 20 Farklı Renk Modu: Tek tıkla temanıza uygun rengi seçin ve kodu anında alın.
+
+📱 Kompakt Tasarım: Orijinal görseldeki premium dokuya sadık kalınarak modernize edildi.
+
+🛠️ Hepsi Bir Arada: HTML, CSS ve JavaScript tek bir paket halinde; yapıştır ve çalıştır!
+
+📸 Görünüm Hakkında
+Tasarım, modern karanlık mod (dark mode) üzerine canlı vurgu renkleriyle inşa edilmiştir. Takvim kısmında gün, numara, ay ve yıl hiyerarşisi en okunabilir şekilde optimize edilmiştir.
+
+🛠️ Yapımcı Notu
+Bu proje Mehmet3620 tarafından 2026 yılı için v1.0 sürümüyle geliştirilmiştir. Tamamen açık kaynaklıdır ancak imza kısmına dokunmamanız emeğe saygı açısından ricamdır. 😊
+
+👇 Canlı Panel ve Kod Üretici (Kodu Buradan Alın)
+[BURAYA OLUŞTURDUĞUMUZ HTML KODUNUN TAMAMINI YAPIŞTIR]
+
+💡 Nasıl Kullanılır?
+
+Üstteki panelden hoşuna giden rengi seç.
+
+Alttaki "Kodu Kopyala" butonuna bas.
+
+Kendi HTML sayfanda istediğin yere yapıştır. İşte bu kadar!
+
+Yorumlarınızı ve hangi rengi daha çok beğendiğinizi aşağıda belirtmeyi unutmayın! 🔥
+
+Seyyah20 / Allaturka Forum
+Dost Yurdu Radyo

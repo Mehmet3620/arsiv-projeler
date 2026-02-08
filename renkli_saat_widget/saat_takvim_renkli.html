@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { background: #1a1a1a; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; }
+        
+        .widget {
+            display: flex;
+            background: #1e90ff;
+            padding: 10px;
+            border-radius: 12px;
+            color: white;
+            align-items: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .time-box {
+            background: #1a1a1a;
+            padding: 15px 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: baseline;
+            margin-right: 12px;
+        }
+
+        #time { font-size: 3rem; font-weight: bold; }
+        #sec { font-size: 1.2rem; color: #1e90ff; margin-left: 5px; width: 25px; font-weight: bold; }
+
+        .date-box { text-align: center; padding-right: 5px; min-width: 80px; }
+        #day-n { font-size: 0.7rem; text-transform: uppercase; }
+        #day-num { font-size: 2.2rem; font-weight: bold; line-height: 1; margin: 2px 0; }
+        #mon-yr { font-size: 0.8rem; line-height: 1.1; }
+
+        .dots { animation: blink 1s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+    </style>
+</head>
+<body>
+
+    <div class="widget">
+        <div class="time-box">
+            <span id="time">00<span class="dots">:</span>00</span>
+            <span id="sec">00</span>
+        </div>
+        <div class="date-box">
+            <div id="day-n">---</div>
+            <div id="day-num">00</div>
+            <div id="mon-yr">---</div>
+        </div>
+    </div>
+
+    <script>
+        function update() {
+            const now = new Date();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            const ss = String(now.getSeconds()).padStart(2, '0');
+            
+            document.getElementById('time').innerHTML = `${hh}<span class="dots">:</span>${mm}`;
+            document.getElementById('sec').textContent = ss;
+            document.getElementById('day-n').textContent = now.toLocaleDateString('tr-TR', { weekday: 'long' });
+            document.getElementById('day-num').textContent = now.getDate();
+            document.getElementById('mon-yr').innerHTML = now.toLocaleDateString('tr-TR', { month: 'long' }).toUpperCase() + "<br>" + now.getFullYear();
+        }
+        setInterval(update, 1000); update();
+    </script>
+</body>
+</html>
