@@ -1,0 +1,40 @@
+[PAYLAŞIM] SEYYAH20 Real-Time System Monitor v5.6 (Extreme Edition)
+Merhaba arkadaşlar, bugün kendi geliştirdiğim ve üzerinde epey emek harcadığım, web sitelerinize veya forum profillerinize profesyonel bir hava katacak olan Sistem İzleme Widget'ını sizlerle paylaşıyorum.
+
+🖥️ Nedir, Ne İşe Yarar?
+Bu widget, sitenizi ziyaret eden kullanıcıların o anki sistem kaynaklarını ve ağ durumlarını canlı olarak (real-time) takip etmelerini sağlar. Sadece bir görsel değil, tarayıcı API'larını kullanan aktif bir analiz aracıdır.
+
+🚀 Öne Çıkan Teknik Özellikler:
+CPU & RAM & GPU Takibi: İşlemci yükü, bellek kullanımı ve grafik verimliliğini simüle eden canlı barlar.
+
+Donanım Dedektörü: Kullanıcının kaç çekirdekli bir işlemci kullandığını ve ekran çözünürlüğünü otomatik algılar.
+
+Canlı Network Analizi: Kullanıcının o anki bağlantı tipini (4G, WiFi, LAN), indirme hızını (Mbps) ve gecikme süresini (Ping) anlık gösterir.
+
+Global IP İzleyici: Kullanıcının dış ağ IP adresini API üzerinden çekerek ekrana yansıtır.
+
+Konum ve Zaman Dilimi: Kullanıcının bulunduğu bölgeye ait UTC zaman dilimini gösterir.
+
+🎨 Tasarım ve Kullanıcı Deneyimi:
+Smart Contrast (Akıllı Görüş): Widget rengini beyaz veya sarı gibi açık tonlara ayarladığınızda, yazılar okunabilirlik için otomatik olarak siyah olur. Koyu renklerde ise beyaza döner.
+
+Multi-Language: Tek tıkla Türkçe veya İngilizce dil seçeneğine geçiş.
+
+Geniş Renk Paleti: 12 farklı profesyonel renk seçeneği ile sitenizin temasına saniyeler içinde uyum sağlar.
+
+Vektörel Bayraklar: Bayraklar resim değil, SVG kodudur; her çözünürlükte cam gibi görünür.
+
+Full Responsive: 850px genişliğinde, her türlü modern tarayıcıda kusursuz hizalama.
+
+🛠️ Kurulum:
+Aşağıdaki önizleme panelinden istediğiniz rengi ve dili seçin.
+
+"KODU KOPYALA" butonuna basın.
+
+Aldığınız HTML kodunu sitenizin istediğiniz yerine yapıştırın. Harici hiçbir JS kütüphanesine veya CSS dosyasına ihtiyaç duymaz!
+
+Not: Tamamen güvenlidir, sadece kullanıcının kendi tarayıcı verilerini okur ve ekrana basar.
+
+seyyah20 / Allaturkaa Forumu
+
+İletişim: Dost yurdu radyo
