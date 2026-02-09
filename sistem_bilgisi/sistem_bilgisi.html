@@ -5,6 +5,7 @@
     <style>
         body { background: #050505; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; font-family: 'Segoe UI', Arial, sans-serif; color: white; }
         
+        /* ÜST PANEL */
         .top-bar { 
             background: #111; padding: 12px 25px; border-radius: 15px; border: 1px solid #333; 
             margin-bottom: 10px; display: flex; align-items: center; gap: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -12,7 +13,6 @@
         .lang-group { display: flex; gap: 12px; border-right: 1px solid #333; padding-right: 15px; }
         .lang-btn { cursor: pointer; transition: 0.3s; width: 35px; height: 22px; opacity: 0.4; border-radius: 4px; }
         .lang-btn.active { opacity: 1; transform: scale(1.1); }
-        
         .color-group { display: flex; gap: 8px; align-items: center; }
         .c-btn { width: 24px; height: 24px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.2s; }
 
@@ -22,6 +22,7 @@
             border: 1px dashed rgba(255,255,255,0.1);
         }
 
+        /* WIDGET */
         .widget {
             display: flex; background: #1e90ff; padding: 25px; border-radius: 25px;
             color: white; align-items: stretch; width: 650px; border: 1px solid rgba(255,255,255,0.1); 
@@ -44,11 +45,17 @@
         .ip-val { font-size: 0.9rem; font-weight: bold; color: #00ff88; font-family: monospace; }
         .status-tag { font-size: 0.65rem; font-weight: 900; letter-spacing: 1px; }
 
-        /* DİNAMİK KOPYALA BUTONU */
+        /* KOD GÖRÜNÜM ALANI */
+        .code-container { width: 650px; margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+        #codeViewer { 
+            width: 100%; height: 120px; background: #111; color: #00ff88; border: 1px solid #333; 
+            border-radius: 10px; padding: 15px; font-family: monospace; font-size: 0.75rem; 
+            resize: none; box-sizing: border-box;
+        }
         .copy-btn { 
-            background: #1e90ff; border: none; color: white; padding: 12px; 
-            border-radius: 10px; cursor: pointer; font-weight: bold; width: 450px; 
-            margin-top: 20px; transition: 0.4s ease; border: 1px solid rgba(255,255,255,0.1);
+            background: #1e90ff; border: none; color: white; padding: 14px; 
+            border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; 
+            transition: 0.4s ease; border: 1px solid rgba(255,255,255,0.1);
         }
     </style>
 </head>
@@ -93,7 +100,7 @@
                 <div class="info-item"><label class="tr">EKRAN</label><label class="en" style="display:none">DISPLAY</label><b id="sys-res">...</b></div>
                 <div class="info-item"><label class="tr">KONUM</label><label class="en" style="display:none">REGION</label><b id="sys-tz">...</b></div>
             </div>
-            <div style="font-size: 0.6rem; font-weight: bold; letter-spacing: 2px; opacity: 0.4; white-space: nowrap;">SEYYAH20 ENGINE v5.6</div>
+            <div style="font-size: 0.6rem; font-weight: bold; letter-spacing: 2px; opacity: 0.4; white-space: nowrap;">SEYYAH20 ENGINE v5.7</div>
         </div>
 
         <div class="side-right">
@@ -104,8 +111,10 @@
         </div>
     </div>
 
-    <button class="copy-btn" id="copyBtn" onclick="copyCode()">KODU KOPYALA</button>
-    <div id="codeOut" style="display:none"></div>
+    <div class="code-container">
+        <textarea id="codeViewer" readonly></textarea>
+        <button class="copy-btn" id="copyBtn" onclick="copyCode()">KODU KOPYALA</button>
+    </div>
 
     <script>
         const colors = ['#1e90ff', '#ff4757', '#2ed573', '#ffa502', '#e056fd', '#ffffff', '#18dcff', '#f1c40f', '#9b59b6', '#34495e', '#16a085', '#d35400'];
@@ -132,19 +141,14 @@
         function updateTheme() {
             const w = document.getElementById('mainW');
             const cpBtn = document.getElementById('copyBtn');
-            
             w.style.background = curC;
             cpBtn.style.background = curC;
-            
             document.querySelectorAll('.bar-fill').forEach(b => b.style.background = curC);
-            
             const rgb = hexToRgb(curC);
             const br = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
             const textColor = (br > 155) ? '#111' : '#fff';
-            
             w.style.color = textColor;
             cpBtn.style.color = textColor;
-            
             gen();
         }
 
@@ -182,11 +186,14 @@
         }, 2500);
 
         function gen() {
-            document.getElementById('codeOut').textContent = `\n` + document.getElementById('mainW').outerHTML;
+            const code = `\n` + document.getElementById('mainW').outerHTML;
+            document.getElementById('codeViewer').value = code;
         }
 
         function copyCode() {
-            navigator.clipboard.writeText(document.getElementById('codeOut').textContent);
+            const viewer = document.getElementById('codeViewer');
+            viewer.select();
+            navigator.clipboard.writeText(viewer.value);
             const btn = document.getElementById('copyBtn');
             const oldTxt = btn.textContent;
             btn.textContent = (oldTxt === 'KODU KOPYALA') ? 'KOPYALANDI!' : 'COPIED!';
