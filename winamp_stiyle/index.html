@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        :root { --wa-main: #3a3a5a; --wa-dark: #000; --wa-green: #00ff00; }
+        
+        html, body { 
+            background: #000; margin: 0; height: 100%; overflow: hidden; 
+            display: flex; justify-content: center; align-items: flex-start; 
+            padding-top: 50px; font-family: 'Arial', sans-serif; 
+        }
+
+        .winamp-case {
+            width: 450px; background: var(--wa-main); border: 2px solid #555;
+            border-right-color: #111; border-bottom-color: #111; padding: 12px;
+            box-shadow: inset 2px 2px 1px #888, 5px 5px 20px #000; position: relative;
+        }
+
+        .wa-top-section { display: flex; gap: 10px; margin-bottom: 12px; height: 70px; }
+        .wa-lcd { background: #000; border: 3px inset #333; width: 140px; display: flex; align-items: center; justify-content: center; }
+        .wa-time { font-family: 'Courier New', monospace; font-size: 38px; color: var(--wa-green); text-shadow: 0 0 10px #006600; font-weight: bold; }
+        .wa-top-right { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+        .wa-status-row { display: flex; justify-content: flex-end; gap: 5px; }
+        .mini-btn { background: #cecece; border: 2px outset #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; cursor: pointer; color: #000; }
+        .mini-btn:active { border-style: inset; background: #999; }
+
+        .wa-slider-area { background: #111; border: 1px inset #555; height: 12px; position: relative; margin-top: 5px; overflow: hidden; }
+        .wa-slider-fill { background: linear-gradient(90deg, #ff8c00, #00ff00); width: 0%; height: 100%; }
+        .playing-bar { animation: flicker 0.2s infinite alternate; }
+        @keyframes flicker { from { width: 50%; } to { width: 60%; } }
+
+        .wa-modes { display: flex; gap: 8px; font-size: 9px; color: #888; font-weight: bold; justify-content: flex-end; }
+        .mode-active { color: var(--wa-green) !important; text-shadow: 0 0 8px var(--wa-green); }
+
+        .wa-info-panel { background: #000; border: 1px inset #444; padding: 6px; margin-bottom: 10px; }
+        .wa-marquee { color: var(--wa-green); font-family: monospace; font-size: 12px; white-space: nowrap; overflow: hidden; width: 100%; display: flex; align-items: center; }
+        .wa-marquee marquee { width: 100%; margin: 0; padding: 0; line-height: 1; }
+
+        .wa-controls { display: flex; gap: 4px; justify-content: flex-start; margin-bottom: 12px; flex-wrap: wrap; }
+        .btn-wa { width: 40px; height: 30px; background: #cecece; border: 2px outset #eee; border-right-color: #666; border-bottom-color: #666; cursor: pointer; font-size: 14px; font-weight: bold; color: #333; display: flex; align-items: center; justify-content: center; }
+        .btn-wa:active { border-style: inset; padding: 2px 0 0 2px; background: #999; }
+        .btn-text { font-size: 10px; width: 50px; }
+
+        .wa-playlist { display: none; background: #000; border: 2px inset #333; height: 160px; margin-top: 10px; overflow-y: auto; padding: 0; }
+        .pl-row { color: var(--wa-green); font-family: monospace; font-size: 11px; padding: 5px 8px; cursor: pointer; display: flex; justify-content: space-between; border-bottom: 1px solid #111; }
+        .pl-row:hover { background: #1a1a4a; color: #fff; }
+        .pl-row.selected { background: #000080; color: #fff; }
+        
+        /* ÇALAN ŞARKININ STİLİ - BELİRGİN YAPILDI */
+        .pl-row.active { 
+            background: #000080 !important; 
+            color: #ffffff !important; 
+            font-weight: bold !important; 
+            border-left: 4px solid #fff;
+        }
+
+        .wa-about-pop { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 220px; background: #cecece; border: 2px outset #fff; padding: 10px; z-index: 100; color: #000; text-align: center; box-shadow: 5px 5px 15px #000; }
+        .about-title { background: #000080; color: #fff; padding: 3px; font-size: 10px; text-align: left; margin: -10px -10px 10px -10px; }
+
+        .wa-input-box { background: #000; border: 1px inset #555; color: var(--wa-green); padding: 8px; width: 100%; box-sizing: border-box; font-size: 11px; outline: none; margin-top: 5px; }
+        .wa-playlist::-webkit-scrollbar { width: 8px; background: #111; }
+        .wa-playlist::-webkit-scrollbar-thumb { background: #555; border: 1px solid #333; }
+    </style>
+</head>
+<body onkeydown="handleGlobalKeys(event)">
+    <div class="winamp-case">
+        <div class="wa-top-section">
+            <div class="wa-lcd"><div class="wa-time" id="timer">00:00</div></div>
+            <div class="wa-top-right">
+                <div class="wa-status-row">
+                    <button class="mini-btn" onclick="togglePL()">PL</button>
+                    <button class="mini-btn" onclick="toggleAbout()">SH</button>
+                </div>
+                <div class="wa-slider-area"><div class="wa-slider-fill" id="vol-bar"></div></div>
+                <div class="wa-modes">
+                    <span id="mono-light">MONO</span>
+                    <span id="stereo-light">STEREO</span>
+                </div>
+            </div>
+        </div>
+        <div class="wa-about-pop" id="about-box">
+            <div class="about-title">WINAMP INFO</div>
+            <p style="font-size:12px"><b>Winamp v1.9.6 Pro</b></p>
+            <p style="font-size: 10px;">Proje: <b>Mehmet3620</b></p>
+            <p style="font-size: 10px;">Yapımcı: <b>Seyyah20</b></p>
+			<p style="font-size: 10px;">Sponsor: <b>Mehmet Can</b></p>
+			<p style="font-size: 10px;">İletişim1: <b>Dost Yurdu Radyo</b></p>
+			<p style="font-size: 10px;">İletişim2: <b>Allaturkaa Forum</b></p>
+            <button class="mini-btn" onclick="toggleAbout()">TAMAM</button>
+        </div>
+
+        <div class="wa-info-panel">
+            <div class="wa-marquee">
+                <marquee id="track-name" scrollamount="3">READY - WINAMP STYLE</marquee>
+            </div>
+            <div style="display:flex; justify-content: space-between; margin-top: 4px; font-size: 9px;">
+                <span id="mb-display" style="color: #ffa500;">SIZE: 0.00 MB</span>
+                <span style="color: #444;">kbps: 192 / kHz: 44.1</span>
+            </div>
+        </div>
+
+        <div class="wa-controls">
+            <button class="btn-wa" onclick="prevTrack()">|&#9664;</button>
+            <button class="btn-wa" onclick="togglePlay()">&#9654;</button>
+            <button class="btn-wa" onclick="pauseTrack()">||</button>
+            <button class="btn-wa" onclick="stopTrack()">&#9632;</button>
+            <button class="btn-wa" onclick="nextTrack()">&#9654;|</button>
+            <button class="btn-wa btn-text" onclick="shufflePlaylist()">MIX</button>
+            <button class="btn-wa btn-text" onclick="deleteSelected()">DEL</button>
+            <button class="btn-wa btn-text" style="width: 55px;" onclick="document.getElementById('f').click()">MÜZİK SEÇ</button>
+        </div>
+
+        <input type="text" class="wa-input-box" id="u" placeholder="RADYO / MÜZİK URL ekle Entere Bas veya Pcden Dosya Yükle..." onkeypress="handleUrl(event)">
+        <input type="file" id="f" multiple style="display:none" onchange="loadFiles(event)">
+
+        <div class="wa-playlist" id="playlist"></div>
+    </div>
+	
+     <div id="meta-storage" style="display:none"></div>
+	 
+    <audio id="audio" style="display:none"></audio>
+
+<script>
+    const audio = document.getElementById('audio');
+    const playlist = document.getElementById('playlist');
+    let tracks = [];
+    let currentIndex = -1;
+    let selectedIndices = new Set();
+
+    // OTOMATİK SONRAKİ ŞARKIYA GEÇİŞ MOTORU
+    audio.onended = () => {
+        if (currentIndex < tracks.length - 1) {
+            play(currentIndex + 1);
+        } else {
+            // Liste bittiyse başa dön (isteğe bağlı)
+            play(0);
+        }
+    };
+
+    // RADYO METADATA MOTORU
+    function updateRadioMeta(url) {
+        const storage = document.getElementById('meta-storage');
+        if (!storage) return;
+        const serverMatch = url.match(/(eu\d+)/);
+        let username = "";
+        if (url.includes('/proxy/')) { username = url.split('/proxy/')[1].split('?')[0]; }
+
+        if (username && serverMatch) {
+            const server = serverMatch[1];
+            storage.innerHTML = ""; 
+            const oldScript = document.getElementById('wa-radio-js');
+            if (oldScript) oldScript.remove();
+            window.cc_conf = undefined;
+
+            const span = document.createElement('span');
+            span.id = "cc_strinfo_song_" + username;
+            span.className = "cc_streaminfo";
+            span.setAttribute('data-type', 'song');
+            span.setAttribute('data-username', username);
+            span.textContent = "BAĞLANILIYOR...";
+            storage.appendChild(span);
+
+            const s = document.createElement('script');
+            s.id = 'wa-radio-js';
+            s.src = `https://${server}.fastcast4u.com/system/streaminfo.js?v=${new Date().getTime()}`;
+            document.body.appendChild(s);
+        }
+    }
+
+    function updateVisuals(isPlaying) {
+        const stereo = document.getElementById('stereo-light');
+        const volBar = document.getElementById('vol-bar');
+        if (isPlaying) {
+            if(stereo) stereo.classList.add('mode-active');
+            if(volBar) volBar.classList.add('playing-bar');
+        } else {
+            if(stereo) stereo.classList.remove('mode-active');
+            if(volBar) volBar.classList.remove('playing-bar');
+        }
+    }
+
+    setInterval(() => {
+        if (currentIndex !== -1 && tracks[currentIndex]?.size === "LIVE") {
+            const info = document.querySelector('.cc_streaminfo');
+            if (info && info.textContent && !["BAĞLANILIYOR...", "UNAVAILABLE", "YÜKLENİYOR...", ""].includes(info.textContent.toUpperCase())) {
+                const songName = "RADYO: " + info.textContent.toUpperCase();
+                const trackDisplay = document.getElementById('track-name');
+                
+                if (trackDisplay.textContent !== songName) {
+                    if (songName.length > 25) {
+                        trackDisplay.innerHTML = `<marquee scrollamount="3" behavior="scroll" direction="left">${songName}</marquee>`;
+                    } else {
+                        trackDisplay.textContent = songName;
+                    }
+                    tracks[currentIndex].name = songName;
+                    render();
+                }
+            }
+        }
+    }, 3000);
+
+    function handleUrl(e) {
+        if (e.key === 'Enter' && e.target.value) {
+            const val = e.target.value;
+            tracks.unshift({ name: "RADYO: BAĞLANILIYOR...", url: val, size: "LIVE" });
+            updateRadioMeta(val);
+            e.target.value = '';
+            play(0);
+        }
+    }
+
+    function play(i) {
+        if (i < 0 || i >= tracks.length) return;
+        currentIndex = i;
+        audio.src = tracks[i].url;
+        audio.load();
+        audio.play().then(() => {
+            updateVisuals(true);
+        }).catch(() => {
+            updateVisuals(false);
+        });
+        
+        document.getElementById('track-name').textContent = tracks[i].name;
+        document.getElementById('mb-display').textContent = `SIZE: ${tracks[i].size} MB`;
+        
+        if(tracks[i].size === "LIVE") {
+            document.getElementById('timer').textContent = "RADYO"; 
+        } else {
+            document.getElementById('timer').textContent = "00:00";
+        }
+        render();
+    }
+
+    audio.onplay = () => updateVisuals(true);
+    audio.onpause = () => updateVisuals(false);
+
+    function render() {
+        playlist.innerHTML = '';
+        tracks.forEach((t, i) => {
+            const d = document.createElement('div');
+            d.style = "display:flex; justify-content:space-between; align-items:center; white-space:nowrap; overflow:hidden; cursor:pointer; padding:5px 8px; gap:10px;";
+            // Burada sınıfları kontrol ediyoruz
+            d.className = 'pl-row' + (i === currentIndex ? ' active' : '') + (selectedIndices.has(i) ? ' selected' : '');
+            
+            d.innerHTML = `
+                <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:75%; display:block;">${i+1}. ${t.name}</span>
+                <span style="flex-shrink:0; text-align:right; min-width:50px;">${t.size}</span>
+            `;
+            
+            d.onclick = (e) => {
+                if (e.ctrlKey) { selectedIndices.has(i) ? selectedIndices.delete(i) : selectedIndices.add(i); }
+                else { selectedIndices.clear(); selectedIndices.add(i); if (e.detail === 2) play(i); }
+                render();
+            };
+            playlist.appendChild(d);
+        });
+    }
+
+    function loadFiles(e) { const files = Array.from(e.target.files).reverse(); files.forEach(f => { tracks.unshift({ name: f.name.toUpperCase(), url: URL.createObjectURL(f), size: (f.size/(1024*1024)).toFixed(2) }); }); if (tracks.length > 0) play(0); }
+    function togglePlay() { audio.paused ? audio.play() : audio.pause(); }
+    function pauseTrack() { audio.pause(); }
+    function stopTrack() { audio.pause(); audio.currentTime = 0; updateVisuals(false); }
+    function nextTrack() { play((currentIndex + 1) % tracks.length); }
+    function prevTrack() { play((currentIndex - 1 + tracks.length) % tracks.length); }
+    function togglePL() { playlist.style.display = (playlist.style.display === 'block') ? 'none' : 'block'; }
+    function toggleAbout() { const ab = document.getElementById('about-box'); ab.style.display = (ab.style.display === 'block') ? 'none' : 'block'; }
+    function deleteSelected() { tracks = tracks.filter((_, i) => !selectedIndices.has(i)); selectedIndices.clear(); render(); }
+    function shufflePlaylist() { tracks.sort(() => Math.random() - 0.5); render(); }
+    function handleGlobalKeys(e) { if (e.ctrlKey && (e.key === 'a' || e.key === 'A')) { e.preventDefault(); tracks.forEach((_, i) => selectedIndices.add(i)); render(); } if (e.key === 'Delete') deleteSelected(); }
+
+    audio.ontimeupdate = () => {
+        if (tracks[currentIndex] && tracks[currentIndex].size === "LIVE") {
+            document.getElementById('timer').textContent = "RADYO";
+        } else if (tracks[currentIndex]) {
+            const m = Math.floor(audio.currentTime / 60);
+            const s = Math.floor(audio.currentTime % 60);
+            document.getElementById('timer').textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }
+    };
+</script>
+</body>
+</html>

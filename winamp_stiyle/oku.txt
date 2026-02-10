@@ -1,0 +1,56 @@
+Merhaba Değerli Forum Dostları!
+
+Radyo dünyasının efsanesi geri döndü! Winamp'ın o unutulmaz arayüzünü, modern web teknolojileriyle birleştirdik. Sadece bir player değil, nostaljiyi iliklerinize kadar hissettirecek bir Winamp Stili Player indexini sizlerle paylaşıyorum.
+
+✨ WİNAMP PLAYER'IN ÖNE ÇIKAN ÖZELLİKLERİ:
+Klasik Winamp Arayüzü: Orijinal mavi-mor tonları, LCD ekranı ve ikonik butonlarıyla tam bir görsel nostalji.
+
+Canlı Visualizer (Ses Spektrumu): Müziğin ritmine göre LCD ekranda dans eden yeşil barlar.
+
+Dinamik Marquee: Çalan şarkının ismi, Winamp'ın o meşhur kayan yazı efektiyle ekranda akar.
+
+Gerçekçi Buton Deneyimi: Play, Pause, Stop ve Ses ayarı butonları, üzerine tıklandığında Winamp'taki gibi içeri çöker (Basılma efekti).
+
+Gizlenebilir Playlist: "PL" butonuyla çalma listenizi anında açıp kapatabilirsiniz.
+
+Sürükle-Bırak Ses Ayarı: Ses barı üzerinden anlık desibel ayarı yapma imkanı.
+
+🛠️ RADYO YAYININIZI NASIL BAĞLARSINIZ?
+Bu player'ı kendi radyonuza mühürlemek çok basittir. Kodun en altındaki JavaScript kısmında şu satırı bulun:
+
+Radyo Linkini Ekleme: tracks.push({ name: "RADYO ADINIZ", url: "https://eu4.fastcast4u.com/proxy/allaturka?mp=/1", size: "LIVE" });
+
+Buradaki linki kendi radyo yayın linkinizle değiştirin. name kısmına radyonuzun ismini yazın.
+
+Sayfa açıldığında radyonun hemen başlaması için play(0); komutu mühürlü hazır gelmektedir.
+
+Radyo siteniz, kişisel blogunuz veya herhangi bir CMS paneliniz için efsane bir eklenti mi arıyorsunuz? İşte karşınızda her ölçüye uyum sağlayan, nostaljik Winamp ruhunu web sitenize taşıyan Mini Winamp Player!
+
+✨ BU WİDGET PLAYER NELER YAPABİLİR? (ÖZELLİKLER)
+💻 PC'den Müzik Yükle: "MÜZİK SEÇ" butonuyla bilgisayarınızdaki MP3'leri anında player'a atabilir, kendi çalma listenizi oluşturabilirsiniz.
+
+🗑️ Sil & Karıştır: Çalma listesindeki parçaları tek tek silebilir veya "SHUFFLE" özelliğiyle listenizi karıştırabilirsiniz.
+
+📱 Her Yere Sığar: Ölçü derdi yok! Tasarım esnektir; Blogspot, WordPress veya herhangi bir sitenin yan sütununa (Sidebar) mühür gibi oturur.
+
+🎚️ Canlı Yayın Desteği: İster bilgisayardan müzik dinleyin, ister radyo yayın linkinizi mühürleyin; ikisini de canavar gibi çalar.
+
+🎹 Klavye Kısayolları: Ctrl+A ile tüm listeyi seçebilir, Delete tuşuyla istemediğiniz parçaları listeden anında uçurabilirsiniz.
+
+📥 KULLANIM VE MONTAJ TARİFİ (WİDGET OLARAK)
+Bu player'ı sitenizin yan sütununa eklemek çok basittir:
+
+Blogspot/WordPress İçin: Panelinizden Yerleşim (Layout) veya Bileşenler kısmına gelin.
+
+HTML/JavaScript Ekle deyin.
+
+Aşağıda paylaştığım kodları yapıştırın. (Kodlar widget boyutuna göre kendini otomatik ayarlar).
+
+Radyo Linki Ayarı: Eğer sabit radyonuz çalsın istiyorsanız, kodun içindeki url kısmına kendi yayın linkinizi mühürleyin.
+
+🕹️ KONTROLLER NASIL ÇALIŞIR?
+PL Butonu: Çalma listesini (Playlist) açar ve kapatır.
+
+MÜZİK SEÇ: Bilgisayarınızın klasörlerini açar, seçtiğiniz müzikleri player'a yükler.
+
+SAĞ TIK / DELETE: Listeyi yönetmenizi sağlar.
