@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* MEHMET3620 ELITE FLOWER SLIDER v4.8 - RICH & COMPACT */
+        :root { --bg-color: #6b705c; --panel-white: #ffffff; --accent: #cb997e; }
+
+        body { background-color: var(--bg-color); font-family: 'Georgia', serif; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 10px; }
+        .slider-title { color: white; font-size: 28px; font-weight: bold; margin-bottom: 12px; letter-spacing: 1px; }
+
+        .product-card { background: var(--panel-white); display: flex; padding: 12px; width: 680px; height: 360px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); position: relative; border-radius: 10px; }
+
+        .sidebar { display: flex; flex-direction: column; width: 65px; gap: 6px; margin-right: 10px; align-items: center; border-right: 1px solid #eee; }
+        #thumb-list { display: flex; flex-direction: column; gap: 5px; align-items: center; }
+        
+        .thumb { width: 45px; height: 40px; object-fit: cover; cursor: pointer; opacity: 0.5; transition: 0.3s; border: 2px solid transparent; border-radius: 4px; }
+        .thumb.active, .thumb:hover { opacity: 1; border-color: var(--bg-color); }
+
+        .side-icon { display: flex; flex-direction: column; align-items: center; font-size: 8px; color: #444; cursor: pointer; margin-top: 5px; font-weight: bold; }
+        .side-icon svg { width: 20px; height: 20px; margin-bottom: 2px; color: var(--accent); }
+
+        .main-display { flex: 1; position: relative; background: #000; display: flex; justify-content: center; align-items: center; overflow: hidden; border-radius: 6px; }
+        #current-img, #video-container, #guide-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; object-fit: cover; }
+        
+        /* REHBER ALANI - BİLGİLER GERİ GELDİ! */
+        #guide-container { display: none; background: white; padding: 20px; box-sizing: border-box; z-index: 4; overflow-y: auto; text-align: left; }
+        #guide-container::-webkit-scrollbar { width: 4px; }
+        #guide-container::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+
+        .guide-section-title { font-size: 18px; color: var(--bg-color); border-bottom: 2px solid var(--accent); margin: 15px 0 8px; font-weight: bold; font-style: italic; }
+        .guide-item { font-size: 12px; line-height: 1.5; color: #444; margin-bottom: 10px; padding-left: 10px; border-left: 2px solid var(--accent); }
+
+        .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.7); border: none; width: 30px; height: 30px; cursor: pointer; font-size: 16px; z-index: 10; border-radius: 50%; }
+        .prev { left: 8px; } .next { right: 8px; }
+        .like-counter { position: absolute; bottom: 12px; right: 12px; background: rgba(107, 112, 92, 0.85); color: white; padding: 4px 10px; border-radius: 12px; font-size: 10px; z-index: 5; }
+    </style>
+</head>
+<body>
+
+    <div class="slider-title">Elite Floral Guide</div>
+
+    <div class="product-card">
+        <div class="sidebar">
+            <div id="thumb-list"></div>
+            <div class="side-icon" onclick="playVideo('https://www.youtube.com/embed/mK928mX7N6A?autoplay=1')">
+                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                İZLE
+            </div>
+            <div class="side-icon" onclick="showGuide()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                REHBER
+            </div>
+        </div>
+
+        <div class="main-display">
+            <button class="nav-arrow prev" onclick="moveSlide(-1)">&#10094;</button>
+            <img src="" id="current-img">
+            <iframe id="video-container" style="display:none;" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+            <div id="guide-container">
+                <div style="font-size: 22px; font-weight: bold; color: var(--bg-color); text-align: center;">Bitki & Çiçek Rehberi</div>
+                
+                <div class="guide-section-title">🌸 Çiçeklerin Gizli Mesajları</div>
+                <div class="guide-item"><b>Kırmızı Gül:</b> Sadece aşkı değil, derin saygıyı ve hayranlığı temsil eder.</div>
+                <div class="guide-item"><b>Beyaz Papatya:</b> Saflığı, masumiyeti ve yeni başlangıçları simgeler.</div>
+                <div class="guide-item"><b>Lila Lavanta:</b> Zarafet, sessizlik ve sadakat getirdiğine inanılır.</div>
+
+                <div class="guide-section-title">🌿 Profesyonel Bakım</div>
+                <div class="guide-item"><b>Işık:</b> Doğrudan güneş yerine parlak ama dolaylı ışık alan noktaları seçin.</div>
+                <div class="guide-item"><b>Su:</b> Parmağınızla toprağı kontrol edin; 2 cm kurumuşsa su verin.</div>
+                <div class="guide-item"><b>İpucu:</b> Vazodaki suya bir miktar şeker eklemek tazeliği korur.</div>
+
+                <p style="text-align:center; color:#999; font-size:10px; margin-top:20px;">Mehmet3620 Allaturka Özel Serisi</p>
+            </div>
+
+            <button class="nav-arrow next" onclick="moveSlide(1)">&#10095;</button>
+            <div class="like-counter">5.2K 🌿</div>
+        </div>
+    </div>
+
+    <script>
+        const galleryUrls = [
+            "https://images.unsplash.com/photo-1490750967868-88aa4486c946",
+            "https://images.unsplash.com/photo-1444930694458-01babf71870c",
+            "https://images.unsplash.com/photo-1526047932273-341f2a7631f9",
+            "https://images.unsplash.com/photo-1507290439931-a861b5a38200"
+        ];
+
+        let currentIndex = 0;
+        const mainImg = document.getElementById('current-img');
+        const thumbList = document.getElementById('thumb-list');
+
+        function initGallery() {
+            thumbList.innerHTML = "";
+            galleryUrls.forEach((url, index) => {
+                const img = document.createElement('img');
+                img.src = `${url}?w=120&h=100&fit=crop`;
+                img.className = `thumb ${index === 0 ? 'active' : ''}`;
+                img.onclick = () => setGallery(index);
+                thumbList.appendChild(img);
+            });
+            updateSlider();
+        }
+
+        function setGallery(index) {
+            currentIndex = index; resetDisplay(); updateSlider();
+        }
+
+        function resetDisplay() {
+            const v = document.getElementById('video-container');
+            v.style.display = 'none'; v.src = "";
+            document.getElementById('guide-container').style.display = 'none';
+            mainImg.style.display = 'block';
+        }
+
+        function updateSlider() {
+            mainImg.src = `${galleryUrls[currentIndex]}?w=800&h=450&fit=crop`;
+            const thumbs = document.querySelectorAll('.thumb');
+            thumbs.forEach((t, i) => t.classList.toggle('active', i === currentIndex));
+        }
+
+        function moveSlide(step) {
+            if (document.getElementById('guide-container').style.display === 'block') {
+                resetDisplay(); return;
+            }
+            currentIndex = (currentIndex + step + galleryUrls.length) % galleryUrls.length;
+            updateSlider();
+        }
+
+        function playVideo(url) {
+            resetDisplay(); mainImg.style.display = 'none';
+            const v = document.getElementById('video-container');
+            v.style.display = 'block'; v.src = url;
+        }
+
+        function showGuide() {
+            resetDisplay(); mainImg.style.display = 'none';
+            document.getElementById('guide-container').style.display = 'block';
+        }
+
+        initGallery();
+    </script>
+</body>
+</html>

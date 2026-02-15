@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        :root { --bg-color: #6b705c; --panel-white: #ffffff; --accent: #cb997e; }
+        body { background-color: var(--bg-color); font-family: 'Georgia', serif; display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 40px 0; }
+        .label { color: white; font-size: 20px; font-weight: bold; background: rgba(0,0,0,0.2); padding: 8px 20px; border-radius: 12px; }
+
+        /* --- REHBER KUTUSU --- */
+        .guide-box { display: none; background: white; width: 100%; height: 100%; position: absolute; top:0; left:0; padding: 25px; box-sizing: border-box; z-index: 10; overflow-y: auto; text-align: left; border-radius: 8px; }
+        .guide-box::-webkit-scrollbar { width: 6px; }
+        .guide-box::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+        .g-header { font-size: 22px; font-weight: bold; color: var(--bg-color); text-align: center; border-bottom: 3px double var(--accent); padding-bottom: 10px; margin-bottom: 15px; }
+        .g-title { font-size: 18px; color: var(--bg-color); border-bottom: 2px solid var(--accent); margin: 15px 0 8px; font-weight: bold; font-style: italic; }
+        .g-item { font-size: 13px; line-height: 1.6; color: #333; margin-bottom: 10px; padding-left: 12px; border-left: 3px solid var(--accent); }
+
+        /* MOD 1: YATAY SLIM (720x380) */
+        .card-h { background: var(--panel-white); display: flex; padding: 15px; width: 720px; height: 380px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); position: relative; border-radius: 12px; overflow: hidden; }
+        .side-h { display: flex; flex-direction: column; width: 70px; gap: 8px; margin-right: 12px; align-items: center; border-right: 1px solid #eee; flex-shrink: 0; }
+        .thumb-h { width: 50px; height: 45px; object-fit: cover; cursor: pointer; opacity: 0.5; border: 2px solid transparent; border-radius: 4px; transition: 0.3s; flex-shrink: 0; }
+        .thumb-h.active { opacity: 1; border-color: var(--bg-color); }
+
+        /* MOD 2: DİKEY (600x600) */
+        .card-v { background: var(--panel-white); display: flex; padding: 15px; width: 600px; height: 600px; box-shadow: 0 25px 50px rgba(0,0,0,0.4); position: relative; border-radius: 15px; overflow: hidden; }
+        .side-v { display: flex; flex-direction: column; width: 85px; gap: 10px; margin-right: 15px; align-items: center; border-right: 1px solid #eee; flex-shrink: 0; }
+        .thumb-v { width: 60px; height: 80px; object-fit: cover; cursor: pointer; opacity: 0.5; border: 2px solid transparent; border-radius: 6px; transition: 0.3s; flex-shrink: 0; }
+        .thumb-v.active { opacity: 1; border-color: var(--bg-color); }
+
+        /* ANA EKRAN */
+        .display { flex: 1; position: relative; background: #000; overflow: hidden; border-radius: 8px; display: flex; flex-direction: column; }
+        .main-img { width: 100%; height: 100%; object-fit: cover; }
+        .video-container { display: none; width: 100%; height: 100%; background: #000; flex-direction: column; }
+        .video-frame { width: 100%; height: 330px; border: none; flex-shrink: 0; }
+        .video-info { flex: 1; background: #fff; padding: 15px; color: #333; display: flex; flex-direction: column; justify-content: flex-start; border-top: 5px solid var(--accent); overflow-y: auto; }
+        
+        .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.7); border: none; width: 35px; height: 35px; cursor: pointer; border-radius: 50%; z-index: 5; font-size: 18px; }
+        .icon-btn { display: flex; flex-direction: column; align-items: center; font-size: 9px; cursor: pointer; margin-top: 12px; font-weight: bold; color: #444; }
+        .icon-btn svg { width: 24px; height: 24px; color: var(--accent); margin-bottom: 2px; }
+    </style>
+</head>
+<body>
+
+    <div class="label">SEÇENEK A: YATAY SLIM</div>
+    <div class="card-h">
+        <div class="side-h">
+            <div id="thumbs-h"></div>
+            <div class="icon-btn" onclick="showVideo('h', 'https://www.youtube.com/embed/mK928mX7N6A?autoplay=1')">
+                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>İZLE
+            </div>
+            <div class="icon-btn" onclick="showView('h', 'guide')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>REHBER
+            </div>
+        </div>
+        <div class="display">
+            <button class="nav-arrow" style="left:10px;" onclick="changeSlide('h', -1)">&#10094;</button>
+            <img class="main-img" id="img-h">
+            <div class="video-container" id="vid-cont-h">
+                <iframe class="video-frame" id="vid-h" style="height:100%" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+            <div class="guide-box" id="guide-h">
+                <div class="g-header">🌿 Kapsamlı Bitki Ansiklopedisi</div>
+                <div class="g-title">🌸 Çiçeklerin Derin Anlamları</div>
+                <div class="g-item"><b>Kırmızı Gül:</b> Antik çağlardan bu yana süregelen bir tutku beyanıdır. Roma mitolojisinde Venüs ile bağdaştırılan bu çiçek; sadakati, derin saygıyı ve ruhsal bir bağı temsil eder.</div>
+                <div class="g-item"><b>Beyaz Papatya:</b> Doğanın en mütevazı ama en güçlü çiçeğidir. Yeni başlangıçları, ruhun arınmasını ve çocuksu bir neşeyi müjdeler. Birine papatya vermek, "kalbim temiz" demenin en samimi yoludur.</div>
+                <div class="g-title">🌿 Profesyonel Bakım Rehberi</div>
+                <div class="g-item"><b>Işık:</b> Bitkilerinizi asla doğrudan yakıcı güneş altına bırakmayın. "Aydınlık gölge" yani tül arkasından süzülen ışık en idealidir.</div>
+                <div class="g-item"><b>Sulama:</b> Parmağınızı toprağa 2 cm daldırın, eğer kuruysa bolca sulayıp tabağındaki fazla suyu boşaltın.</div>
+                <div class="g-item"><b>Tüyo:</b> Vazo suyuna bir adet ezilmiş aspirin veya bir çay kaşığı şeker eklemek ömrü 3-4 gün uzatır. Bakteri oluşumu için iki damla elma sirkesi mucize yaratır!</div>
+                <center><button onclick="showView('h', 'img')" style="margin:15px; padding:8px 20px; cursor:pointer;">Görsele Dön</button></center>
+            </div>
+            <button class="nav-arrow" style="right:10px;" onclick="changeSlide('h', 1)">&#10095;</button>
+        </div>
+    </div>
+
+    <div class="label">SEÇENEK B: DİKEY (600x600 - DOLU BİLGİ)</div>
+    <div class="card-v">
+    <div class="side-v">
+        <div id="thumbs-v"></div>
+        <div class="icon-btn" onclick="showView('v', 'vid'); document.getElementById('vid-v').src='https://www.youtube.com/embed/mK928mX7N6A?autoplay=1'">
+            <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>İZLE
+        </div>
+        <div class="icon-btn" onclick="showView('v', 'guide')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>REHBER
+        </div>
+    </div>
+    <div class="display">
+        <button class="nav-arrow" style="left:10px;" onclick="changeSlide('v', -1)">&#10094;</button>
+        <img class="main-img" id="img-v">
+        
+        <div class="video-container" id="vid-cont-v">
+            <iframe class="video-frame" id="vid-v" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <div class="video-info">
+                <b style="color:var(--bg-color); font-size:18px; display:block; margin-bottom:8px;">🌿 Profesyonel Bitki Bakımı ve Sırları</b>
+                <hr style="border:0; border-top:1px solid #eee; margin-bottom:10px;">
+                <p style="font-size:13px; line-height:1.6; color:#444; margin:0;">
+                    <b>Mehmet3620 Özel Serisi</b> ile bitki dünyasına giriş yapın. Bu videoda; bitki türlerine göre en doğru toprak karışımı nasıl hazırlanır, mevsim geçişlerinde sulama döngüsü nasıl ayarlanır ve yaprak hastalıklarıyla doğal yollarla nasıl mücadele edilir gibi kritik konuları en ince ayrıntısına kadar ele alıyoruz. <br><br>
+                    <b>📌 Neler Öğreneceksiniz?</b><br>
+                    • Doğru toprak karışımı hazırlama teknikleri.<br>
+                    • Mevsimsel sulama ve nem dengesi.<br>
+                    • Doğal yollarla hastalık mücadelesi.<br><br>
+                    <b>✨ Püf Noktası:</b> Saksı değişiminde köklerin nefes almasını sağlayacak kritik sırlar bu rehberde sizlerle!
+                </p>
+            </div>
+        </div>
+            <div class="guide-box" id="guide-v">
+                <div class="g-header">🌿 Kapsamlı Bitki Ansiklopedisi</div>
+                <div class="g-title">🌸 Çiçeklerin Derin Anlamları</div>
+                <div class="g-item"><b>Kırmızı Gül:</b> Antik çağlardan bu yana süregelen bir tutku beyanıdır. Roma mitolojisinde Venüs ile bağdaştırılan bu çiçek; sadakati, derin saygıyı ve ruhsal bir bağı temsil eder.</div>
+                <div class="g-item"><b>Beyaz Papatya:</b> Doğanın en mütevazı ama en güçlü çiçeğidir. Yeni başlangıçları, ruhun arınmasını ve çocuksu bir neşeyi müjdeler. Birine papatya vermek, "kalbim temiz" demenin en samimi yoludur.</div>
+                <div class="g-item"><b>Mavi Ortanca:</b> İçten gelen duyguları, samimi bir özrü ve anlayışı simgeler. Minnettarlık ifadesi olarak kullanılır.</div>
+                <div class="g-item"><b>Lale:</b> Osmanlı'dan Avrupa'ya asalet simgesidir. Gururu, zarafeti ve mükemmel aşkı temsil eder.</div>
+                
+                <div class="g-title">🌿 Profesyonel Bakım Rehberi</div>
+                <div class="g-item"><b>Işık:</b> Bitkilerinizi asla doğrudan yakıcı güneş altına bırakmayın. "Aydınlık gölge" yani tül arkasından süzülen ışık en idealidir.</div>
+                <div class="g-item"><b>Sulama:</b> Parmağınızı toprağa 2 cm daldırın, eğer kuruysa bolca sulayıp tabağındaki fazla suyu boşaltın.</div>
+                <div class="g-item"><b>Nem:</b> Kuru ev havası bitki düşmanıdır. Haftada bir yapraklara su fısfıslamak onları canlandırır.</div>
+                
+                <div class="g-title">✨ Mehmet3620 Bakım Tüyoları</div>
+                <div class="g-item"><b>Tüyo:</b> Vazo suyuna bir adet ezilmiş aspirin veya bir çay kaşığı şeker eklemek ömrü 3-4 gün uzatır. Bakteri oluşumu için iki damla elma sirkesi mucize yaratır!</div>
+                
+                <center><button onclick="showView('v', 'img')" style="margin:15px; padding:8px 20px; cursor:pointer;">Görsele Dön</button></center>
+            </div>
+            <button class="nav-arrow" style="right:10px;" onclick="changeSlide('v', 1)">&#10095;</button>
+        </div>
+    </div>
+
+    <script>
+        const urls = ["https://images.unsplash.com/photo-1526047932273-341f2a7631f9", "https://images.unsplash.com/photo-1507290439931-a861b5a38200", "https://images.unsplash.com/photo-1644462282183-0873b8d2e7ad", "https://images.unsplash.com/photo-1692558128928-371b9e1b8849"];
+        let hIdx = 0, vIdx = 0;
+
+        function init() {
+            const hDiv = document.getElementById('thumbs-h'), vDiv = document.getElementById('thumbs-v');
+            urls.forEach((u, i) => {
+                let hImg = document.createElement('img'); hImg.src = u+'?w=100&h=80&fit=crop'; hImg.className='thumb-h';
+                hImg.onclick = () => { hIdx=i; render('h'); }; hDiv.appendChild(hImg);
+                let vImg = document.createElement('img'); vImg.src = u+'?w=120&h=160&fit=crop'; vImg.className='thumb-v';
+                vImg.onclick = () => { vIdx=i; render('v'); }; vDiv.appendChild(vImg);
+            });
+            render('h'); render('v');
+        }
+
+        function render(t) {
+            showView(t, 'img');
+            if(t==='h') {
+                document.getElementById('img-h').src = urls[hIdx]+'?w=900&h=500&fit=crop';
+                document.querySelectorAll('.thumb-h').forEach((el,i)=>el.classList.toggle('active',i===hIdx));
+            } else {
+                document.getElementById('img-v').src = urls[vIdx]+'?w=800&h=800&fit=crop';
+                document.querySelectorAll('.thumb-v').forEach((el,i)=>el.classList.toggle('active',i===vIdx));
+            }
+        }
+
+        function changeSlide(t, s) {
+            if(t==='h') { hIdx=(hIdx+s+urls.length)%urls.length; render('h'); }
+            else { vIdx=(vIdx+s+urls.length)%urls.length; render('v'); }
+        }
+
+        function showView(t, m) {
+            const g = document.getElementById(`guide-${t}`), i = document.getElementById(`img-${t}`), vc = document.getElementById(`vid-cont-${t}`), v = document.getElementById(`vid-${t}`);
+            g.style.display = (m==='guide') ? 'block' : 'none';
+            i.style.display = (m==='img') ? 'block' : 'none';
+            if(vc) vc.style.display = (m==='vid') ? 'flex' : 'none';
+            if(m !== 'vid' && v) v.src = "";
+        }
+
+        function showVideo(t, url, title, desc) {
+            showView(t, 'vid');
+            document.getElementById(`vid-${t}`).src = url;
+            if(t === 'v') {
+                document.getElementById('v-title-v').innerText = title;
+                document.getElementById('v-desc-v').innerText = desc;
+            }
+        }
+        init();
+    </script>
+</body>
+</html>
