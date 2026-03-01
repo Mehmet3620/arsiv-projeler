@@ -195,7 +195,125 @@ body { padding-top: 55px; }
 <audio id="radioPlayer" crossorigin="anonymous"></audio>
 
 <script src="https://eu4.fastcast4u.com/system/streaminfo.js"></script>
+<style>
+/* ------------------------------------------------------------------- */
+/* KULLANIM AÇIKLAMA ALANI - MEHMET3620                                */
+/* ------------------------------------------------------------------- */
+.usage-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.05);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #444;
+    line-height: 1.6;
+}
 
+.usage-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.usage-header i {
+    font-size: 24px;
+    color: #FF8C00; /* Player'daki turuncu tonu */
+}
+
+.usage-header h2 {
+    margin: 0;
+    font-size: 22px;
+    color: #333;
+}
+
+.usage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.usage-item {
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    border-left: 4px solid #008080; /* Player'daki yeşil tonu */
+    transition: transform 0.3s ease;
+}
+
+.usage-item:hover {
+    transform: translateY(-5px);
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.usage-item h3 {
+    margin-top: 0;
+    font-size: 16px;
+    color: #008080;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.usage-item p {
+    margin-bottom: 0;
+    font-size: 14px;
+    color: #666;
+}
+
+/* Küçük Not Kısmı */
+.usage-footer {
+    margin-top: 25px;
+    padding-top: 15px;
+    font-size: 13px;
+    font-style: italic;
+    color: #888;
+    text-align: center;
+    border-top: 1px dashed #ddd;
+}
+</style>
+
+<div class="usage-container">
+    <div class="usage-header">
+        <i class="fa-solid fa-circle-info"></i>
+        <h2>Radyo Kullanım Rehberi</h2>
+    </div>
+
+    <div class="usage-grid">
+        <div class="usage-item">
+            <h3><i class="fa-solid fa-play"></i> Kesintisiz Dinleme</h3>
+            <p>Oynat butonuna bastığınızda yayın en güncel haliyle (canlı) başlar. Yayını durdurup tekrar açtığınızda kaldığı yerden değil, o anki canlı akıştan devam eder.</p>
+        </div>
+
+        <div class="usage-item">
+            <h3><i class="fa-solid fa-sliders"></i> Ses Kontrolü</h3>
+            <p>Sağ taraftaki ses çubuğunu kullanarak ses seviyesini ayarlayabilirsiniz. Hoparlör simgesine tıklayarak sesi anında kapatıp (mute) açabilirsiniz.</p>
+        </div>
+
+        <div class="usage-item">
+            <h3><i class="fa-solid fa-music"></i> Şarkı Bilgisi</h3>
+            <p>Player'ın orta kısmında o an çalan şarkının adı ve sanatçı bilgisi otomatik olarak güncellenmektedir.</p>
+        </div>
+
+        <div class="usage-item">
+            <h3><i class="fa-solid fa-share-nodes"></i> Sosyal Medya</h3>
+            <p>Bize sosyal medya ikonları üzerinden ulaşabilir, istek parçalarınızı veya mesajlarınızı iletebilirsiniz.</p>
+        </div>
+    </div>
+
+    <div class="usage-footer">
+        * Yayın kalitesi internet hızınıza göre otomatik ayarlanmaktadır. Keyifli dinlemeler dileriz.
+    </div>
+	
+	<div class="usage-footer">
+        Allaturkaa Forum | Seyyah20
+    </div>
+</div>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const r = document.getElementById('radioPlayer');
