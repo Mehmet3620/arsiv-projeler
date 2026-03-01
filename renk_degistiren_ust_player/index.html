@@ -1,0 +1,227 @@
+<style>
+/* ------------------------------------------------------------------- */
+/* MEHMET3620 - GÜNCELLENMİŞ SES ÇUBUĞU VE SABİT DÜZEN                 */
+/* ------------------------------------------------------------------- */
+
+.fixed-radio-bar_TOP {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    width: 100%;
+    height: 55px; 
+    color: white;
+    position: fixed; 
+    top: 0; 
+    left: 0;
+    z-index: 10000; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.4);
+    box-sizing: border-box;
+
+    /* 6 RENKLİ VE YAVAŞ GEÇİŞLİ YENİ AYAR */
+    background: linear-gradient(-45deg, 
+        #008080, /* Orijinal Yeşil */
+        #FF8C00, /* Orijinal Turuncu */
+        #4B0082, /* YENİ: İndigo Mor */
+        #2E8B57, /* Orijinal Deniz Yeşili */
+        #800000, /* YENİ: Koyu Bordo */
+        #1A2A6C  /* Orijinal Lacivert */
+    );
+    
+    /* 6 renk olduğu için alanı %600 yapıyoruz */
+    background-size: 600% 600%; 
+    
+    /* Süreyi 30s yaptım ki renkler yavaştan ve sindire sindire değişsin */
+    animation: mehmetGradient 30s ease infinite;
+}
+
+/* Animasyon döngüsü aynı kalıyor */
+@keyframes mehmetGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.radio-logo_TOP {
+    height: 35px;
+    width: auto;
+    flex-shrink: 0;
+}
+
+.marquee-area_TOP {
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    margin: 0 40px;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.marquee-text_TOP {
+    display: inline-block;
+    padding-left: 100%;
+    animation: marquee_TOP 20s linear infinite;
+}
+
+@keyframes marquee_TOP {
+    0%   { transform: translate(0, 0); }
+    100% { transform: translate(-100%, 0); }
+}
+
+.right-controls_TOP {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+}
+
+/* SES ÇUBUĞU YENİ TASARIM */
+.volume-control-area_TOP {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.15); /* Hafif cam efekti */
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.volume-slider-bar_TOP {
+    -webkit-appearance: none;
+    width: 80px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3); /* Çubuğun boş hali */
+    border-radius: 5px;
+    outline: none;
+    cursor: pointer;
+    margin: 0 10px;
+}
+
+/* Chrome/Edge/Safari Ses Topuzu */
+.volume-slider-bar_TOP::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    cursor: pointer;
+}
+
+/* Firefox Ses Topuzu */
+.volume-slider-bar_TOP::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    cursor: pointer;
+}
+
+.play-pause-btn-bar_TOP button {
+    height: 40px;
+    width: 40px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: white;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+
+.play-pause-btn-bar_TOP button:hover { 
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(255,255,255,0.6);
+}
+
+.social-icons_TOP {
+    display: flex;
+    gap: 12px;
+}
+
+.social-icons_TOP a {
+    color: white;
+    font-size: 1.25em;
+    transition: transform 0.2s, opacity 0.2s;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+.social-icons_TOP a:hover { 
+    opacity: 0.8; 
+    transform: translateY(-2px);
+}
+
+body { padding-top: 55px; }
+
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<div class="fixed-radio-bar_TOP">
+    <img src="https://allaturkaa.de/forum/wcf/images/allaturkaa/logo.png" alt="Logo" class="radio-logo_TOP">
+
+    <div class="marquee-area_TOP">
+        <span class="marquee-text_TOP">
+            RADYO ALLATURKA - <span class="cc_streaminfo" data-type="song" data-username="allaturka">Bağlanıyor...</span>
+        </span>
+    </div>
+    
+    <div class="right-controls_TOP">
+        <div class="volume-control-area_TOP">
+            <i class="fa-solid fa-volume-low" id="vIcon"></i>
+            <input type="range" min="0" max="100" value="75" class="volume-slider-bar_TOP" id="vSlider">
+        </div>
+
+        <div class="play-pause-btn-bar_TOP">
+            <button id="playBtn">
+                <i class="fa-solid fa-play"></i>
+            </button>
+        </div>
+
+        <div class="social-icons_TOP">
+            <a href="#" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" target="_blank"><i class="fa-solid fa-envelope"></i></a>
+        </div>
+    </div>
+</div>
+
+<audio id="radioPlayer" crossorigin="anonymous"></audio>
+
+<script src="https://eu4.fastcast4u.com/system/streaminfo.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const r = document.getElementById('radioPlayer');
+    const b = document.getElementById('playBtn');
+    const s = document.getElementById('vSlider');
+    const i = document.getElementById('vIcon');
+    let isPlaying = false;
+
+    b.addEventListener('click', () => {
+        if (!isPlaying) {
+            r.src = "https://eu4.fastcast4u.com/proxy/allaturka?mp=/1&t=" + new Date().getTime();
+            r.play().then(() => {
+                isPlaying = true;
+                b.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            });
+        } else {
+            r.pause();
+            r.src = "";
+            isPlaying = false;
+            b.innerHTML = '<i class="fa-solid fa-play"></i>';
+        }
+    });
+
+    s.addEventListener('input', () => {
+        r.volume = s.value / 100;
+        i.className = s.value == 0 ? 'fa-solid fa-volume-xmark' : (s.value < 50 ? 'fa-solid fa-volume-low' : 'fa-solid fa-volume-high');
+    });
+});
+</script>
