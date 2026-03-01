@@ -1,0 +1,229 @@
+<style>
+/* ------------------------------------------------------------------- */
+/* MODERN DINAMIK PLAYER - MEHMET3620 ÖZEL                               */
+/* ------------------------------------------------------------------- */
+
+:root {
+    --player-height: 60px;
+    --transition-speed: 5s; /* Renk geçiş hızı */
+}
+
+.dynamic-radio-bar {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    width: 100%;
+    height: var(--player-height);
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    
+    /* Dinamik Renk Değiştiren Arka Plan */
+    background: linear-gradient(-45deg, #008080, #FF8C00, #4b0082, #2e8b57);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Logo Bölümü */
+.player-logo {
+    height: 40px;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+    transition: transform 0.3s;
+}
+.player-logo:hover { transform: scale(1.05); }
+
+/* Şarkı Bilgisi Alanı */
+.info-container {
+    flex: 2;
+    margin: 0 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.radio-title {
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    opacity: 0.8;
+    margin-bottom: 2px;
+}
+
+.track-marquee {
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.track-text {
+    display: inline-block;
+    padding-left: 100%;
+    animation: scrollText 20s linear infinite;
+}
+
+@keyframes scrollText {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+}
+
+/* Kontroller */
+.action-area {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.play-trigger {
+    background: white;
+    color: #333;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: all 0.3s;
+}
+
+.play-trigger:hover {
+    transform: scale(1.1);
+    background: #f0f0f0;
+}
+
+/* Ses Ayarı */
+.vol-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.1);
+    padding: 5px 15px;
+    border-radius: 20px;
+}
+
+.vol-slider {
+    -webkit-appearance: none;
+    width: 80px;
+    height: 4px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 2px;
+    outline: none;
+}
+
+.vol-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Sosyal Medya */
+.social-links {
+    display: flex;
+    gap: 15px;
+}
+
+.social-links a {
+    color: white;
+    font-size: 1.2em;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.social-links a:hover {
+    opacity: 0.7;
+    transform: translateY(-3px);
+}
+
+/* Sayfa içeriğinin player altında kalmaması için */
+body { padding-top: 60px; }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<div class="dynamic-radio-bar">
+    <img src="https://allaturkaa.de/forum/wcf/images/allaturkaa/logo.png" alt="Logo" class="player-logo">
+
+    <div class="info-container">
+        <div class="radio-title">CANLI YAYIN: RADYO ALLATURKA</div>
+        <div class="track-marquee">
+            <span class="track-text">
+                <span class="cc_streaminfo" data-type="song" data-username="allaturka">Şarkı bilgisi alınıyor...</span>
+            </span>
+        </div>
+    </div>
+
+    <div class="action-area">
+        <div class="vol-box">
+            <i class="fa-solid fa-volume-low" id="volIcon"></i>
+            <input type="range" min="0" max="100" value="80" class="vol-slider" id="volRange">
+        </div>
+
+        <button class="play-trigger" id="mainPlayBtn">
+            <i class="fa-solid fa-play"></i>
+        </button>
+
+        <div class="social-links">
+            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#"><i class="fa-solid fa-envelope"></i></a>
+        </div>
+    </div>
+</div>
+sss
+<audio id="radioEngine" crossorigin="anonymous"></audio>
+
+<script src="https://eu4.fastcast4u.com/system/streaminfo.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const audio = document.getElementById('radioEngine');
+    const btn = document.getElementById('mainPlayBtn');
+    const vol = document.getElementById('volRange');
+    const volIcon = document.getElementById('volIcon');
+    let playing = false;
+
+    // Oynat / Durdur
+    btn.addEventListener('click', () => {
+        if (!playing) {
+            audio.src = "https://eu4.fastcast4u.com/proxy/allaturka?mp=/1&t=" + new Date().getTime();
+            audio.play().then(() => {
+                playing = true;
+                btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            });
+        } else {
+            audio.pause();
+            audio.src = "";
+            playing = false;
+            btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        }
+    });
+
+    // Ses Kontrol
+    vol.addEventListener('input', () => {
+        audio.volume = vol.value / 100;
+        if(vol.value == 0) volIcon.className = 'fa-solid fa-volume-xmark';
+        else if(vol.value < 50) volIcon.className = 'fa-solid fa-volume-low';
+        else volIcon.className = 'fa-solid fa-volume-high';
+    });
+});
+</script>
