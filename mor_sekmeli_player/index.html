@@ -23,13 +23,21 @@
         .item.playing { background: rgba(255,255,255,0.2); border-left: 3px solid #fff; }
         .album-art { width: 45px; height: 45px; background: #333; border-radius: 6px; margin-right: 12px; overflow: hidden; flex-shrink: 0; }
         .album-art img { width: 100%; height: 100%; object-fit: cover; }
-        .info { flex: 1; color: white; overflow: hidden; }
+        
+        /* ŞARKI BİLGİ ALANI - GENİŞLETİLDİ */
+        .info { flex: 1; color: white; overflow: hidden; margin-left: 10px; min-width: 0; }
         .info b { font-size: 13px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .info small { font-size: 10px; color: #ccc; }
+        .info small { font-size: 10px; color: #ccc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+        
         .meta { text-align: right; color: #fff; font-size: 10px; min-width: 60px; opacity: 0.9; }
         .about-box { padding: 20px; color: #fff; text-align: center; line-height: 1.6; }
+        
+        /* FOOTER & SAGA ALINMIŞ EKOLAYZIR */
         .footer-player { height: 85px; background: linear-gradient(90deg, #7b68ee, #4b0082); display: flex; align-items: center; padding: 0 15px; border-top: 1px solid rgba(255,255,255,0.2); }
-        .controls { display: flex; gap: 6px; align-items: center; }
+        .equalizer { display: flex; align-items: flex-end; gap: 2px; height: 25px; margin-left: 25px; margin-right: 10px; width: 80px; justify-content: flex-start; flex-shrink: 0; }
+        .bar { width: 3px; background: #fff; height: 3px; border-radius: 2px; transition: height 0.3s ease-in-out; }
+        
+        .controls { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
         .btn { width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer; background: rgba(0,0,0,0.3); color: white; display: flex; align-items: center; justify-content: center; }
         .play { background: white; color: #4b0082; width: 40px; height: 40px; font-size: 18px; }
         ::-webkit-scrollbar { width: 4px; }
@@ -39,7 +47,7 @@
 <body>
 
 <div class="player-card">
-    <header><span>❮</span><strong>Müzik & Şiir Arşivi</strong><span>🔍</span></header>
+    <header><span>🎵</span><strong>Müzik & Şiir Arşivi</strong><span>2026</span></header>
     <div class="tabs">
         <button class="tab-btn active" onclick="changeTab('slow', this)">Slow</button>
         <button class="tab-btn" onclick="changeTab('pop', this)">Pop</button>
@@ -51,7 +59,18 @@
     <div class="content-area" id="main-list"></div>
     <div class="footer-player">
         <div class="album-art" style="width:50px; height:50px;"><img src="" id="curr-img" style="display:none;"><span id="def-icon">🎵</span></div>
-        <div class="info" style="margin-left:10px;"><b id="curr-title">Parça Seçin</b><small id="curr-artist">Müzik Listesi</small></div>
+        
+        <div class="info">
+            <b id="curr-title">Parça Seçin</b>
+            <small id="curr-artist">Müzik Listesi</small>
+        </div>
+
+        <div class="equalizer" id="eq-container">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        </div>
+
         <div class="controls">
             <button class="btn" onclick="prev()">⏮</button>
             <button class="btn play" id="p-btn" onclick="togglePlay()">▶</button>
@@ -64,7 +83,7 @@
 <script>
     const songData = {
         slow: [
-		    { t: "Hoşçakal", a: "Şebnem Ferah", d: "4:50", s: "6.5 MB", img: "images/sebnem_ferah.jpg", url: "https://archive.org/download/karisik_muzik/%C5%9Eebnem%20Ferah%20-%20Ho%C5%9F%C3%A7akal.mp3" },
+            { t: "Hoşçakal", a: "Şebnem Ferah", d: "4:50", s: "6.5 MB", img: "images/sebnem_ferah.jpg", url: "https://archive.org/download/karisik_muzik/%C5%9Eebnem%20Ferah%20-%20Ho%C5%9F%C3%A7akal.mp3" },
             { t: "Unutamadım", a: "Müslüm Gürses", d: "4:20", s: "6.2 MB", img: "images/muslum_gurses.jpg", url: "https://archive.org/download/karisik_muzik/M%C3%BCsl%C3%BCm%20G%C3%BCrses%20-%20Unutamad%C4%B1m.mp3" },
             { t: "Hasretler Ayrılıkla Başlar", a: "Zülfü Livaneli", d: "3:45", s: "4.8 MB", img: "https://picsum.photos/50?random=2", url: "#" },            
             { t: "Seni Kimler Aldı", a: "Sezen Aksu", d: "3:30", s: "4.1 MB", img: "https://picsum.photos/50?random=4", url: "#" },
@@ -127,8 +146,28 @@
 
     let currentCategory = 'slow';
     let currentIndex = -1;
+    let eqInterval;
     const audio = document.getElementById('player');
     const pBtn = document.getElementById('p-btn');
+    const bars = document.querySelectorAll('.bar');
+
+    // Yumuşak Ekolayzır Döngüsü
+    function startEQ() {
+        if(eqInterval) clearInterval(eqInterval);
+        eqInterval = setInterval(() => {
+            if (!audio.paused) {
+                bars.forEach(bar => {
+                    const h = Math.random() * 20 + 4; // Rastgele yükseklik (4px-24px)
+                    bar.style.height = h + "px";
+                });
+            }
+        }, 300); // 300ms hızında güncelleme (yavaş ve akıcı)
+    }
+
+    function stopEQ() {
+        clearInterval(eqInterval);
+        bars.forEach(bar => bar.style.height = "3px");
+    }
 
     function render(cat) {
         currentCategory = cat;
@@ -160,13 +199,25 @@
         img.src = song.img; img.style.display = 'block';
         document.getElementById('def-icon').style.display = 'none';
         audio.src = song.url;
-        if(song.url !== "#") { audio.play(); pBtn.innerText = "⏸"; }
+        if(song.url !== "#") { 
+            audio.play(); 
+            pBtn.innerText = "⏸"; 
+            startEQ();
+        }
         render(currentCategory);
     }
 
     function togglePlay() {
         if(!audio.src || audio.src.includes('#')) return;
-        audio.paused ? (audio.play(), pBtn.innerText="⏸") : (audio.pause(), pBtn.innerText="▶");
+        if(audio.paused) {
+            audio.play();
+            pBtn.innerText="⏸";
+            startEQ();
+        } else {
+            audio.pause();
+            pBtn.innerText="▶";
+            stopEQ();
+        }
     }
 
     function next() {
