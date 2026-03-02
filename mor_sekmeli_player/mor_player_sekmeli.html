@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mehmet3620 Müzik & Şiir Arşivi</title>
+    <style>
+        body { margin: 0; background: #000; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding-top: 20px; }
+        .player-card { 
+            width: 380px; height: 600px; 
+            background: linear-gradient(180deg, #6a5acd 0%, #2e1a47 100%);
+            border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1);
+        }
+        header { padding: 15px; display: flex; justify-content: space-between; align-items: center; color: white; background: rgba(0,0,0,0.2); }
+        .tabs { display: flex; gap: 5px; padding: 10px; background: rgba(0,0,0,0.1); overflow-x: auto; scrollbar-width: none; }
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { background: none; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 12px; border-radius: 20px; font-size: 10px; cursor: pointer; white-space: nowrap; min-width: 55px; }
+        .tab-btn.active { background: #fff; color: #4b0082; border-color: #fff; font-weight: bold; }
+        .content-area { flex: 1; overflow-y: auto; padding: 5px; position: relative; }
+        .item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
+        .item:hover { background: rgba(255,255,255,0.1); }
+        .item.playing { background: rgba(255,255,255,0.2); border-left: 3px solid #fff; }
+        .album-art { width: 45px; height: 45px; background: #333; border-radius: 6px; margin-right: 12px; overflow: hidden; flex-shrink: 0; }
+        .album-art img { width: 100%; height: 100%; object-fit: cover; }
+        .info { flex: 1; color: white; overflow: hidden; }
+        .info b { font-size: 13px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .info small { font-size: 10px; color: #ccc; }
+        .meta { text-align: right; color: #fff; font-size: 10px; min-width: 60px; opacity: 0.9; }
+        .about-box { padding: 20px; color: #fff; text-align: center; line-height: 1.6; }
+        .footer-player { height: 85px; background: linear-gradient(90deg, #7b68ee, #4b0082); display: flex; align-items: center; padding: 0 15px; border-top: 1px solid rgba(255,255,255,0.2); }
+        .controls { display: flex; gap: 6px; align-items: center; }
+        .btn { width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer; background: rgba(0,0,0,0.3); color: white; display: flex; align-items: center; justify-content: center; }
+        .play { background: white; color: #4b0082; width: 40px; height: 40px; font-size: 18px; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.4); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="player-card">
+    <header><span>❮</span><strong>Müzik & Şiir Arşivi</strong><span>🔍</span></header>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="changeTab('slow', this)">Slow</button>
+        <button class="tab-btn" onclick="changeTab('pop', this)">Pop</button>
+        <button class="tab-btn" onclick="changeTab('arabesk', this)">Arabesk</button>
+        <button class="tab-btn" onclick="changeTab('turku', this)">Türkü</button>
+        <button class="tab-btn" onclick="changeTab('siir', this)">Şiir</button>
+        <button class="tab-btn" onclick="changeTab('about', this)">❓</button>
+    </div>
+    <div class="content-area" id="main-list"></div>
+    <div class="footer-player">
+        <div class="album-art" style="width:50px; height:50px;"><img src="" id="curr-img" style="display:none;"><span id="def-icon">🎵</span></div>
+        <div class="info" style="margin-left:10px;"><b id="curr-title">Parça Seçin</b><small id="curr-artist">Müzik Listesi</small></div>
+        <div class="controls">
+            <button class="btn" onclick="prev()">⏮</button>
+            <button class="btn play" id="p-btn" onclick="togglePlay()">▶</button>
+            <button class="btn" onclick="next()">⏭</button>
+        </div>
+    </div>
+    <audio id="player"></audio>
+</div>
+
+<script>
+    const songData = {
+        slow: [
+		    { t: "Hoşçakal", a: "Şebnem Ferah", d: "4:50", s: "6.5 MB", img: "images/sebnem_ferah.jpg", url: "https://archive.org/download/karisik_muzik/%C5%9Eebnem%20Ferah%20-%20Ho%C5%9F%C3%A7akal.mp3" },
+            { t: "Unutamadım", a: "Müslüm Gürses", d: "4:20", s: "6.2 MB", img: "images/muslum_gurses.jpg", url: "https://archive.org/download/karisik_muzik/M%C3%BCsl%C3%BCm%20G%C3%BCrses%20-%20Unutamad%C4%B1m.mp3" },
+            { t: "Hasretler Ayrılıkla Başlar", a: "Zülfü Livaneli", d: "3:45", s: "4.8 MB", img: "https://picsum.photos/50?random=2", url: "#" },            
+            { t: "Seni Kimler Aldı", a: "Sezen Aksu", d: "3:30", s: "4.1 MB", img: "https://picsum.photos/50?random=4", url: "#" },
+            { t: "Sigara", a: "Müslüm Gürses", d: "4:10", s: "5.1 MB", img: "https://picsum.photos/50?random=5", url: "#" },
+            { t: "Gül Senin Tenin", a: "Bora Öztoprak", d: "3:55", s: "4.7 MB", img: "https://picsum.photos/50?random=6", url: "#" },
+            { t: "Haram Geceler", a: "Nilüfer", d: "4:25", s: "5.5 MB", img: "https://picsum.photos/50?random=7", url: "#" },
+            { t: "Paramparça", a: "Teoman", d: "3:40", s: "4.3 MB", img: "https://picsum.photos/50?random=8", url: "#" },
+            { t: "Duydum ki Unutmuşsun", a: "Zeki Müren", d: "5:10", s: "6.8 MB", img: "https://picsum.photos/50?random=9", url: "#" },
+            { t: "Bir Gülü sevdim", a: "Zeki Müren", d: "4:15", s: "5.3 MB", img: "https://picsum.photos/50?random=10", url: "#" }
+        ],
+        pop: [
+            { t: "Şımarık", a: "Tarkan", d: "3:10", s: "4.4 MB", img: "images/tarkan.png", url: "https://archive.org/download/karisik_muzik/Tarkan%20-%20%C5%9E%C4%B1mar%C4%B1k.mp3" },
+            { t: "Bi' Tek Ben Anlarım", a: "KÖFN", d: "3:40", s: "4.5 MB", img: "https://picsum.photos/50?random=12", url: "#" },
+            { t: "Ateşteyim", a: "Çelik", d: "3:25", s: "4.2 MB", img: "https://picsum.photos/50?random=13", url: "#" },
+            { t: "Abone", a: "Yonca Evcimik", d: "3:50", s: "4.8 MB", img: "https://picsum.photos/50?random=14", url: "#" },
+            { t: "Kuzu Kuzu", a: "Tarkan", d: "3:55", s: "4.9 MB", img: "https://picsum.photos/50?random=15", url: "#" },
+            { t: "Dudu", a: "Tarkan", d: "4:20", s: "5.4 MB", img: "https://picsum.photos/50?random=16", url: "#" },
+            { t: "Budala", a: "Gökhan Özen", d: "3:45", s: "4.7 MB", img: "https://picsum.photos/50?random=17", url: "#" },
+            { t: "İsyankar", a: "Mustafa Sandal", d: "3:50", s: "4.8 MB", img: "https://picsum.photos/50?random=18", url: "#" },
+            { t: "Araba", a: "Mustafa Sandal", d: "4:10", s: "5.1 MB", img: "https://picsum.photos/50?random=19", url: "#" },
+            { t: "Bandıra Bandıra", a: "Yonca Evcimik", d: "3:15", s: "4.0 MB", img: "https://picsum.photos/50?random=20", url: "#" }
+        ],
+        arabesk: [
+            { t: "Batsın Bu Dünya", a: "Orhan Gencebay", d: "5:15", s: "8.1 MB", img: "images/orhan-gencebay.jpg", url: "https://archive.org/download/karisik_muzik/Bats%C4%B1n%20Bu%20D%C3%BCnya%20-%20Orhan%20Gencebay.mp3" },
+            { t: "Kaderimin Oyunu", a: "Orhan Gencebay", d: "4:40", s: "5.8 MB", img: "https://picsum.photos/50?random=22", url: "#" },
+            { t: "Tanrı İstemezse", a: "Müslüm Gürses", d: "6:10", s: "7.8 MB", img: "https://picsum.photos/50?random=23", url: "#" },
+            { t: "Ben İnsan Değil miyim", a: "İbrahim Tatlıses", d: "4:20", s: "5.5 MB", img: "https://picsum.photos/50?random=24", url: "#" },
+            { t: "Gülüm Benim", a: "İbrahim Tatlıses", d: "3:50", s: "4.9 MB", img: "https://picsum.photos/50?random=25", url: "#" },
+            { t: "Sevenler Mesut Olmaz", a: "Ferdi Tayfur", d: "4:30", s: "5.7 MB", img: "https://picsum.photos/50?random=26", url: "#" },
+            { t: "Huzurum Kalmadı", a: "Ferdi Tayfur", d: "3:55", s: "5.0 MB", img: "https://picsum.photos/50?random=27", url: "#" },
+            { t: "Dertler Benim Olsun", a: "Orhan Gencebay", d: "5:05", s: "6.4 MB", img: "https://picsum.photos/50?random=28", url: "#" },
+            { t: "Seni Yazdım Kalbime", a: "Müslüm Gürses", d: "4:15", s: "5.3 MB", img: "https://picsum.photos/50?random=29", url: "#" },
+            { t: "Kaç Kadeh Kırıldı", a: "Müslüm Gürses", d: "4:45", s: "6.1 MB", img: "https://picsum.photos/50?random=30", url: "#" }
+        ],
+        turku: [
+            { t: "Mihriban", a: "Musa Eroğlu", d: "4:35", s: "6.4 MB", img: "images/musa_eroglu.jpg", url: "https://archive.org/download/karisik_muzik/Musa%20Ero%C4%9Flu%20-%20Mihriban.mp3" },
+            { t: "Gesi Bağları", a: "Selda Bağcan", d: "4:10", s: "5.2 MB", img: "https://picsum.photos/50?random=32", url: "#" },
+            { t: "Ahirim Sensin", a: "Neşet Ertaş", d: "5:50", s: "7.2 MB", img: "https://picsum.photos/50?random=33", url: "#" },
+            { t: "Neredesin Sen", a: "Neşet Ertaş", d: "4:15", s: "5.3 MB", img: "https://picsum.photos/50?random=34", url: "#" },
+            { t: "Gönül Dağı", a: "Neşet Ertaş", d: "3:55", s: "4.9 MB", img: "https://picsum.photos/50?random=35", url: "#" },
+            { t: "Sarı Gelin", a: "Yavuz Bingöl", d: "4:40", s: "5.9 MB", img: "https://picsum.photos/50?random=36", url: "#" },
+            { t: "Leylim Ley", a: "Zülfü Livaneli", d: "4:20", s: "5.5 MB", img: "https://picsum.photos/50?random=37", url: "#" },
+            { t: "Uzun İnce Bir Yoldayım", a: "Aşık Veysel", d: "3:30", s: "4.2 MB", img: "https://picsum.photos/50?random=38", url: "#" },
+            { t: "Kara Tren", a: "Özhan Eren", d: "4:55", s: "6.3 MB", img: "https://picsum.photos/50?random=39", url: "#" },
+            { t: "Yol Ver Dağlar", a: "Güler Duman", d: "4:10", s: "5.2 MB", img: "https://picsum.photos/50?random=40", url: "#" }
+        ],
+        siir: [
+            { t: "Otuz Beş Yaş", a: "Cahit Sıtkı Tarancı", d: "2:45", s: "4.6 MB", img: "images/cahit_sıtkı.jpg", url: "https://archive.org/download/karisik_muzik/Cahit%20S%C4%B1tk%C4%B1%20Taranc%C4%B1%20-%20Otuz%20Be%C5%9F%20Ya%C5%9F.mp3" },
+            { t: "Seni Seviyorum", a: "Can Yücel", d: "3:10", s: "3.8 MB", img: "https://picsum.photos/50?random=42", url: "#" },
+            { t: "Etme", a: "Mevlana (Sesli)", d: "5:20", s: "6.5 MB", img: "https://picsum.photos/50?random=43", url: "#" },
+            { t: "Beklenen", a: "Necip Fazıl", d: "2:15", s: "2.8 MB", img: "https://picsum.photos/50?random=44", url: "#" },
+            { t: "Monna Rosa", a: "Sezai Karakoç", d: "4:50", s: "6.0 MB", img: "https://picsum.photos/50?random=45", url: "#" },
+            { t: "Ihlamurlar Çiçek Açtığında", a: "Bahaeddin Karakoç", d: "3:40", s: "4.5 MB", img: "https://picsum.photos/50?random=46", url: "#" },
+            { t: "Anlatamıyorum", a: "Orhan Veli", d: "2:05", s: "2.5 MB", img: "https://picsum.photos/50?random=47", url: "#" },
+            { t: "Sakarya Türküsü", a: "Necip Fazıl", d: "6:30", s: "8.1 MB", img: "https://picsum.photos/50?random=48", url: "#" },
+            { t: "Desem ki", a: "Cahit Sıtkı", d: "2:55", s: "3.5 MB", img: "https://picsum.photos/50?random=49", url: "#" },
+            { t: "Memleket İsterim", a: "Cahit Sıtkı", d: "2:30", s: "3.1 MB", img: "https://picsum.photos/50?random=50", url: "#" }
+        ]
+    };
+
+    let currentCategory = 'slow';
+    let currentIndex = -1;
+    const audio = document.getElementById('player');
+    const pBtn = document.getElementById('p-btn');
+
+    function render(cat) {
+        currentCategory = cat;
+        const listDiv = document.getElementById('main-list');
+        if(cat === 'about') {
+            listDiv.innerHTML = `<div class="about-box"><h3>Hakkında</h3><p><b>Yapımcı:</b> Seyyah20</p><p><b>Widget:</b> Müzik & Şiir Arşivi v3.0</p><p><b>Tarih:</b> 2026</p><p>Bu player Seyyah20 tarafından Allaturkaa forum kullanıcıları için özel olarak tasarlanmıştır.</p></div>`;
+            return;
+        }
+        listDiv.innerHTML = songData[cat].map((s, index) => `
+            <div class="item ${currentIndex === index && currentCategory === cat ? 'playing' : ''}" onclick="load(${index})">
+                <div class="album-art"><img src="${s.img}"></div>
+                <div class="info"><b>${s.t}</b><small>${s.a}</small></div>
+                <div class="meta">${s.d}<br>${s.s}</div>
+            </div>`).join('');
+    }
+
+    function changeTab(cat, btn) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        render(cat);
+    }
+
+    function load(index) {
+        currentIndex = index;
+        const song = songData[currentCategory][currentIndex];
+        document.getElementById('curr-title').innerText = song.t;
+        document.getElementById('curr-artist').innerText = song.a;
+        const img = document.getElementById('curr-img');
+        img.src = song.img; img.style.display = 'block';
+        document.getElementById('def-icon').style.display = 'none';
+        audio.src = song.url;
+        if(song.url !== "#") { audio.play(); pBtn.innerText = "⏸"; }
+        render(currentCategory);
+    }
+
+    function togglePlay() {
+        if(!audio.src || audio.src.includes('#')) return;
+        audio.paused ? (audio.play(), pBtn.innerText="⏸") : (audio.pause(), pBtn.innerText="▶");
+    }
+
+    function next() {
+        let nIdx = (currentIndex + 1) % songData[currentCategory].length;
+        load(nIdx);
+    }
+
+    function prev() {
+        let pIdx = (currentIndex - 1 + songData[currentCategory].length) % songData[currentCategory].length;
+        load(pIdx);
+    }
+
+    audio.onended = next;
+    render('slow');
+</script>
+</body>
+</html>
