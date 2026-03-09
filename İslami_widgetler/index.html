@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dost Yurdu Ramazan Portalı 2026</title>
+	<style>
+    /* Kaydırma Çubuğu Özelleştirme */
+    #m3620-city::-webkit-scrollbar { width: 8px; }
+    #m3620-city::-webkit-scrollbar-track { background: #111; border-radius: 5px; }
+    #m3620-city::-webkit-scrollbar-thumb { background: #00d4ff; border-radius: 5px; border: 2px solid #111; }
+    #m3620-city { scrollbar-width: thin; scrollbar-color: #00d4ff #111; }
+    
+    /* Yumuşak Tebrik Animasyonu */
+    @keyframes m3620Fade { 0% { opacity:0; transform:translateY(10px); } 100% { opacity:1; transform:translateY(0); } }
+    .m3620-alert { animation: m3620Fade 0.5s ease forwards; background: rgba(0,212,255,0.1); border: 1px solid #00d4ff; color: #00d4ff; padding: 10px; border-radius: 10px; font-size: 12px; margin-bottom: 10px; display: none; }
+</style>
+
+<div id="m3620-ramadan-final" style="background:#0a0a0a; border:2px solid #00d4ff; border-radius:20px; width:100%; max-width:400px; color:#fff; font-family:'Segoe UI', Tahoma, sans-serif; box-shadow: 0 0 30px rgba(0,212,255,0.3); overflow:hidden; margin:15px auto;">
+    
+    <div style="background:linear-gradient(135deg, #00d4ff, #0056b3); padding:15px; text-align:center;">
+        <div style="font-size:18px; font-weight:bold; letter-spacing:1px; text-shadow:0 0 10px #fff;">🌙 2026 RAMAZAN PORTALI</div>
+        <select id="m3620-city" onchange="getVakitler()" style="margin-top:10px; width:95%; background:#111; color:#00d4ff; border:1px solid #00d4ff; border-radius:5px; padding:8px; font-size:13px; font-weight:bold; cursor:pointer; outline:none;">
+            <option value="Istanbul" selected>İSTANBUL (Seçiniz...)</option>
+            <option value="Adana">Adana</option>
+			<option value="Adiyaman">Adıyaman</option>
+			<option value="Afyonkarahisar">Afyonkarahisar</option>
+			<option value="Agri">Ağrı</option>
+			<option value="Amasya">Amasya</option>
+			<option value="Ankara">Ankara</option>
+			<option value="Antalya">Antalya</option>
+			<option value="Artvin">Artvin</option>
+			<option value="Aydin">Aydın</option>
+			<option value="Balikesir">Balıkesir</option>
+			<option value="Bilecik">Bilecik</option>
+			<option value="Bingol">Bingöl</option>
+			<option value="Bitlis">Bitlis</option>
+			<option value="Bolu">Bolu</option>
+			<option value="Burdur">Burdur</option>
+			<option value="Bursa">Bursa</option>
+			<option value="Canakkale">Çanakkale</option>
+			<option value="Cankiri">Çankırı</option>
+			<option value="Corum">Çorum</option>
+			<option value="Denizli">Denizli</option>
+			<option value="Diyarbakir">Diyarbakır</option>
+			<option value="Edirne">Edirne</option>
+			<option value="Elazig">Elazığ</option>
+			<option value="Erzincan">Erzincan</option>
+			<option value="Erzurum">Erzurum</option>
+			<option value="Eskisehir">Eskişehir</option>
+			<option value="Gaziantep">Gaziantep</option>
+			<option value="Giresun">Giresun</option>
+			<option value="Gumushane">Gümüşhane</option>
+			<option value="Hakkari">Hakkari</option>
+			<option value="Hatay">Hatay</option>
+			<option value="Isparta">Isparta</option>
+			<option value="Mersin">Mersin</option>
+			<option value="Istanbul">İstanbul</option>
+			<option value="Izmir">İzmir</option>
+			<option value="Kars">Kars</option>
+			<option value="Kastamonu">Kastamonu</option>
+			<option value="Kayseri">Kayseri</option>
+			<option value="Kirklareli">Kırklareli</option>
+			<option value="Kirsehir">Kırşehir</option>
+			<option value="Kocaeli">Kocaeli</option>
+			<option value="Konya">Konya</option>
+			<option value="Kutahya">Kütahya</option>
+			<option value="Malatya">Malatya</option>
+			<option value="Manisa">Manisa</option>
+			<option value="Kahramanmaras">Kahramanmaraş</option>
+			<option value="Mardin">Mardin</option>
+			<option value="Mugla">Muğla</option>
+			<option value="Mus">Muş</option>
+			<option value="Nevsehir">Nevşehir</option>
+			<option value="Nigde">Niğde</option>
+			<option value="Ordu">Ordu</option>
+			<option value="Rize">Rize</option>
+			<option value="Sakarya">Sakarya</option>
+			<option value="Samsun">Samsun</option>
+			<option value="Siirt">Siirt</option>
+			<option value="Sinop">Sinop</option>
+			<option value="Sivas">Sivas</option>
+			<option value="Tekirdag">Tekirdağ</option>
+			<option value="Tokat">Tokat</option>
+			<option value="Trabzon">Trabzon</option>
+			<option value="Tunceli">Tunceli</option>
+			<option value="Sanliurfa">Şanlıurfa</option>
+			<option value="Usak">Uşak</option>
+			<option value="Van">Van</option>
+			<option value="Yozgat">Yozgat</option>
+			<option value="Zonguldak">Zonguldak</option>
+			<option value="Aksaray">Aksaray</option>
+			<option value="Bayburt">Bayburt</option>
+			<option value="Karaman">Karaman</option>
+			<option value="Kirikkale">Kırikkale</option>
+			<option value="Batman">Batman</option>
+			<option value="Sirnak">Şırnak</option>
+			<option value="Bartin">Bartın</option>
+			<option value="Ardahan">Ardahan</option>
+			<option value="Igdir">Iğdır</option>
+			<option value="Yalova">Yalova</option>
+			<option value="Karabuk">Karabük</option>
+			<option value="Kilis">Kilis</option>
+			<option value="Osmaniye">Osmaniye</option>
+			<option value="Duzce">Düzce</option>
+        </select>
+    </div>
+
+    <div style="display:flex; background:#181818; border-bottom:1px solid #222;">
+        <div style="flex:1; padding:15px; text-align:center; border-right:1px solid #222;">
+            <div style="font-size:10px; color:#00d4ff;">İMSAK</div>
+            <div id="imsak-v" style="font-size:26px; font-weight:bold; color:#fff;">--:--</div>
+        </div>
+        <div style="flex:1; padding:15px; text-align:center;">
+            <div style="font-size:10px; color:#ff4444;">İFTAR</div>
+            <div id="iftar-v" style="font-size:26px; font-weight:bold; color:#fff;">--:--</div>
+        </div>
+    </div>
+
+    <div style="display:flex; background:#111; border-bottom:1px solid #222; padding:10px; align-items:center;">
+        <div style="flex:1; text-align:left; padding-left:10px; border-right:1px solid #222;">
+            <div id="m3620-clock" style="font-size:16px; font-weight:bold; color:#00d4ff;">00:00:00</div>
+            <div id="m3620-date" style="font-size:10px; color:#777;">-- --- 2026</div>
+        </div>
+        <div style="flex:1; text-align:right; padding-right:10px;">
+            <div id="m3620-day" style="font-size:14px; font-weight:bold; color:#fff;">Ramazan'ın -. Günü</div>
+            <div id="m3620-remain" style="font-size:10px; color:#ff4444;">Bayrama -- gün kaldı</div>
+        </div>
+    </div>
+
+    <div style="background:#0a0a0a; padding:12px; border-bottom:1px solid #222;">
+        <marquee id="m3620-hadis" scrollamount="3" style="font-size:13px; color:#ccc; font-style:italic;">Günün hadis-i şerifi yükleniyor...</marquee>
+    </div>
+
+    <div style="display:flex; background:#0f0f0f; border-bottom:1px solid #222; padding:10px; gap:5px;">
+        <div style="flex:1; background:#181818; padding:8px; border-radius:10px; border:1px solid #333;">
+            <div style="font-size:9px; color:#ff4444; font-weight:bold; margin-bottom:4px;">İFTAR DUASI</div>
+            <div style="font-size:10px; color:#aaa; line-height:1.3;">Allah'ım senin rızan için oruç tuttum, senin rızkınla iftar ettim.</div>
+        </div>
+        <div style="flex:1; background:#181818; padding:8px; border-radius:10px; border:1px solid #333;">
+            <div style="font-size:9px; color:#00d4ff; font-weight:bold; margin-bottom:4px;">SAHUR DUASI</div>
+            <div style="font-size:10px; color:#aaa; line-height:1.3;">Niyet ettim Allah rızası için bugünkü Ramazan orucunu tutmaya.</div>
+        </div>
+    </div>
+
+    <div style="padding:20px; background:#0f0f0f; border-bottom:1px solid #222; text-align:center;">
+    <div style="font-size:12px; color:#00d4ff; font-weight:bold; margin-bottom:15px;">📿 ZİKİRMATİK</div>
+    
+    <div id="m3620-toast" class="m3620-alert">
+        Tebrikler! Hedefinize ulaştınız. Allah kabul etsin. <br>
+        <span style="color:#fff; font-size:10px; font-weight:normal; margin-top:5px; display:block;">
+            Devam etmek için yeni bir zikir seçin veya hedefi artırın.
+        </span>
+    </div>
+
+    <div style="display:flex; gap:5px; margin-bottom:10px;">
+        <select id="z-type" onchange="zReset()" style="flex:2; background:#222; color:#fff; border:1px solid #444; padding:8px; font-size:12px; border-radius:5px;">
+            <option value="Sübhanallah" data-m="Allah her türlü eksiklikten uzaktır.">Sübhanallah</option>
+            <option value="Elhamdülillah" data-m="Bütün övgüler Allah'adır.">Elhamdülillah</option>
+            <option value="Allahü Ekber" data-m="Allah en büyüktür.">Allahü Ekber</option>
+            <option value="Lâ ilâhe illallah" data-m="Allah'tan başka ilah yoktur.">Lâ ilâhe illallah</option>
+        </select>
+        <select id="z-target" onchange="zReset()" style="flex:1; background:#222; color:#00d4ff; border:1px solid #444; padding:8px; font-size:12px; border-radius:5px; font-weight:bold;">
+            <option value="33">Hedef: 33</option>
+            <option value="100">Hedef: 100</option>
+            <option value="1000">Hedef: 1000</option>
+        </select>
+    </div>
+    <div id="z-count" style="font-size:55px; font-weight:bold; color:#fff; text-shadow:0 0 15px #00d4ff; margin-bottom:15px;">0</div>
+    
+    <button id="z-btn" onclick="zClick()" style="width:110px; height:110px; border-radius:50%; border:6px solid #00d4ff; background:radial-gradient(circle, #1a1a1a, #000); color:#00d4ff; font-size:24px; font-weight:bold; cursor:pointer; outline:none; transition:0.3s;" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'">OKU</button>
+    
+    <div id="z-desc" style="font-size:11px; color:#777; margin-top:15px; font-style:italic;">Allah her türlü eksiklikten uzaktır.</div>
+    <button onclick="zReset()" style="background:none; border:none; color:#ff4444; font-size:11px; margin-top:10px; cursor:pointer; text-decoration:underline; font-weight:bold;">SAYACI SIFIRLA</button>
+</div>
+
+    <div style="padding:10px; background:#0a0a0a;">
+        <details style="background:#111; border:1px solid #333; border-radius:10px; cursor:pointer;">
+            <summary style="padding:10px; font-size:12px; color:#00d4ff; font-weight:bold; outline:none;">🍽️ Yemek Duasını Görüntüle</summary>
+            <div style="padding:10px; font-size:11px; color:#ccc; line-height:1.5; border-top:1px solid #222;">
+                "Elhamdüllillâhillezî et’amenâ ve sekânâ ve cealenâ müslimîn. Elhamdüllillâhi hamden kesîran mübâreken fîhi, ğayra mekfiyyin velâ müveddein velâ müstâğnen anhu Rabbenâ. 
+				Allahümme bârik lenâ fîmâ razaktenâ ve kınâ azâben nâr." <br><br>
+                <span style="color:#00d4ff;">Türkçesi:</span> "Bizi yediren, içiren ve bizi Müslüman kılan Allah’a hamdolsun. Ey Rabbimiz! Sana tertemiz, bereketli ve hiç eksilmeyip artan, huzurundan geri çevrilmeyecek ve vazgeçilmeyecek bir hamd ile hamd ederiz. 
+				Allah'ım! Bize verdiğin rızıkları bereketli kıl ve bizi cehennem azabından koru."
+            </div>
+        </details>
+    </div>
+
+    <div style="background:linear-gradient(to top, #111, #0a0a0a); padding:15px; text-align:center;">
+        <div style="font-size:10px; color:#555;">&copy; 2026 DOST YURDU RAMAZAN ÖZEL PORTALI</div>
+    </div>
+</div>
+
+<script>
+    const otuzHadis = [
+        "Oruç tutunuz ki sıhhat bulasınız. (Hadis-i Şerif)",
+        "Sahur yapın, zira sahurda bereket vardır. (Buhârî)",
+        "Ramazan ayı geldiğinde cennet kapıları açılır. (Müslim)",
+        "Oruç, müminin cehennem ateşine karşı kalkanıdır. (Nesâî)",
+        "Kim bir oruçluya iftar ettirirse, sevabı kadar sevap kazanır. (Tirmizî)",
+        "Oruçlunun uykusu ibadet, susması tesbihtir. (Deylemî)",
+        "Ramazan'ın evveli rahmet, ortası mağfiret, sonu kurtuluştur.",
+        "Gerçek oruç, kötü sözü ve haramı terk etmektir. (Buhârî)",
+        "İftar vaktinde oruçlunun reddolunmayacak bir duası vardır. (Tirmizî)",
+        "Sabır imanın yarısıdır, oruç da sabrın yarısıdır.",
+        "İftarınızı taze hurma ile, yoksa su ile açın. (Ebû Dâvud)",
+        "Ramazan Kur'an ayıdır; bu ayda Kur'an'ı çokça okumak fazilettir.",
+        "Oruç tutan bedenin zekâtını vermiş olur. (İbn Mâce)",
+        "Cennette Reyyân denilen kapıdan sadece oruçlular girer. (Buhârî)",
+        "Beş vakit namaz ve Ramazan orucu günahlara kefarettir. (Müslim)",
+        "Oruçlu iken unutarak yiyip içen orucunu tamamlasın. (Buhârî)",
+        "Sevabını Allah'tan bekleyerek oruç tutanın günahları bağışlanır.",
+        "Ramazan ayında yapılan umre, hac sevabına denktir. (Buhârî)",
+        "Oruçlu için iki sevinç vardır: İftar ve Rabbine kavuştuğu an.",
+        "Gözleri haramdan, dili yalandan korumak orucun aslındandır.",
+        "Ramazan yardımlaşma ayıdır, bolca sadaka verin.",
+        "Oruç, nefsi terbiye eden en etkili yollardan biridir.",
+        "Zahmetsiz kazanılan tek ganimet kışın tutulan oruçtur. (Tirmizî)",
+        "Kadir Gecesi bin aydan daha hayırlıdır; son on günde arayın.",
+        "Sahur yemeği mübarektir, bir yudum su ile de olsa yapın.",
+        "Ramazan gecelerini ibadetle ihyâ etmek geçmiş günahları siler. (Buhârî)",
+        "Oruç tutan kimse, cahillik edip kötü söz söylemesin. (Buhârî)",
+        "Allah buyurur: 'Oruç benim içindir, mükafatını ben vereceğim.'",
+        "Ramazan bayramı, oruç tutanlara Allah'ın bir ikramıdır.",
+        "Ramazan veda ederken arınmış olanlara ne mutlu!"
+    ];
+    let count = 0;
+let isLocked = false; // Kilit mekanizması eklendi
+
+function zClick() { 
+    // EĞER KİLİTLİYSE (Hedefe ulaşıldıysa) SAYI ARTMASIN
+    if (isLocked) return; 
+
+    count++; 
+    document.getElementById('z-count').innerText = count; 
+    let t = parseInt(document.getElementById('z-target').value); 
+    
+    // HEDEFE ULAŞILDIĞINDA
+    if(count >= t) {
+        isLocked = true; // SİSTEMİ KİLİTLE (Sayı artık artmaz)
+        let toast = document.getElementById('m3620-toast');
+        
+        // UYARIYI GÜNCELLE VE GÖSTER (Kalıcı olması için setTimeout'u kaldırdık)
+        toast.innerHTML = "Tebrikler! Hedefinize ulaştınız. <br><small style='color:#fff; font-weight:normal;'>Yeni bir zikir seçin veya hedefi artırın.</small>";
+        toast.style.display = 'block';
+        
+        // BUTONU SOLUKLAŞTIR (Görsel geri bildirim)
+        document.querySelector("button[onclick='zClick()']").style.opacity = '0.3';
+    } 
+}
+
+function zReset() { 
+    count = 0; 
+    isLocked = false; // KİLİDİ AÇ
+    document.getElementById('z-count').innerText = 0; 
+    document.getElementById('m3620-toast').style.display = 'none'; 
+    
+    // BUTONU ESKİ HALİNE GETİR
+    document.querySelector("button[onclick='zClick()']").style.opacity = '1';
+}
+
+function zUpdate() { 
+    // Zikir türü veya hedef değiştiğinde sayacı sıfırla ve kilidi aç
+    zReset(); 
+    let s = document.getElementById('z-type'); 
+    document.getElementById('z-desc').innerText = s.options[s.selectedIndex].getAttribute('data-m'); 
+}
+    
+    function updateClock() {
+        let n = new Date();
+        document.getElementById('m3620-clock').innerText = n.toLocaleTimeString('tr-TR');
+        document.getElementById('m3620-date').innerText = n.toLocaleDateString('tr-TR', {day:'numeric', month:'long', year:'numeric'});
+        let rStart = new Date('2026-02-18');
+        let rEnd = new Date('2026-03-20');
+        let diff = Math.floor((n - rStart) / (1000*60*60*24)) + 1;
+        let left = Math.ceil((rEnd - n) / (1000*60*60*24));
+        if(diff > 0 && diff <= 30) document.getElementById('m3620-day').innerText = "Ramazan'ın " + diff + ". Günü";
+        else document.getElementById('m3620-day').innerText = "Mübarek Ramazan";
+        if(left > 0) document.getElementById('m3620-remain').innerText = "Bayrama " + left + " gün kaldı";
+        else document.getElementById('m3620-remain').innerText = "Hayırlı Bayramlar!";
+    }
+
+    async function getVakitler() {
+        const city = document.getElementById('m3620-city').value || "Istanbul";
+        try {
+            const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=Turkey&method=13`);
+            const data = await res.json();
+            document.getElementById('imsak-v').innerText = data.data.timings.Fajr;
+            document.getElementById('iftar-v').innerText = data.data.timings.Maghrib;
+        } catch (e) { document.getElementById('imsak-v').innerText = "Hata!"; }
+    }
+
+    window.onload = function() {
+        getVakitler(); setInterval(updateClock, 1000); updateClock();
+        const bugun = new Date().getDate() % 30;
+        document.getElementById('m3620-hadis').innerText = otuzHadis[bugun];
+    };
+</script>
+
+</body>
+</html>
